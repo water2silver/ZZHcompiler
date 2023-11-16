@@ -1,6 +1,13 @@
 # Prerequisites
 *.d
 
+# folder
+cmake-build-*/
+build/
+html/
+latex/
+.antlr/
+
 # Compiled Object files
 *.slo
 *.lo
@@ -30,3 +37,7 @@
 *.exe
 *.out
 *.app
+
+# inner files
+ir.txt
+ast.png

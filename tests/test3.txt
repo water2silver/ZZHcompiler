@@ -1,0 +1,15 @@
+function sum(a, b, c, d, e, f)
+{
+    putint(d);
+    putint(e);
+    putint(f);
+    return a + b + c + d + e + f;
+}
+
+a = 2;
+b = 3;
+c = 4;
+d = 1;
+e = 5;
+f = 6;
+sum(a + b, b + c + d, c, d, e, f + e + e)

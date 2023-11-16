@@ -1,0 +1,14 @@
+function sum(a, b, c, d, e, f)
+{
+    return e + f;
+}
+a=5;
+b=a+7;
+// 显示b的值
+b
+a=3-a;
+b=b-10;
+/*
+* 显示a+b的值
+*/
+a+b
