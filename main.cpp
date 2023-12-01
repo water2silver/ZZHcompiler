@@ -189,54 +189,79 @@ lb_check:
 /// @return 
 int main(int argc, char * argv[])
 {
-    int result;
+    // 函数返回值，默认-1
+    int result = -1;
+
+    // 内部函数调用返回值保存变量
+    int subResult;
 
 #ifdef _WIN32
     SetConsoleOutputCP(65001);
 #endif
 
-    // 参数解析
-    result = ArgsAnalysis(argc, argv);
-    if (result < 0) {
-        showHelp(argv[0]);
-        return -1;
-    }
+    do {
 
-    // 显示帮助
-    if (gShowHelp) {
-        showHelp(argv[0]);
-        return 0;
-    }
+        // 参数解析
+        subResult = ArgsAnalysis(argc, argv);
+        if (subResult < 0) {
 
-    FrontEndExecutor * fontEndExecutor;
+            // 在终端显示程序帮助信息
+            showHelp(argv[0]);
 
-    // 创建词法语法分析器
-    if (gFrontEndFlexBison) {
-        fontEndExecutor = new FlexBisonExecutor(gInputFile);
-    } else if (gFrontEndAntlr4) {
-        fontEndExecutor = new Antlr4Executor(gInputFile);
-    } else {
-        showHelp(argv[0]);
-        return -1;
-    }
+            // 错误不用设置，因此result默认值为-1
+            break;
+        }
 
-    result = fontEndExecutor->run();
-    if (!result) {
-        printf("lex and synytax ananlys failed\n");
-        return -1;
-    }
+        // 显示帮助
+        if (gShowHelp) {
+            
+            // 在终端显示程序帮助信息
+            showHelp(argv[0]);
 
-    // 清理前端资源
-    delete fontEndExecutor;
+            // 这里必须设置返回值，因默认值为-1
+            result = 0;
+            
+            break;
+        }
 
-    if (gShowAST) {
+        // 创建词法语法分析器
+        FrontEndExecutor * fontEndExecutor = nullptr;
+        if (gFrontEndAntlr4) {
+            // Antlr4
+            fontEndExecutor = new Antlr4Executor(gInputFile);
+        } else {
+            // 默认为Flex+Bison
+            fontEndExecutor = new FlexBisonExecutor(gInputFile);
+        }
 
-        // 遍历抽象语法树，生成抽象语法树图片
-        OutputAST(ast_root, gOutputFile);
+        // 前端执行：词法分析、语法分析后产生抽象语法树，其root为全局变量ast_root
+        subResult = fontEndExecutor->run();
+        if (!subResult) {
+            
+            printf("FrontEnd's analysis failed\n");
 
-        // 清理抽象语法树
-        free_ast();
-    } else {
+            // 退出循环
+            break;
+        }
+
+        // 清理前端资源
+        delete fontEndExecutor;
+
+        // 这里可进行非线性AST的优化
+        
+        if (gShowAST) {
+
+            // 遍历抽象语法树，生成抽象语法树图片
+            OutputAST(ast_root, gOutputFile);
+
+            // 清理抽象语法树
+            free_ast();
+
+            // 设置返回结果：正常
+            result = 0;
+            
+            break;
+        }
 
         // 输出线性中间IR、计算器模拟解释执行、输出汇编指令
         // 都需要遍历AST转换成线性IR指令
@@ -246,33 +271,57 @@ int main(int argc, char * argv[])
 
         // 遍历抽象语法树产生线性IR，相关信息保存到符号表中
         IRGenerator ast2IR(ast_root, &symtab);
-        result = ast2IR.run();
-        if (!result) {
+        subResult = ast2IR.run();
+        if (!subResult) {
+
+            // 输出错误信息
             printf("GenIR failed\n");
-            return -1;
+
+            break;
         }
 
         // 清理抽象语法树
         free_ast();
 
         if (gShowLineIR) {
+            
             // 输出IR
             symtab.outputIR(gOutputFile);
-        } else if (gShowASM) {
-            // 输出汇编指令
-            CodeGenerator * generator = new CodeGeneratorArm32(symtab);
+
+            // 设置返回结果：正常
+            result = 0;
+            
+            break;
+        }
+
+        // 这里可追加中间代码优化，体系结果无关的优化等
+
+        // 后端处理，体系结果相关的操作
+        // 这里提供两种模式：第一种是解释执行器CodeSimulator；第二种为面向ARM32的汇编产生器CodeGeneratorArm32
+        // 需要时可根据需要修改或追加新的目标体系架构
+
+        CodeGenerator *generator;
+        
+        if (gShowASM) {
+            
+            // 输出面向ARM32的汇编指令
+            generator = new CodeGeneratorArm32(symtab);
             generator->run(gOutputFile);
             delete generator;
         } else {
+            
             // 遍历中间代码指令，解释执行，得出运算结果
-            CodeGenerator * generator = new CodeSimulator(symtab);
-            generator->run("");
+            generator = new CodeSimulator(symtab);
+            generator->run(gOutputFile);
             delete generator;
         }
 
         // 清理符号表
         symtab.freeValues();
-    }
 
-    return 0;
+        result = 0;
+    }
+    while (0);
+    
+    return result;
 }
