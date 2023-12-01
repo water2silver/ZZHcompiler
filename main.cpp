@@ -320,8 +320,7 @@ int main(int argc, char * argv[])
         symtab.freeValues();
 
         result = 0;
-    }
-    while (0);
+    } while (0);
     
     return result;
 }
