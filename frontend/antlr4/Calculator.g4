@@ -1,19 +1,21 @@
 grammar Calculator;
 
-// 词法规则名总是以大写字母开头； 
+// 词法规则名总是以大写字母开头
 
-// 语法规则名总是以小写字母开头 
+// 语法规则名总是以小写字母开头
 
-// 尽量每个非终结符多多采用闭包、正闭包或可选符等用一个EBNF范式描述 
+// 每个非终结符尽量多包含闭包、正闭包或可选符等的EBNF范式描述
 
-// 若不能用一个EBNF范式来描述，则很大可能需要增加#区分，类似下面的非终结符statement
+// 若非终结符由多个产生式组成，则建议在每个产生式的尾部追加# 名称来区分，详细可查看非终结符statement的描述
 
 // 语法规则描述：EBNF范式
 compileUnit: (statement | funcDef)+;
+
 funcDef: T_FUNC T_ID '(' funcFormalParams? ')' block;
 funcFormalParams: funcFormalParam (',' funcFormalParam)*;
 funcFormalParam: funcBasicParam;
 funcBasicParam: T_ID;
+
 block: '{' blockItemList? '}';
 blockItemList: blockItem+;
 blockItem: statement;
@@ -34,7 +36,7 @@ primaryExp: '(' expr ')' | T_DIGIT | lVal;
 realParamList: expr (',' expr)*;
 lVal: T_ID;
 
-// 词法规则描述：正规式
+// 用正规式来进行词法规则的描述
 T_ADD: '+';
 T_SUB: '-';
 
