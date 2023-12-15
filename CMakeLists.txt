@@ -14,6 +14,9 @@ endif()
 # graphviz查找文件
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 
+# 查找Java
+find_package(Java REQUIRED)
+
 # 查找graphviz库是否在系统中安装，若安装则设置一系列的变量，如LIBGVC_INCLUDE_DIRS等
 find_package(Graphviz REQUIRED)
 
@@ -53,6 +56,9 @@ find_path(ANTLR4_INCLUDE_DIR NAMES antlr4-runtime.h PATH_SUFFIXES antlr4-runtime
 
 # 查找antlr4-runtime库的位置
 find_library(ANTLR4_LIBRARIES NAMES antlr4-runtime)
+
+# 查找antlr-4.12.0-complete的位置
+find_program(ANTLR4_JAR NAMES antlr-4.12.0-complete.jar)
 
 # 配置创建一个可执行程序，以及该程序所依赖的所有源文件、头文件等
 add_executable(${PROJECT_NAME}
@@ -225,7 +231,7 @@ add_custom_command(
     ${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/CalculatorParser.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/CalculatorParser.h
     COMMAND
-    java -jar ${CMAKE_CURRENT_SOURCE_DIR}/tools/antlr-4.12.0-complete.jar -Dlanguage=Cpp -no-listener -visitor -o ${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4 ${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/Calculator.g4
+    java -jar ${ANTLR4_JAR} -Dlanguage=Cpp -no-listener -visitor -o ${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4 ${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/Calculator.g4
     DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/Calculator.g4
 )
