@@ -187,6 +187,12 @@ make
 
 arm-none-eabi-gcc-12.2.0.exe -S  --specs=nosys.specs  -o test.s tests/test3.c
 
+## 用户模式的qemu
+
+qemu的用户模式下可直接运行交叉编译的用户态程序。但这种模式只在Linux和BSD系统下支持，Windows下不支持。
+
+因此，为便于后端开发与调试，请用Linux系统进行程序的模拟运行与调试。
+
 ## qemu用户与程序调试
 
 假定通过交叉编译出的程序为test
