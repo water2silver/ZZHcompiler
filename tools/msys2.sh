@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/sh
 
 # 若Windows系统已经安装有JDK，这里就不需要安装，设置为OFF或者注释掉
 JDK_NEED_INSTALL=ON
