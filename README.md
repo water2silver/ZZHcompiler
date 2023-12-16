@@ -186,3 +186,24 @@ make
 <https://godbolt.org/>
 
 arm-none-eabi-gcc-12.2.0.exe -S  --specs=nosys.specs  -o test.s tests/test3.c
+
+## qemu用户与程序调试
+
+假定通过交叉编译出的程序为test
+
+首先通过用户态模式的qemu运行程序，其中-g指定远程调试的端口，这里指定端口号为1234，这样qemu会开启gdb的远程调试服务。
+
+```shell
+qemu-arm -L /usr/arm-linux-gnueabi/ -g 1234 hello
+```
+
+其次，在另一个命令行界面启动gdb进行远程调试，需要指定远程机器的主机与端口。注意这里的gdb要支持目标CPU的gdb，而不是
+本地的gdb。
+
+```shell
+gdb-multiarch -tui
+>> target remote:1234    // 远程连接qemu的gdb server
+file hello               // 读取hello的符号，前提是hello是用-g编译的
+b main                   // 设置断点
+c                        // 继续运行
+```

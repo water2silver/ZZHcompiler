@@ -53,6 +53,7 @@ pacman -S --noconfirm ${MSYS2_KIND}-arm-none-eabi-gcc
 
 # 安装qemu软件，只有system模式，没有user模式，因此运行后端运行请在Linux上进行
 # pacman -S --noconfirm ${MSYS2_KIND}-qemu
+# wget -O ~/qemu-w64-setup-20231214.exe ${PROXY_URL}https://qemu.weilnetz.de/w64/2023/qemu-w64-setup-20231214.exe
 
 # 安装antlr4-runtime-cpp-4.12.0
 pacman -U --noconfirm https://mirrors.ustc.edu.cn/msys2/mingw/clang64/${MSYS2_KIND}-antlr4-runtime-cpp-${ANTLR4_VERSION}-1-any.pkg.tar.zst 
