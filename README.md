@@ -122,6 +122,12 @@ test.txt 测试用例代码
 
 ## 工具安装
 
+Windows下的msys2环境请执行msys2.sh来安装配置环境
+
+Ubuntu系统下请执行ubuntu.sh
+
+Mac系统下请执行mac.sh
+
 ### flex&bison
 
 #### Windows(MinGW)
@@ -134,11 +140,11 @@ sudo apt install flex bison
 
 ### graphviz
 
-#### Windows(MinGW)
+#### graphviz-clang64
 
-pacman -S pkg-config mingw-w64-x86_64-graphviz
+pacman -S pkg-config mingw-w64-clang-x86_64-graphviz
 
-#### Linux(ubuntu)
+#### graphviz-ubuntu
 
 sudo apt install pkg-config graphviz libgraphviz-dev
 
@@ -154,7 +160,7 @@ sudo apt install pkg-config graphviz libgraphviz-dev
 
 前提要安装软件doxygen和graphviz程序
 
-svg时需要安装mingw-w64-x86_64-pdf2svg
+svg时需要安装mingw-w64-clang-x86_64-pdf2svg
 
 请修改配置文件Doxygen.config，然后执行如下的命令:
 
