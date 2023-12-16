@@ -29,12 +29,11 @@ apt-get install -y doxygen texlive-lang-chinese texlive-lang-english texlive-lat
 apt-get install -y openssh-server
 
 # 编译安装antlr 4.12.0
-cd ~
 wget -O /usr/local/bin/antlr-4.12.0-complete.jar ${PROXY_URL}https://github.com/antlr/website-antlr4/blob/gh-pages/download/antlr-4.12.0-complete.jar
 chmod +x /usr/local/bin/antlr-4.12.0-complete.jar
-wget -O antlr4-cpp-runtime-4.12.0-source.zip ${PROXY_URL}https://github.com/antlr/website-antlr4/blob/gh-pages/download/antlr4-cpp-runtime-4.12.0-source.zip
-unzip antlr4-cpp-runtime-4.12.0-source.zip -d antlr4-cpp-runtime-4.12.0-source
-cd antlr4-cpp-runtime-4.12.0-source
+wget -O ~/antlr4-cpp-runtime-4.12.0-source.zip ${PROXY_URL}https://github.com/antlr/website-antlr4/blob/gh-pages/download/antlr4-cpp-runtime-4.12.0-source.zip
+unzip ~/antlr4-cpp-runtime-4.12.0-source.zip -d ~/antlr4-cpp-runtime-4.12.0-source
+cd ~/antlr4-cpp-runtime-4.12.0-source
 cmake -B build -S . -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Debug -DANTLR_BUILD_CPP_TESTS=OFF
 cmake --build build --parallel
 cmake --install build
