@@ -2,8 +2,7 @@ FROM ubuntu:22.04
 
 # 设置环境变量，时区为上海，东八区
 ENV TZ=Asia/Shanghai
-
-USER root
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # 设置国内源
 RUN sed -E -i -e 's/(archive|ports).ubuntu.com/mirrors.ustc.edu.cn/g' -e '/security.ubuntu.com/d' /etc/apt/sources.list
@@ -12,6 +11,7 @@ RUN sed -E -i -e 's/(archive|ports).ubuntu.com/mirrors.ustc.edu.cn/g' -e '/secur
 RUN apt-get update && \
     apt-get install -y zsh vim git wget curl python3 sudo && \
     apt-get install -y software-properties-common apt-utils clang llvm libtool cmake graphviz graphviz-dev dos2unix && \
+    apt-get install -y flex bison && \
     apt-get install -y gdb lldb && \
     apt-get install -y openjdk-17-jdk && \
     apt-get install -y gcc-mips-linux-gnu g++-mips-linux-gnu && \
@@ -19,7 +19,7 @@ RUN apt-get update && \
     apt-get install -y gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf && \
     apt-get install -y gcc-riscv64-linux-gnu g++-riscv64-linux-gnu && \
     apt-get install -y qemu-user-static && \
-    apt-get install -y doxygen texlive-full && \
+    apt-get install -y doxygen texlive-lang-chinese texlive-lang-english texlive-latex-extra texlive-science texlive-plain-generic && \
     apt-get install -y openssh-server
 
 # 删除 apt/lists，可以减少最终镜像大小
@@ -32,7 +32,7 @@ RUN git clone https://proxy.201704.xyz/https://github.com/robbyrussell/oh-my-zsh
     git clone https://proxy.201704.xyz/https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions && \
     git clone https://proxy.201704.xyz/https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && \
     sed -i 's/^plugins=(/plugins=(zsh-autosuggestions zsh-syntax-highlighting z /' ~/.zshrc && \
-    chsh -s /bin/zsh
+    chsh -s /bin/zsh root
 
 # 创建code用户
 RUN useradd --create-home --no-log-init --shell /bin/zsh -G sudo code && \

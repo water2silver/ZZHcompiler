@@ -17,7 +17,8 @@ apt-get update
 # 安装一系列的软件
 apt-get install -y zsh vim git wget curl python3 sudo
 apt-get install -y software-properties-common apt-utils clang llvm libtool cmake graphviz graphviz-dev dos2unix
-apt-get install -y flex bison 
+apt-get install -y flex bison
+apt-get install -y gdb lldb
 apt-get install -y openjdk-17-jdk
 apt-get install -y gcc-mips-linux-gnu g++-mips-linux-gnu
 apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu

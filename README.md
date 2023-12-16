@@ -122,11 +122,13 @@ test.txt 测试用例代码
 
 ## 工具安装
 
-Windows下的msys2环境请执行msys2.sh来安装配置环境
+Windows下的msys2环境请执行msys2.sh来安装配置环境，前提是事先安装msys2软件。
 
-Ubuntu系统下请执行ubuntu.sh
+在Windows上可通过wsl安装ubuntu虚拟机并配置环境，详细见wsl.md文件。
 
-Mac系统下请执行mac.sh
+可通过VMware/VirtualBox/Qemu等虚拟机软件安装Ubuntu系统，然后以root用户进入系统后请执行ubuntu.sh配置开发环境。这种方式建议用vscode+ssh方式连接。
+
+可通过Docker Desktop Installer安装Docker运行环境，然后在Docker中配置运行，详细见docker.md文件。
 
 ### flex&bison
 
