@@ -1,3 +1,4 @@
+#/bin/sh
 
 # 切换时区东八区
 timedatectl set-timezone Asia/Shanghai
@@ -17,7 +18,7 @@ apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
 apt-get install -y gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf
 apt-get install -y gcc-riscv64-linux-gnu g++-riscv64-linux-gnu
 apt-get install -y qemu-user-static
-apt-get install -y doxygen texlive-full
+apt-get install -y doxygen texlive-lang-chinese texlive-lang-english texlive-latex-extra texlive-science texlive-plain-generic
 apt-get install -y openssh-server
 
 # 编译安装antlr 4.12.0

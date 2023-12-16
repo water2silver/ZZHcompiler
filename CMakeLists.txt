@@ -59,6 +59,7 @@ find_library(ANTLR4_LIBRARIES NAMES antlr4-runtime)
 
 # 查找antlr-4.12.0-complete的位置
 find_program(ANTLR4_JAR NAMES antlr-4.12.0-complete.jar)
+message(STATUS ${ANTLR4_JAR})
 
 # 配置创建一个可执行程序，以及该程序所依赖的所有源文件、头文件等
 add_executable(${PROJECT_NAME}
