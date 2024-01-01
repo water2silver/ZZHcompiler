@@ -8,12 +8,18 @@
  * @copyright Copyright (c) 2023
  *
  */
+#include <cstdio>
 
+#include "CodeGenerator.h"
 #include "CodeSimulator.h"
+#include "IRCode.h"
+#include "IRInst.h"
+#include "SymbolTable.h"
+#include "Value.h"
 
- /// @brief 构造函数
- /// @param tab 符号表
-CodeSimulator::CodeSimulator(SymbolTable & tab) : CodeGenerator(tab)
+/// @brief 构造函数
+/// @param tab 符号表
+CodeSimulator::CodeSimulator(SymbolTable &tab) : CodeGenerator(tab)
 {
     calc_handlers[IRInstOperator::IRINST_OP_ENTRY] = &CodeSimulator::calc_entry;
     calc_handlers[IRInstOperator::IRINST_OP_EXIT] = &CodeSimulator::calc_exit;
@@ -29,15 +35,9 @@ CodeSimulator::CodeSimulator(SymbolTable & tab) : CodeGenerator(tab)
     calc_handlers[IRInstOperator::IRINST_OP_FUNC_CALL] = &CodeSimulator::calc_call;
 }
 
-/// @brief 析构函数
-CodeSimulator::~CodeSimulator()
-{
-
-}
-
 /// @brief 函数入口指令计算
 /// @param inst IR中间指令
-bool CodeSimulator::calc_entry(IRInst * inst)
+bool CodeSimulator::calc_entry(IRInst *inst)
 {
     // 目前什么都不做
     return true;
@@ -45,7 +45,7 @@ bool CodeSimulator::calc_entry(IRInst * inst)
 
 /// @brief 函数出口指令计算
 /// @param inst IR中间指令
-bool CodeSimulator::calc_exit(IRInst * inst)
+bool CodeSimulator::calc_exit(IRInst *inst)
 {
     // TODO 函数调用支持时这里必须进行值的返回
 
@@ -54,11 +54,11 @@ bool CodeSimulator::calc_exit(IRInst * inst)
 
 /// @brief 赋值指令计算
 /// @param inst IR中间指令
-bool CodeSimulator::calc_assign(IRInst * inst)
+bool CodeSimulator::calc_assign(IRInst *inst)
 {
     // 目前只支持整数运算
-    Value * destVal = inst->getDst();
-    Value * srcVal = inst->getSrc1();
+    Value *destVal = inst->getDst();
+    Value *srcVal = inst->getSrc1();
 
     destVal->intVal = srcVal->intVal;
     destVal->type = srcVal->type;
@@ -67,8 +67,8 @@ bool CodeSimulator::calc_assign(IRInst * inst)
 }
 
 /// @brief Label指令计算
-/// @param inst IR中间指令    
-bool CodeSimulator::calc_label(IRInst * inst)
+/// @param inst IR中间指令
+bool CodeSimulator::calc_label(IRInst *inst)
 {
     // 目前可忽略
     // TODO 如果支持自定义的函数调用等功能时需要自己实现
@@ -78,11 +78,11 @@ bool CodeSimulator::calc_label(IRInst * inst)
 
 /// @brief 整数加法指令计算
 /// @param inst IR中间指令
-bool CodeSimulator::calc_add_int32(IRInst * inst)
+bool CodeSimulator::calc_add_int32(IRInst *inst)
 {
-    Value * destVal = inst->getDst();
-    Value * srcVal1 = inst->getSrc1();
-    Value * srcVal2 = inst->getSrc2();
+    Value *destVal = inst->getDst();
+    Value *srcVal1 = inst->getSrc1();
+    Value *srcVal2 = inst->getSrc2();
 
     destVal->intVal = srcVal1->intVal + srcVal2->intVal;
     destVal->type.type = BasicType::TYPE_INT;
@@ -92,11 +92,11 @@ bool CodeSimulator::calc_add_int32(IRInst * inst)
 
 /// @brief 整数减法指令计算
 /// @param inst IR中间指令
-bool CodeSimulator::calc_sub_int32(IRInst * inst)
+bool CodeSimulator::calc_sub_int32(IRInst *inst)
 {
-    Value * destVal = inst->getDst();
-    Value * srcVal1 = inst->getSrc1();
-    Value * srcVal2 = inst->getSrc2();
+    Value *destVal = inst->getDst();
+    Value *srcVal1 = inst->getSrc1();
+    Value *srcVal2 = inst->getSrc2();
 
     destVal->intVal = srcVal1->intVal - srcVal2->intVal;
     destVal->type.type = BasicType::TYPE_INT;
@@ -106,7 +106,7 @@ bool CodeSimulator::calc_sub_int32(IRInst * inst)
 
 /// @brief GOTO指令计算
 /// @param inst IR中间指令
-bool CodeSimulator::calc_goto(IRInst * inst)
+bool CodeSimulator::calc_goto(IRInst *inst)
 {
     // 无条件跳转指令
 
@@ -118,13 +118,13 @@ bool CodeSimulator::calc_goto(IRInst * inst)
 
 /// @brief 函数调用指令计算
 /// @param inst IR中间指令
-bool CodeSimulator::calc_call(IRInst * inst)
+bool CodeSimulator::calc_call(IRInst *inst)
 {
     // TODO 自定义函数需要自己实现
-    FuncCallIRInst * funcCallInst = dynamic_cast<FuncCallIRInst *>(inst);
+    FuncCallIRInst *funcCallInst = dynamic_cast<FuncCallIRInst *>(inst);
 
     // 根据函数名查找函数信息
-    Function * func = symtab.findFunction(funcCallInst->name);
+    Function *func = symtab.findFunction(funcCallInst->name);
     if (!func) {
         // 函数没有找到，则错误返回
         printf("Function(%s) not found\n", funcCallInst->name.c_str());
@@ -152,16 +152,16 @@ bool CodeSimulator::calc_call(IRInst * inst)
 
 /// @brief 指令解释执行，返回的结果报告到inst的destValue中
 /// @param inst IR指令
-bool CodeSimulator::IRInstCalc(IRInst * inst)
+bool CodeSimulator::IRInstCalc(IRInst *inst)
 {
     // 操作符
-    IRInstOperator op = inst->getOp();
+    const IRInstOperator instOp = inst->getOp();
 
     std::unordered_map<IRInstOperator, calc_handler>::const_iterator pIter;
-    pIter = calc_handlers.find(op);
+    pIter = calc_handlers.find(instOp);
     if (pIter == calc_handlers.end()) {
         // 没有找到，则说明当前不支持
-        printf("IRInstCalc: Operator(%d) not support", (int)op);
+        printf("IRInstCalc: Operator(%d) not support", (int) instOp);
         return false;
     }
 
@@ -178,7 +178,7 @@ bool CodeSimulator::run()
     bool result = true;
 
     // 查找main函数进行执行
-    Function * mainFunc = symtab.findFunction("main");
+    Function *mainFunc = symtab.findFunction("main");
     if (!mainFunc) {
         // main函数查找不到，则出错
         printf("main function not found\n");
@@ -186,11 +186,11 @@ bool CodeSimulator::run()
     }
 
     // 开始遍历函数内的指令，开始解释执行，得出结果
-    InterCode & irCode = mainFunc->getInterCode();
-    for (auto inst : irCode.getInsts()) {
+    InterCode &irCode = mainFunc->getInterCode();
+    for (auto &inst: irCode.getInsts()) {
 
         // 单条指令解释执行
-        bool result = IRInstCalc(inst);
+        result = IRInstCalc(inst);
         if (!result) {
             break;
         }

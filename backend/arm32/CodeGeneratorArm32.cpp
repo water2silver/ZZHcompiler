@@ -8,14 +8,19 @@
  * @copyright Copyright (c) 2023
  *
  */
+#include <cstdio>
+#include <cstdint>
 #include <vector>
 
 #include "CodeGeneratorArm32.h"
 #include "ILocArm32.h"
+#include "IRInst.h"
 #include "InstSelectorArm32.h"
 #include "PlatformArm32.h"
+#include "SymbolTable.h"
+#include "Value.h"
 
- /// @brief 构造函数
+/// @brief 构造函数
  /// @param tab 符号表
 CodeGeneratorArm32::CodeGeneratorArm32(SymbolTable & tab) : CodeGeneratorAsm(tab)
 {
@@ -40,7 +45,6 @@ void CodeGeneratorArm32::genHeader()
     fprintf(fp, "%s\n", ".arm");
     fprintf(fp, "%s\n", ".fpu vfpv4");
 
-#if 0
     // ARM32的32位立即数mov操作宏，需要时请打开
     fprintf(fp, "%s\n", R"(
 .macro mov32, cond, reg, val
@@ -48,7 +52,6 @@ void CodeGeneratorArm32::genHeader()
     movt\cond \reg, #:upper16:\val
 .endm
     )");
-#endif
     
 }
 
@@ -71,14 +74,14 @@ void CodeGeneratorArm32::genCodeSection(Function * func)
     std::vector<IRInst *> & IrInsts = func->getInterCode().getInsts();
 
     // ILOC代码序列
-    ILocArm32 il(&symtab);
+    ILocArm32 iloc(&symtab);
 
     // 指令选择生成汇编指令
-    InstSelectorArm32 instSelector(IrInsts, il, func);
+    InstSelectorArm32 instSelector(IrInsts, iloc, func);
     instSelector.run();
 
     // 删除无用的Label指令
-    il.deleteUsedLabel();
+    iloc.deleteUsedLabel();
 
     // ILOC代码输出为汇编代码
     string name = func->getName();
@@ -86,7 +89,7 @@ void CodeGeneratorArm32::genCodeSection(Function * func)
     fprintf(fp, ".global %s\n", asmName.c_str());
     fprintf(fp, ".type %s, %%function\n", asmName.c_str());
     fprintf(fp, "%s:\n", asmName.c_str());
-    il.outPut(fp);
+    iloc.outPut(fp);
 }
 
 /// @brief 寄存器分配

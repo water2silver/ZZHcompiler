@@ -1,7 +1,7 @@
 #pragma once
 
+#include "AST.h"
 #include "CalculatorBaseVisitor.h"
-#include "ast.h"
 
 
 /// @brief 遍历具体语法树产生抽象语法树

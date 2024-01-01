@@ -13,9 +13,9 @@
 #include <vector>
 #include <unordered_map>
 
-#include "value.h"
-#include "function.h"
+#include "Function.h"
 #include "IRCode.h"
+#include "Value.h"
 
 class Function;
 

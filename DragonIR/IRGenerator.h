@@ -12,10 +12,10 @@
 
 #include <unordered_map>
 
-#include "ast.h"
-#include "symboltable.h"
+#include "AST.h"
+#include "SymbolTable.h"
 
- /// @brief AST遍历产生线性IR类
+/// @brief AST遍历产生线性IR类
 class IRGenerator {
 
 public:
@@ -25,7 +25,7 @@ public:
     IRGenerator(ast_node * root, SymbolTable * symtab);
 
     /// @brief 析构函数
-    ~IRGenerator();
+    ~IRGenerator() = default;
 
     /// @brief 运行产生IR
     bool run();

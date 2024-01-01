@@ -13,14 +13,13 @@
 /// @brief 构造函数
 InterCode::InterCode()
 {
-    
 }
 
 /// @brief 析构函数
 InterCode::~InterCode()
 {
     // 资源清理
-    for (auto inst : code) {
+    for (auto inst: code) {
 
         delete inst;
     }
@@ -30,10 +29,10 @@ InterCode::~InterCode()
 
 /// @brief 添加一个指令块，添加到尾部，并清除原来指令块的内容
 /// @param block 指令块，请注意加入后会自动清空block的指令
-void InterCode::addInst(InterCode & block)
+void InterCode::addInst(InterCode &block)
 {
     std::vector<IRInst *> &insert = block.getInsts();
-    
+
     code.insert(code.end(), insert.begin(), insert.end());
 
     // InterCode析构会清理资源，因此移动指令到code中后必须清理，否则会释放多次导致程序例外
@@ -54,4 +53,3 @@ std::vector<IRInst *> &InterCode::getInsts()
 {
     return code;
 }
-

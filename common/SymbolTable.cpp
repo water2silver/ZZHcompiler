@@ -10,10 +10,10 @@
  */
 #include <algorithm>
 
-#include "symboltable.h"
+#include "SymbolTable.h"
 
 
- /// @brief 构造函数
+/// @brief 构造函数
 SymbolTable::SymbolTable()
 {
     // 加入内置函数

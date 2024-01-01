@@ -12,7 +12,7 @@
 
 #include <string>
 
-#include "ast.h"
+#include "AST.h"
 
 /// @brief 抽象语法树AST的图形化显示，这里用C语言实现
 /// @param root 抽象语法树的根

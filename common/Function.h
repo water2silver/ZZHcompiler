@@ -14,8 +14,8 @@
 #include <vector>
 #include <unordered_map>
 
-#include "value.h"
 #include "IRCode.h"
+#include "Value.h"
 
 class SymbolTable;
 

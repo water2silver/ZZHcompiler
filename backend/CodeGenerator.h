@@ -13,9 +13,9 @@
 #include <cstdio>
 #include <string>
 
-#include "symboltable.h"
+#include "SymbolTable.h"
 
- /// @brief 代码生成的一般类
+/// @brief 代码生成的一般类
 class CodeGenerator {
 
 public:
@@ -24,7 +24,7 @@ public:
     CodeGenerator(SymbolTable & tab);
 
     /// @brief 析构函数
-    virtual ~CodeGenerator();
+    virtual ~CodeGenerator() = default;
 
     /// @brief 代码产生器运行，结果保存到指定的文件中
     /// @param outFileName 输出内容所在文件

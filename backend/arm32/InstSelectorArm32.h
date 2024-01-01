@@ -13,9 +13,9 @@
 #include <map>
 #include <vector>
 
-#include "IRInst.h"
+#include "Function.h"
 #include "ILocArm32.h"
-#include "function.h"
+#include "IRInst.h"
 #include "PlatformArm32.h"
 
 using namespace std;

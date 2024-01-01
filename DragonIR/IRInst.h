@@ -12,9 +12,9 @@
 
 #include <vector>
 
-#include "value.h"
+#include "Value.h"
 
- /// @brief IR指令操作码
+/// @brief IR指令操作码
 enum class IRInstOperator {
 
     /// @brief 函数入口指令，对应函数的prologue，用户栈空间分配、寄存器保护等
@@ -55,13 +55,12 @@ public:
     IRInst();
 
     /// @brief 构造函数
-    /// @param op 
+    /// @param op
     /// @param result
-    IRInst(IRInstOperator op, Value * result = nullptr);
+    IRInst(IRInstOperator op, Value *result = nullptr);
 
-public:
     /// @brief 析构函数
-    virtual ~IRInst();
+    virtual ~IRInst() = default;
 
     /// @brief 获取指令操作码
     /// @return 指令操作码
@@ -69,24 +68,24 @@ public:
 
     /// @brief 获取源操作数列表
     /// @return 源操作数列表
-    std::vector<Value *> & getSrc();
+    std::vector<Value *> &getSrc();
 
     /// @brief 获取目的操作数，或者结果操作数
     /// @return 目的操作数，或者结果操作数
-    Value * getDst();
+    Value *getDst();
 
     /// @brief 取得源操作数1
-    /// @return 
-    Value * getSrc1();
+    /// @return
+    Value *getSrc1();
 
     /// @brief 取得源操作数2
-    /// @return 
-    Value * getSrc2();
+    /// @return
+    Value *getSrc2();
 
     /// @brief 转换成字符串
-    virtual void toString(std::string & str);
+    virtual void toString(std::string &str);
 
-    /// @brief 是否是Dead指令 
+    /// @brief 是否是Dead指令
     bool isDead()
     {
         return dead;
@@ -105,8 +104,8 @@ public:
     {
         return labelName;
     }
-protected:
 
+protected:
     /// @brief IR指令操作码
     enum IRInstOperator op;
 
@@ -114,7 +113,7 @@ protected:
     std::vector<Value *> srcValues;
 
     /// @brief 目的操作数或结果或跳转指令的目标
-    Value * dstValue;
+    Value *dstValue;
 
     /// @brief 是否是Dead指令
     bool dead = false;
@@ -123,10 +122,10 @@ protected:
     std::string labelName;
 
     /// @brief 目标真出口指令，指向Label指令，主要用于有条件跳转
-    IRInst * trueInst;
+    IRInst *trueInst;
 
     /// @brief 目标假出口指令，指向Label指令，主要用于有条件跳转
-    IRInst * falseInst;
+    IRInst *falseInst;
 };
 
 /// @brief Label指令
@@ -145,14 +144,14 @@ public:
 
     /// @brief 转换成字符串
     /// @param str 返回指令字符串
-    void toString(std::string & str) override;
+    void toString(std::string &str) override;
 
 protected:
     /// @brief 新建Label名字，目前采用全局唯一编号，实际上函数内唯一即可
     /// \return Label名字
     static std::string createLabelName()
     {
-        static uint64_t tempLabelCount = 0; // 常量计数，默认从0开始
+        static uint64_t tempLabelCount = 0;// 常量计数，默认从0开始
 
         return "L" + std::to_string(tempLabelCount++);
     }
@@ -167,26 +166,23 @@ public:
     /// @param _result 结果操作数
     /// @param _srcVal1 源操作数1
     /// @param _srcVal2 源操作数2
-    BinaryIRInst(IRInstOperator _op, Value * _result, Value * _srcVal1, Value * _srcVal2);
+    BinaryIRInst(IRInstOperator _op, Value *_result, Value *_srcVal1, Value *_srcVal2);
 
     /// @brief 析构函数
     virtual ~BinaryIRInst() override;
 
     /// @brief 转换成字符串
-    void toString(std::string & str) override;
-
+    void toString(std::string &str) override;
 };
 
 /// @brief 函数调用指令
 class FuncCallIRInst : public IRInst {
 
 public:
-
     /// @brief 函数名
     std::string name;
 
 public:
-
     /// @brief 无参数并且没有要设置的返回值的函数调用
     /// @param name 函数名
     FuncCallIRInst(std::string _name);
@@ -194,18 +190,18 @@ public:
     /// @brief 含有参数的函数调用
     /// @param _srcVal1 函数的实参Value
     /// @param result 保存返回值的Value
-    FuncCallIRInst(std::string _name, Value * _srcVal1, Value * _result = nullptr);
+    FuncCallIRInst(std::string _name, Value *_srcVal1, Value *_result = nullptr);
 
     /// @brief 含有参数的函数调用
     /// @param srcVal 函数的实参Value
     /// @param result 保存返回值的Value
-    FuncCallIRInst(std::string _name, std::vector<Value *> & _srcVal, Value * _result = nullptr);
+    FuncCallIRInst(std::string _name, std::vector<Value *> &_srcVal, Value *_result = nullptr);
 
     /// @brief 析构函数
     virtual ~FuncCallIRInst() override;
 
     /// @brief 转换成字符串
-    void toString(std::string & str) override;
+    void toString(std::string &str) override;
 };
 
 /// @brief 赋值指令或者说复制指令
@@ -213,16 +209,15 @@ class AssignIRInst : public IRInst {
 
 public:
     /// @brief 构造函数
-    /// @param result 
-    /// @param srcVal1 
-    AssignIRInst(Value * result, Value * srcVal1);
+    /// @param result
+    /// @param srcVal1
+    AssignIRInst(Value *result, Value *srcVal1);
 
     /// @brief 析构函数
     virtual ~AssignIRInst() override;
 
     /// @brief 转换成字符串
-    void toString(std::string & str) override;
-
+    void toString(std::string &str) override;
 };
 
 class EntryIRInst : public IRInst {
@@ -235,7 +230,7 @@ public:
     virtual ~EntryIRInst() override;
 
     /// @brief 转换成字符串
-    void toString(std::string & str) override;
+    void toString(std::string &str) override;
 };
 
 /// @brief return语句指令
@@ -244,14 +239,13 @@ class ExitIRInst : public IRInst {
 public:
     /// @brief return语句指令
     /// @param _result 返回结果值
-    ExitIRInst(Value * result = nullptr);
+    ExitIRInst(Value *result = nullptr);
 
     /// @brief 析构函数
     virtual ~ExitIRInst() override;
 
     /// @brief 转换成字符串
-    void toString(std::string & str) override;
-
+    void toString(std::string &str) override;
 };
 
 class GotoIRInst : public IRInst {
@@ -259,11 +253,11 @@ class GotoIRInst : public IRInst {
 public:
     /// @brief return语句指令
     /// @param target 跳转目标
-    GotoIRInst(IRInst * target);
+    GotoIRInst(IRInst *target);
 
     /// @brief 析构函数
     virtual ~GotoIRInst() override;
 
     /// @brief 转换成字符串
-    void toString(std::string & str) override;
+    void toString(std::string &str) override;
 };

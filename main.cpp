@@ -18,17 +18,17 @@
 
 #include "getopt-port.h"
 
-#include "flex_lexer.h"
-#include "bison_parser.h"
-#include "graph.h"
-#include "symboltable.h"
-#include "IRGenerator.h"
-#include "CodeSimulator.h"
-#include "CodeGeneratorArm32.h"
-#include "FlexBisonExecutor.h"
 #include "Antlr4Executor.h"
+#include "CodeGeneratorArm32.h"
+#include "CodeSimulator.h"
+#include "FlexBisonExecutor.h"
+#include "Graph.h"
+#include "IRGenerator.h"
+#include "SymbolTable.h"
+#include "bison_parser.h"
+#include "flex_lexer.h"
 
- /// @brief 是否显示帮助信息
+/// @brief 是否显示帮助信息
 bool gShowHelp = false;
 
 /// @brief 显示抽象语法树，非线性IR

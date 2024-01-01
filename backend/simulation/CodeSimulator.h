@@ -21,7 +21,7 @@ public:
     CodeSimulator(SymbolTable & tab);
 
     /// @brief 析构函数
-    virtual ~CodeSimulator();
+    virtual ~CodeSimulator() = default;
 
     /// @brief 中间代码指令的模拟运行
     /// @param fp 输出内容所在文件

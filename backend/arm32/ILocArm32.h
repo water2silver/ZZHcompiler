@@ -13,9 +13,9 @@
 #include <list>
 #include <string>
 
-#include "symboltable.h"
+#include "SymbolTable.h"
 
- /// @brief 底层汇编指令：ARM32
+/// @brief 底层汇编指令：ARM32
 struct ArmInst {
 
     /// @brief 操作码

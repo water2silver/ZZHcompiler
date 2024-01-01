@@ -16,9 +16,9 @@
 #include <cstdint>
 
 #include "IRCode.h"
-#include "value.h"
+#include "Value.h"
 
- /// @brief AST节点的类型
+/// @brief AST节点的类型
 enum class ast_operator_type :int {
 
     /* 以下为AST的叶子节点 */

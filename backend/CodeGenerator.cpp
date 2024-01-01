@@ -8,16 +8,14 @@
  * @copyright Copyright (c) 2023
  *
  */
+#include <cstdio>
 
 #include "CodeGenerator.h"
+#include "SymbolTable.h"
 
- /// @brief 构造函数
+/// @brief 构造函数
  /// @param tab 符号表
 CodeGenerator::CodeGenerator(SymbolTable & tab) : symtab(tab)
-{}
-
-/// @brief 析构函数
-CodeGenerator::~CodeGenerator()
 {}
 
 /// @brief 代码产生器运行，结果保存到指定的文件中
@@ -39,7 +37,7 @@ bool CodeGenerator::run(std::string outFileName)
     }
 
     // 执行真正的代码
-    bool result = run();
+    const bool result = run();
 
     // 关闭文件
     if (fp) {

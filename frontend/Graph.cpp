@@ -13,8 +13,8 @@
 #include <iostream>
 #include <vector>
 
-#include "ast.h"
-#include "common.h"
+#include "AST.h"
+#include "Common.h"
 
 using namespace std;
 

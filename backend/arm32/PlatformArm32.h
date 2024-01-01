@@ -45,9 +45,9 @@ public:
     static bool isDisp(int num);
 
     /// @brief 判断是否是合法的寄存器名
-    /// @param s 寄存器名字
+	/// @param name 寄存器名字
     /// @return 是否是
-    static bool isReg(std::string s);
+    static bool isReg(std::string name);
 
     /// @brief 最大寄存器数目
     static const int maxRegNum = 16;

@@ -1,9 +1,9 @@
 #include <iostream>
 
+#include "AST.h"
 #include "Antlr4Executor.h"
-#include "CalculatorLexer.h"
 #include "CalculatorCSTVisitor.h"
-#include "ast.h"
+#include "CalculatorLexer.h"
 
 /// @brief 前端词法与语法解析生成AST
 /// @return true: 成功 false：错误

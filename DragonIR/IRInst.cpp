@@ -9,8 +9,9 @@
  *
  */
 #include "IRInst.h"
+#include "Value.h"
 
- /// @brief 构造函数
+/// @brief 构造函数
 IRInst::IRInst()
 {
     // 未知指令
@@ -18,19 +19,11 @@ IRInst::IRInst()
 }
 
 /// @brief 构造函数
-/// @param op 
-/// @param result 
-/// @param srcVal1 
-/// @param srcVal2 
-IRInst::IRInst(IRInstOperator _op, Value * _result) :
-    op(_op), dstValue(_result)
-{}
-
-/// @brief 析构函数
-IRInst::~IRInst()
-{
-
-}
+/// @param op
+/// @param result
+/// @param srcVal1
+/// @param srcVal2
+IRInst::IRInst(IRInstOperator _op, Value *_result) : op(_op), dstValue(_result) {}
 
 /// @brief 获取指令操作码
 /// @return 指令操作码
@@ -41,35 +34,35 @@ IRInstOperator IRInst::getOp()
 
 /// @brief 获取源操作数列表
 /// @return 源操作数列表
-std::vector<Value *> & IRInst::getSrc()
+std::vector<Value *> &IRInst::getSrc()
 {
     return srcValues;
 }
 
 /// @brief 获取目的操作数，或者结果操作数
 /// @return 目的操作数，或者结果操作数
-Value * IRInst::getDst()
+Value *IRInst::getDst()
 {
     return dstValue;
 }
 
 /// @brief 取得源操作数1
-/// @return 
-Value * IRInst::getSrc1()
+/// @return
+Value *IRInst::getSrc1()
 {
     return srcValues[0];
 }
 
 /// @brief 取得源操作数2
-/// @return 
-Value * IRInst::getSrc2()
+/// @return
+Value *IRInst::getSrc2()
 {
     return srcValues[1];
 }
 
 /// @brief 转换成字符串
 /// @param str 转换后的字符串
-void IRInst::toString(std::string & str)
+void IRInst::toString(std::string &str)
 {
     // 未知指令
     str = "Unkown IR Instruction";
@@ -91,12 +84,11 @@ LabelIRInst::LabelIRInst(std::string name) : IRInst(IRInstOperator::IRINST_OP_LA
 }
 
 /// @brief 析构函数
-LabelIRInst::~LabelIRInst()
-{}
+LabelIRInst::~LabelIRInst() {}
 
 /// @brief 转换成字符串
 /// @param str 返回指令字符串
-void LabelIRInst::toString(std::string & str)
+void LabelIRInst::toString(std::string &str)
 {
     str = labelName + ":";
 }
@@ -106,8 +98,7 @@ void LabelIRInst::toString(std::string & str)
 /// @param _result 结果操作数
 /// @param _srcVal1 源操作数1
 /// @param _srcVal2 源操作数2
-BinaryIRInst::BinaryIRInst(IRInstOperator _op, Value * _result, Value * _srcVal1, Value * _srcVal2) :
-    IRInst(_op, _result)
+BinaryIRInst::BinaryIRInst(IRInstOperator _op, Value *_result, Value *_srcVal1, Value *_srcVal2) : IRInst(_op, _result)
 {
     srcValues.push_back(_srcVal1);
     srcValues.push_back(_srcVal2);
@@ -116,47 +107,43 @@ BinaryIRInst::BinaryIRInst(IRInstOperator _op, Value * _result, Value * _srcVal1
 /// @brief 析构函数
 BinaryIRInst::~BinaryIRInst()
 {
-
 }
 
 /// @brief 转换成字符串
 /// @param str 转换后的字符串
-void BinaryIRInst::toString(std::string & str)
+void BinaryIRInst::toString(std::string &str)
 {
 
-    Value * src1 = srcValues[0], * src2 = srcValues[1], * result = dstValue;
+    Value *src1 = srcValues[0], *src2 = srcValues[1], *result = dstValue;
 
     switch (op) {
-    case IRInstOperator::IRINST_OP_ADD_I:
+        case IRInstOperator::IRINST_OP_ADD_I:
 
-        // 加法指令，二元运算
-        str = result->getName() + " = add " + src1->toString() + ", " + src2->toString();
-        break;
-    case IRInstOperator::IRINST_OP_SUB_I:
+            // 加法指令，二元运算
+            str = result->getName() + " = add " + src1->toString() + ", " + src2->toString();
+            break;
+        case IRInstOperator::IRINST_OP_SUB_I:
 
-        // 减法指令，二元运算
-        str = result->getName() + " = sub " + src1->toString() + ", " + src2->toString();
-        break;
+            // 减法指令，二元运算
+            str = result->getName() + " = sub " + src1->toString() + ", " + src2->toString();
+            break;
 
-    default:
-        // 未知指令
-        IRInst::toString(str);
-        break;
+        default:
+            // 未知指令
+            IRInst::toString(str);
+            break;
     }
 }
 
 /// @brief 无参数的函数调用
 /// @param name 函数名
 /// @param result 保存返回值的Value
-FuncCallIRInst::FuncCallIRInst(std::string _name) :
-    IRInst(IRInstOperator::IRINST_OP_FUNC_CALL, nullptr), name(_name)
-{}
+FuncCallIRInst::FuncCallIRInst(std::string _name) : IRInst(IRInstOperator::IRINST_OP_FUNC_CALL, nullptr), name(_name) {}
 
 /// @brief 含有参数的函数调用
 /// @param _srcVal1 函数的实参Value
 /// @param result 保存返回值的Value
-FuncCallIRInst::FuncCallIRInst(std::string _name, Value * _srcVal1, Value * _result) :
-    IRInst(IRInstOperator::IRINST_OP_FUNC_CALL, _result), name(_name)
+FuncCallIRInst::FuncCallIRInst(std::string _name, Value *_srcVal1, Value *_result) : IRInst(IRInstOperator::IRINST_OP_FUNC_CALL, _result), name(_name)
 {
     srcValues.push_back(_srcVal1);
 }
@@ -164,8 +151,7 @@ FuncCallIRInst::FuncCallIRInst(std::string _name, Value * _srcVal1, Value * _res
 /// @brief 含有参数的函数调用
 /// @param srcVal 函数的实参Value
 /// @param result 保存返回值的Value
-FuncCallIRInst::FuncCallIRInst(std::string _name, std::vector<Value *> & _srcVal, Value * _result) :
-    IRInst(IRInstOperator::IRINST_OP_FUNC_CALL, _result), name(_name)
+FuncCallIRInst::FuncCallIRInst(std::string _name, std::vector<Value *> &_srcVal, Value *_result) : IRInst(IRInstOperator::IRINST_OP_FUNC_CALL, _result), name(_name)
 {
     // 实参拷贝
     srcValues = _srcVal;
@@ -174,14 +160,13 @@ FuncCallIRInst::FuncCallIRInst(std::string _name, std::vector<Value *> & _srcVal
 /// @brief 析构函数
 FuncCallIRInst::~FuncCallIRInst()
 {
-
 }
 
 /// @brief 转换成字符串显示
 /// @param str 转换后的字符串
-void FuncCallIRInst::toString(std::string & str)
+void FuncCallIRInst::toString(std::string &str)
 {
-    Value * result = dstValue;
+    Value *result = dstValue;
 
     // TODO 这里应该根据函数名查找函数定义或者声明获取函数的类型
     // 这里假定所有函数返回类型要么是i32，要么是void
@@ -211,10 +196,9 @@ void FuncCallIRInst::toString(std::string & str)
 }
 
 /// @brief 赋值IR指令
-/// @param _result 
-/// @param _srcVal1 
-AssignIRInst::AssignIRInst(Value * _result, Value * _srcVal1) :
-    IRInst(IRInstOperator::IRINST_OP_ASSIGN, _result)
+/// @param _result
+/// @param _srcVal1
+AssignIRInst::AssignIRInst(Value *_result, Value *_srcVal1) : IRInst(IRInstOperator::IRINST_OP_ASSIGN, _result)
 {
     srcValues.push_back(_srcVal1);
 }
@@ -222,22 +206,21 @@ AssignIRInst::AssignIRInst(Value * _result, Value * _srcVal1) :
 /// @brief 析构函数
 AssignIRInst::~AssignIRInst()
 {
-
 }
 
 
 /// @brief 转换成字符串显示
 /// @param str 转换后的字符串
-void AssignIRInst::toString(std::string & str)
+void AssignIRInst::toString(std::string &str)
 {
-    Value * src1 = srcValues[0], * result = dstValue;
+    Value *src1 = srcValues[0], *result = dstValue;
 
     str = result->getName() + " = " + src1->toString();
 }
 
 /// @brief return语句指令
 /// @param _result 返回结果值
-ExitIRInst::ExitIRInst(Value * _result) : IRInst(IRInstOperator::IRINST_OP_EXIT, nullptr)
+ExitIRInst::ExitIRInst(Value *_result) : IRInst(IRInstOperator::IRINST_OP_EXIT, nullptr)
 {
     if (_result != nullptr) {
         srcValues.push_back(_result);
@@ -245,17 +228,16 @@ ExitIRInst::ExitIRInst(Value * _result) : IRInst(IRInstOperator::IRINST_OP_EXIT,
 }
 
 /// @brief 析构函数
-ExitIRInst::~ExitIRInst()
-{}
+ExitIRInst::~ExitIRInst() {}
 
 /// @brief 转换成字符串显示
 /// @param str 转换后的字符串
-void ExitIRInst::toString(std::string & str)
+void ExitIRInst::toString(std::string &str)
 {
     if (0 == srcValues.size()) {
         str = "exit void";
     } else {
-        Value * src1 = srcValues[0];
+        Value *src1 = srcValues[0];
         str = "exit " + src1->toString();
     }
 }
@@ -263,24 +245,22 @@ void ExitIRInst::toString(std::string & str)
 /// @brief return语句指令
 EntryIRInst::EntryIRInst() : IRInst(IRInstOperator::IRINST_OP_ENTRY, nullptr)
 {
-
 }
 
 /// @brief 析构函数
 EntryIRInst::~EntryIRInst()
 {
-
 }
 
 /// @brief 转换成字符串
-void EntryIRInst::toString(std::string & str)
+void EntryIRInst::toString(std::string &str)
 {
     str = "entry";
 }
 
 /// @brief return语句指令
 /// @param target 跳转目标
-GotoIRInst::GotoIRInst(IRInst * target) : IRInst(IRInstOperator::IRINST_OP_GOTO, nullptr)
+GotoIRInst::GotoIRInst(IRInst *target) : IRInst(IRInstOperator::IRINST_OP_GOTO, nullptr)
 {
     // 真假目标一样，则无条件跳转
     trueInst = falseInst = target;
@@ -289,11 +269,10 @@ GotoIRInst::GotoIRInst(IRInst * target) : IRInst(IRInstOperator::IRINST_OP_GOTO,
 /// @brief 析构函数
 GotoIRInst::~GotoIRInst()
 {
-
 }
 
 /// @brief 转换成字符串
-void GotoIRInst::toString(std::string & str)
+void GotoIRInst::toString(std::string &str)
 {
     str = "goto " + trueInst->getLabelName();
 }

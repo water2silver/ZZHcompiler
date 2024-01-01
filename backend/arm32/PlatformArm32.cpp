@@ -8,8 +8,6 @@
  * @copyright Copyright (c) 2023
  *
  */
-#include <string>
-
 #include "PlatformArm32.h"
 
 const std::string PlatformArm32::regName[PlatformArm32::maxRegNum] = {
@@ -35,7 +33,7 @@ const std::string PlatformArm32::regName[PlatformArm32::maxRegNum] = {
 /// @param num 
 void PlatformArm32::roundLeftShiftTwoBit(unsigned int & num)
 {
-    unsigned int overFlow = num & 0xc0000000;//取左移即将溢出的两位
+    const unsigned int overFlow = num & 0xc0000000;//取左移即将溢出的两位
     num = (num << 2) | (overFlow >> 30);//将溢出部分追加到尾部
 }
 
@@ -79,10 +77,10 @@ bool PlatformArm32::isDisp(int num)
 /// @brief 判断是否是合法的寄存器名
 /// @param s 寄存器名字
 /// @return 是否是
-bool PlatformArm32::isReg(std::string s)
+bool PlatformArm32::isReg(std::string name)
 {
-    return s == "r0" || s == "r1" || s == "r2" || s == "r3" || s == "r4"
-        || s == "r5" || s == "r6" || s == "r7" || s == "r8" || s == "r9"
-        || s == "r10" || s == "fp" || s == "ip" || s == "sp" || s == "lr"
-        || s == "pc";
+    return name == "r0" || name == "r1" || name == "r2" || name == "r3" || name == "r4"
+        || name == "r5" || name == "r6" || name == "r7" || name == "r8" || name == "r9"
+        || name == "r10" || name == "fp" || name == "ip" || name == "sp" || name == "lr"
+        || name == "pc";
 }

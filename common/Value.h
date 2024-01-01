@@ -13,10 +13,10 @@
 #include <cstdint>
 #include <string>
 
-#include "common.h"
-#include "type.h"
+#include "Common.h"
+#include "ValueType.h"
 
- /// @brief 变量、常量等管理的基类
+/// @brief 变量、常量等管理的基类
 class Value {
 
 protected:

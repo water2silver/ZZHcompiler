@@ -8,11 +8,18 @@
  * @copyright Copyright (c) 2023
  *
  */
+#include <cstdio>
+#include <cstdint>
 
-#include "IRGenerator.h"
+#include "AST.h"
 #include "IRCode.h"
+#include "IRGenerator.h"
+#include "IRInst.h"
+#include "SymbolTable.h"
+#include "Value.h"
+#include "ValueType.h"
 
- /// @brief 构造函数
+/// @brief 构造函数
  /// @param _root AST的根
  /// @param _symtab 符号表
 IRGenerator::IRGenerator(ast_node * _root, SymbolTable * _symtab) : root(_root), symtab(_symtab)
@@ -44,12 +51,6 @@ IRGenerator::IRGenerator(ast_node * _root, SymbolTable * _symtab) : root(_root),
 
     /* 编译单元 */
     ast2ir_handlers[ast_operator_type::AST_OP_COMPILE_UNIT] = &IRGenerator::ir_compile_unit;
-}
-
-/// @brief 析构函数
-IRGenerator::~IRGenerator()
-{
-
 }
 
 /// @brief 编译单元AST节点翻译成线性中间IR
@@ -121,8 +122,8 @@ bool IRGenerator::ir_function_define(ast_node * node)
 
     // 创建一个新的函数定义，函数的返回类型设置为VOID，待定，必须等return时才能确定，目前可以是VOID或者INT类型
     symtab->currentFunc = new Function(node->name, BasicType::TYPE_VOID);
-    bool reuslt = symtab->insertFunction(symtab->currentFunc);
-    if (!reuslt) {
+    bool result = symtab->insertFunction(symtab->currentFunc);
+    if (!result) {
         // 清理资源
         delete symtab->currentFunc;
 
@@ -209,7 +210,6 @@ bool IRGenerator::ir_function_formal_params(ast_node * node)
 /// @return 翻译是否成功，true：成功，false：失败
 bool IRGenerator::ir_function_call(ast_node * node)
 {
-    InterCode paramsInsts;
     std::vector<Value *> realParams;
 
     // 根据函数名查找函数，看是否存在。若不存在则出错

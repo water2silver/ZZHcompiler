@@ -1,5 +1,5 @@
 #include "CalculatorCSTVisitor.h"
-#include "ast.h"
+#include "AST.h"
 
 /// @brief 抽象语法树的根
 extern ast_node * ast_root;

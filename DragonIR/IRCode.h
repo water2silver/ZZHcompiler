@@ -18,7 +18,6 @@
 class InterCode {
 
 protected:
-
     /// @brief 指令块的指令序列
     std::vector<IRInst *> code;
 
@@ -31,12 +30,12 @@ public:
 
     /// @brief 添加一个指令块，添加到尾部，并清除原来指令块的内容
     /// @param block 指令块，请注意加入后会自动清空block的指令
-    void addInst(InterCode & block);
+    void addInst(InterCode &block);
 
     /// @brief 添加一条中间指令
     /// @param inst IR指令
     void addInst(IRInst *inst);
-    
+
     /// @brief 获取指令序列
     /// @return 指令序列
     std::vector<IRInst *> &getInsts();

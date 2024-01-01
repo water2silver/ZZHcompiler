@@ -66,10 +66,10 @@ add_executable(${PROJECT_NAME}
 
     main.cpp
 
-    frontend/ast.cpp
-    frontend/ast.h
-    frontend/graph.cpp
-    frontend/graph.h
+        frontend/AST.cpp
+        frontend/AST.h
+        frontend/Graph.cpp
+        frontend/Graph.h
     frontend/FrontEndExecutor.h
 
     ${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/calculator_lex.cpp
@@ -110,17 +110,17 @@ add_executable(${PROJECT_NAME}
     backend/arm32/PlatformArm32.h
     backend/arm32/CodeGeneratorArm32.cpp
     backend/arm32/CodeGeneratorArm32.h
-    
-    common/common.cpp
-    common/common.h
-    common/type.h
-    common/type.cpp
-    common/value.cpp
-    common/value.h
-    common/function.cpp
-    common/function.h
-    common/symboltable.cpp
-    common/symboltable.h
+
+        common/Common.cpp
+        common/Common.h
+        common/ValueType.h
+        common/ValueType.cpp
+        common/Value.cpp
+        common/Value.h
+        common/Function.cpp
+        common/Function.h
+        common/SymbolTable.cpp
+        common/SymbolTable.h
 
     DragonIR/IRInst.h
     DragonIR/IRInst.cpp

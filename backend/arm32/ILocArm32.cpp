@@ -9,13 +9,15 @@
  *
  */
 #include <sstream>
+#include <string>
+#include <cstdio>
 
 #include "ILocArm32.h"
 
-#include "value.h"
-#include "function.h"
-#include "symboltable.h"
+#include "Function.h"
 #include "PlatformArm32.h"
+#include "SymbolTable.h"
+#include "Value.h"
 
 
 ArmInst::ArmInst(std::string op, std::string rs, std::string s1, std::string s2, std::string extra)
@@ -459,9 +461,7 @@ int ILocArm32::getAdjustOffset(Value * var)
     }
 
     // 获取栈内偏移
-    int offset = var->getOffset();
-
-    return offset;
+	return var->getOffset();
 }
 
 /// @brief 删除无用的Label指令

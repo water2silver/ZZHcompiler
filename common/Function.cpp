@@ -11,10 +11,11 @@
 
 #include <algorithm>
 
-#include "function.h"
-#include "symboltable.h"
+#include "Function.h"
+#include "SymbolTable.h"
 
- /// @brief 默认整型参数
+
+/// @brief 默认整型参数
  /// @param _name 形参的名字
 FuncFormalParam::FuncFormalParam(std::string _name) : name(_name)
 {
