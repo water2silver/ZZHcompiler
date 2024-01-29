@@ -9,8 +9,8 @@
  *
  */
 
-#include <string>
 #include <iostream>
+#include <string>
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -25,8 +25,6 @@
 #include "Graph.h"
 #include "IRGenerator.h"
 #include "SymbolTable.h"
-#include "bison_parser.h"
-#include "flex_lexer.h"
 
 /// @brief 是否显示帮助信息
 bool gShowHelp = false;
@@ -59,20 +57,22 @@ std::string gInputFile;
 std::string gOutputFile;
 
 /// @brief 显示帮助
-/// @param exeName 
-void showHelp(const std::string & exeName)
+/// @param exeName
+void showHelp(const std::string &exeName)
 {
     std::cout << exeName + " -S [-a | -I] [-A] [-o output] source" << std::endl;
     std::cout << exeName + " -R [-A] source" << std::endl;
 }
 
 /// @brief 参数解析与有效性检查
-/// @param argc 
-/// @param argv 
-/// @return 
-int ArgsAnalysis(int argc, char * argv[])
+/// @param argc
+/// @param argv
+/// @return
+int ArgsAnalysis(int argc, char *argv[])
 {
     int ch;
+
+    // 指定参数解析的选项，可识别-h、-o、-S、-a、-I、-R、-A选项，并且-o要求必须要有附加参数
     const char options[] = "ho:SaIRA";
 
     opterr = 1;
@@ -80,34 +80,34 @@ int ArgsAnalysis(int argc, char * argv[])
 lb_check:
     while ((ch = getopt(argc, argv, options)) != -1) {
         switch (ch) {
-        case 'h':
-            gShowHelp = true;
-            break;
-        case 'o':
-            gOutputFile = optarg;
-            break;
-        case 'S':
-            gShowSymbol = 1;
-            break;
-        case 'a':
-            gShowAST = 1;
-            break;
-        case 'I':
-            // 产生中间IR
-            gShowLineIR = 1;
-            break;
-        case 'R':
-            // 直接运行，默认运行
-            gDirectRun = 1;
-            break;
-        case 'A':
-            // 选用antlr4
-            gFrontEndAntlr4 = true;
-            gFrontEndFlexBison = false;
-            break;
-        default:
-            return -1;
-            break; /* no break */
+            case 'h':
+                gShowHelp = true;
+                break;
+            case 'o':
+                gOutputFile = optarg;
+                break;
+            case 'S':
+                gShowSymbol = 1;
+                break;
+            case 'a':
+                gShowAST = 1;
+                break;
+            case 'I':
+                // 产生中间IR
+                gShowLineIR = 1;
+                break;
+            case 'R':
+                // 直接运行，默认运行
+                gDirectRun = 1;
+                break;
+            case 'A':
+                // 选用antlr4
+                gFrontEndAntlr4 = true;
+                gFrontEndFlexBison = false;
+                break;
+            default:
+                return -1;
+                break; /* no break */
         }
     }
 
@@ -184,10 +184,10 @@ lb_check:
 }
 
 /// @brief 主程序
-/// @param argc 
-/// @param argv 
-/// @return 
-int main(int argc, char * argv[])
+/// @param argc
+/// @param argv
+/// @return
+int main(int argc, char *argv[])
 {
     // 函数返回值，默认-1
     int result = -1;
@@ -214,18 +214,18 @@ int main(int argc, char * argv[])
 
         // 显示帮助
         if (gShowHelp) {
-            
+
             // 在终端显示程序帮助信息
             showHelp(argv[0]);
 
             // 这里必须设置返回值，因默认值为-1
             result = 0;
-            
+
             break;
         }
 
         // 创建词法语法分析器
-        FrontEndExecutor * fontEndExecutor = nullptr;
+        FrontEndExecutor *fontEndExecutor = nullptr;
         if (gFrontEndAntlr4) {
             // Antlr4
             fontEndExecutor = new Antlr4Executor(gInputFile);
@@ -237,7 +237,7 @@ int main(int argc, char * argv[])
         // 前端执行：词法分析、语法分析后产生抽象语法树，其root为全局变量ast_root
         subResult = fontEndExecutor->run();
         if (!subResult) {
-            
+
             printf("FrontEnd's analysis failed\n");
 
             // 退出循环
@@ -248,7 +248,7 @@ int main(int argc, char * argv[])
         delete fontEndExecutor;
 
         // 这里可进行非线性AST的优化
-        
+
         if (gShowAST) {
 
             // 遍历抽象语法树，生成抽象语法树图片
@@ -259,7 +259,7 @@ int main(int argc, char * argv[])
 
             // 设置返回结果：正常
             result = 0;
-            
+
             break;
         }
 
@@ -284,13 +284,13 @@ int main(int argc, char * argv[])
         free_ast();
 
         if (gShowLineIR) {
-            
+
             // 输出IR
             symtab.outputIR(gOutputFile);
 
             // 设置返回结果：正常
             result = 0;
-            
+
             break;
         }
 
@@ -301,15 +301,15 @@ int main(int argc, char * argv[])
         // 需要时可根据需要修改或追加新的目标体系架构
 
         CodeGenerator *generator;
-        
+
         if (gShowASM) {
-            
+
             // 输出面向ARM32的汇编指令
             generator = new CodeGeneratorArm32(symtab);
             generator->run(gOutputFile);
             delete generator;
         } else {
-            
+
             // 遍历中间代码指令，解释执行，得出运算结果
             generator = new CodeSimulator(symtab);
             generator->run(gOutputFile);
@@ -321,6 +321,6 @@ int main(int argc, char * argv[])
 
         result = 0;
     } while (0);
-    
+
     return result;
 }

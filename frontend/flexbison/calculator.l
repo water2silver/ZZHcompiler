@@ -7,7 +7,7 @@
 #include <cstring>
 
 // 此文件定义了文法中终结符的类别
-#include "bison_parser.h"
+#include "BisonParser.h"
 
 // 对于整数或浮点数，词法识别无符号数，对于负数，识别为求负运算符与无符号数，请注意。
 %}

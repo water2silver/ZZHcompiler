@@ -1,14 +1,14 @@
-#include "FlexBisonExecutor.h"
-#include "BisonParser.h"
-#include "FlexLexer.h"
+#include "RecursiveDescentExecutor.h"
+#include "CalculatorRDFlex.h"
+#include "CalculatorRDParser.h"
 
 /// @brief 前端词法与语法解析生成AST
 /// @return true: 成功 false：错误
-bool FlexBisonExecutor::run()
+bool RecursiveDescentExecutor::run()
 {
     // 若指定有参数，则作为词法分析的输入文件
-    yyin = fopen(filename.c_str(), "r");
-    if (yyin == nullptr) {
+    rd_filein = fopen(filename.c_str(), "r");
+    if (rd_filein == nullptr) {
         printf("Can't open file %s\n", filename.c_str());
         return false;
     }
@@ -17,18 +17,18 @@ bool FlexBisonExecutor::run()
     // yydebug = 1;
 
     // 词法、语法分析生成抽象语法树AST
-    bool result = yyparse();
+    int result = rd_parse();
     if (0 != result) {
-        printf("yyparse failed\n");
+        printf("rd_parse failed\n");
 
         // 关闭文件
-        fclose(yyin);
+        fclose(rd_filein);
 
         return false;
     }
 
     // 关闭文件
-    fclose(yyin);
+    fclose(rd_filein);
 
     return true;
 }

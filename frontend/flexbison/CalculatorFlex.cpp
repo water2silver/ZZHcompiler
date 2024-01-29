@@ -1,6 +1,6 @@
-#line 1 "calculator_lex.cpp"
+#line 1 "CalculatorFlex.cpp"
 
-#line 3 "calculator_lex.cpp"
+#line 3 "CalculatorFlex.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -47,6 +47,7 @@ typedef int16_t flex_int16_t;
 typedef uint16_t flex_uint16_t;
 typedef int32_t flex_int32_t;
 typedef uint32_t flex_uint32_t;
+typedef uint64_t flex_uint64_t;
 #else
 typedef signed char flex_int8_t;
 typedef short int flex_int16_t;
@@ -155,7 +156,7 @@ typedef struct yy_buffer_state *YY_BUFFER_STATE;
 typedef size_t yy_size_t;
 #endif
 
-extern int yyleng;
+extern yy_size_t yyleng;
 
 extern FILE *yyin, *yyout;
 
@@ -172,7 +173,7 @@ extern FILE *yyin, *yyout;
      */
     #define  YY_LESS_LINENO(n) \
             do { \
-                int yyl;\
+                yy_size_t yyl;\
                 for ( yyl = n; yyl < yyleng; ++yyl )\
                     if ( yytext[yyl] == '\n' )\
                         --yylineno;\
@@ -217,7 +218,7 @@ struct yy_buffer_state
 	/* Number of characters read into yy_ch_buf, not including EOB
 	 * characters.
 	 */
-	int yy_n_chars;
+	yy_size_t yy_n_chars;
 
 	/* Whether we "own" the buffer - i.e., we know we created it,
 	 * and can realloc() it to grow it, and should free() it to
@@ -286,8 +287,8 @@ static YY_BUFFER_STATE * yy_buffer_stack = NULL; /**< Stack as an array. */
 
 /* yy_hold_char holds the character lost when yytext is formed. */
 static char yy_hold_char;
-static int yy_n_chars;		/* number of characters read into yy_ch_buf */
-int yyleng;
+static yy_size_t yy_n_chars;		/* number of characters read into yy_ch_buf */
+yy_size_t yyleng;
 
 /* Points to current character in buffer. */
 static char *yy_c_buf_p = NULL;
@@ -314,7 +315,7 @@ static void yy_init_buffer ( YY_BUFFER_STATE b, FILE *file  );
 
 YY_BUFFER_STATE yy_scan_buffer ( char *base, yy_size_t size  );
 YY_BUFFER_STATE yy_scan_string ( const char *yy_str  );
-YY_BUFFER_STATE yy_scan_bytes ( const char *bytes, int len  );
+YY_BUFFER_STATE yy_scan_bytes ( const char *bytes, yy_size_t len  );
 
 void *yyalloc ( yy_size_t  );
 void *yyrealloc ( void *, yy_size_t  );
@@ -370,7 +371,7 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
  */
 #define YY_DO_BEFORE_ACTION \
 	(yytext_ptr) = yy_bp; \
-	yyleng = (int) (yy_cp - yy_bp); \
+	yyleng = (yy_size_t) (yy_cp - yy_bp); \
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
@@ -506,8 +507,8 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "calculator.l"
-#line 2 "calculator.l"
+#line 1 "Calculator.l"
+#line 2 "Calculator.l"
 /* 这里声明语义动作符程序所需要的函数原型或者变量原型或定义等 */
 /* 主要包含头文件，extern的全局变量，定义的全局变量等 */
 
@@ -516,10 +517,10 @@ char *yytext;
 #include <cstring>
 
 // 此文件定义了文法中终结符的类别
-#include "bison_parser.h"
+#include "BisonParser.h"
 
 // 对于整数或浮点数，词法识别无符号数，对于负数，识别为求负运算符与无符号数，请注意。
-#line 522 "calculator_lex.cpp"
+#line 523 "CalculatorFlex.cpp"
 /* 使它不要添加默认的规则,这样输入无法被给定的规则完全匹配时，词法分析器可以报告一个错误 */
 /* 产生yywrap函数 */
 /* flex 生成的扫描器用全局变量yylineno 维护着输入文件的当前行编号 */
@@ -531,10 +532,18 @@ char *yytext;
 
 /* 辅助定义式或者宏，后面使用时带上大括号 */
 /* 正规式定义 */
-#line 534 "calculator_lex.cpp"
+#line 535 "CalculatorFlex.cpp"
 
 #define INITIAL 0
 #define COMMENT 1
+
+#ifndef YY_NO_UNISTD_H
+/* Special case for "unistd.h", since it is non-ANSI. We include it way
+ * down here because we want the user's section 1 to have been scanned first.
+ * The user has a chance to override it with an option.
+ */
+#include <unistd.h>
+#endif
 
 #ifndef YY_EXTRA_TYPE
 #define YY_EXTRA_TYPE void *
@@ -563,7 +572,7 @@ FILE *yyget_out ( void );
 
 void yyset_out  ( FILE * _out_str  );
 
-			int yyget_leng ( void );
+			yy_size_t yyget_leng ( void );
 
 char *yyget_text ( void );
 
@@ -632,7 +641,7 @@ static int input ( void );
 	if ( YY_CURRENT_BUFFER_LVALUE->yy_is_interactive ) \
 		{ \
 		int c = '*'; \
-		int n; \
+		yy_size_t n; \
 		for ( n = 0; n < max_size && \
 			     (c = getc( yyin )) != EOF && c != '\n'; ++n ) \
 			buf[n] = (char) c; \
@@ -741,9 +750,9 @@ YY_DECL
 		}
 
 	{
-#line 45 "calculator.l"
+#line 45 "Calculator.l"
 
-#line 746 "calculator_lex.cpp"
+#line 755 "CalculatorFlex.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -787,7 +796,7 @@ yy_find_action:
 
 		if ( yy_act != YY_END_OF_BUFFER && yy_rule_can_match_eol[yy_act] )
 			{
-			int yyl;
+			yy_size_t yyl;
 			for ( yyl = 0; yyl < yyleng; ++yyl )
 				if ( yytext[yyl] == '\n' )
 					
@@ -808,7 +817,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 46 "calculator.l"
+#line 46 "Calculator.l"
 {
                 // 进入注释子有限自动机
                 BEGIN(COMMENT); 
@@ -816,7 +825,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 51 "calculator.l"
+#line 51 "Calculator.l"
 { 
                 // 结束注释子有限自动机
                 BEGIN(INITIAL); 
@@ -825,13 +834,13 @@ YY_RULE_SETUP
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 56 "calculator.l"
+#line 56 "Calculator.l"
 {
                 ; // 注释子有限自动机中，忽略所有字符，含换行符等
             }
 	YY_BREAK
 case YY_STATE_EOF(COMMENT):
-#line 60 "calculator.l"
+#line 60 "Calculator.l"
 {
                 // 注释子有限自动机，没有遇到*/但是文件结束
                 printf("Line %d: Unterminated comment\n", yylineno); 
@@ -843,14 +852,14 @@ case YY_STATE_EOF(COMMENT):
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 68 "calculator.l"
+#line 68 "Calculator.l"
 {
                 ; // 忽略行注释
             }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 72 "calculator.l"
+#line 72 "Calculator.l"
 {
                 // 词法识别无符号整数，注意对于负数，则需要识别为负号和无符号数两个Token
                 yylval.integer_num.val = (int)strtol(yytext, (char **)NULL, 10);
@@ -860,7 +869,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 79 "calculator.l"
+#line 79 "Calculator.l"
 {
                 // function作为关键字，作为特殊ID被预留
                 return T_FUNC;
@@ -868,7 +877,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 83 "calculator.l"
+#line 83 "Calculator.l"
 {
                 // return关键字
                 return T_RETURN;
@@ -876,7 +885,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 88 "calculator.l"
+#line 88 "Calculator.l"
 {
                 strncpy(yylval.var_id.id, yytext, sizeof(yylval.var_id.id) - 1);
                 yylval.var_id.lineno = yylineno;
@@ -885,63 +894,63 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 94 "calculator.l"
+#line 94 "Calculator.l"
 {return '(';}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 95 "calculator.l"
+#line 95 "Calculator.l"
 {return ')';}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 97 "calculator.l"
+#line 97 "Calculator.l"
 {return T_SUB;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 98 "calculator.l"
+#line 98 "Calculator.l"
 {return T_ADD;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 100 "calculator.l"
+#line 100 "Calculator.l"
 {return '=';}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 101 "calculator.l"
+#line 101 "Calculator.l"
 {return ';';}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 103 "calculator.l"
+#line 103 "Calculator.l"
 {return '{';}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 104 "calculator.l"
+#line 104 "Calculator.l"
 {return '}'; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 106 "calculator.l"
+#line 106 "Calculator.l"
 {return ','; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 108 "calculator.l"
+#line 108 "Calculator.l"
 ;
 	YY_BREAK
 case 19:
 /* rule 19 can match eol */
 YY_RULE_SETUP
-#line 110 "calculator.l"
+#line 110 "Calculator.l"
 ;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 112 "calculator.l"
+#line 112 "Calculator.l"
 {
                 printf("Line %d: Invalid char %s\n", yylineno, yytext);
                 
@@ -951,10 +960,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 118 "calculator.l"
+#line 118 "Calculator.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 957 "calculator_lex.cpp"
+#line 966 "CalculatorFlex.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1142,7 +1151,7 @@ static int yy_get_next_buffer (void)
 
 	else
 		{
-			int num_to_read =
+			yy_size_t num_to_read =
 			YY_CURRENT_BUFFER_LVALUE->yy_buf_size - number_to_move - 1;
 
 		while ( num_to_read <= 0 )
@@ -1156,7 +1165,7 @@ static int yy_get_next_buffer (void)
 
 			if ( b->yy_is_our_buffer )
 				{
-				int new_size = b->yy_buf_size * 2;
+				yy_size_t new_size = b->yy_buf_size * 2;
 
 				if ( new_size <= 0 )
 					b->yy_buf_size += b->yy_buf_size / 8;
@@ -1214,7 +1223,7 @@ static int yy_get_next_buffer (void)
 
 	if (((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
 		/* Extend the array by 50%, plus the number we really need. */
-		int new_size = (yy_n_chars) + number_to_move + ((yy_n_chars) >> 1);
+		yy_size_t new_size = (yy_n_chars) + number_to_move + ((yy_n_chars) >> 1);
 		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) yyrealloc(
 			(void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf, (yy_size_t) new_size  );
 		if ( ! YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
@@ -1303,7 +1312,7 @@ static int yy_get_next_buffer (void)
 	if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
 		{ /* need to shift things up to make room */
 		/* +2 for EOB chars. */
-		int number_to_move = (yy_n_chars) + 2;
+		yy_size_t number_to_move = (yy_n_chars) + 2;
 		char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
 					YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
 		char *source =
@@ -1358,7 +1367,7 @@ static int yy_get_next_buffer (void)
 
 		else
 			{ /* need more input */
-			int offset = (int) ((yy_c_buf_p) - (yytext_ptr));
+			yy_size_t offset = (yy_c_buf_p) - (yytext_ptr);
 			++(yy_c_buf_p);
 
 			switch ( yy_get_next_buffer(  ) )
@@ -1732,12 +1741,12 @@ YY_BUFFER_STATE yy_scan_string (const char * yystr )
  * 
  * @return the newly allocated buffer state object.
  */
-YY_BUFFER_STATE yy_scan_bytes  (const char * yybytes, int  _yybytes_len )
+YY_BUFFER_STATE yy_scan_bytes  (const char * yybytes, yy_size_t  _yybytes_len )
 {
 	YY_BUFFER_STATE b;
 	char *buf;
 	yy_size_t n;
-	int i;
+	yy_size_t i;
     
 	/* Get memory for full buffer, including space for trailing EOB's. */
 	n = (yy_size_t) (_yybytes_len + 2);
@@ -1779,7 +1788,7 @@ static void yynoreturn yy_fatal_error (const char* msg )
 	do \
 		{ \
 		/* Undo effects of setting up yytext. */ \
-        int yyless_macro_arg = (n); \
+        yy_size_t yyless_macro_arg = (n); \
         YY_LESS_LINENO(yyless_macro_arg);\
 		yytext[yyleng] = (yy_hold_char); \
 		(yy_c_buf_p) = yytext + yyless_macro_arg; \
@@ -1819,7 +1828,7 @@ FILE *yyget_out  (void)
 /** Get the length of the current token.
  * 
  */
-int yyget_leng  (void)
+yy_size_t yyget_leng  (void)
 {
         return yyleng;
 }
@@ -1972,6 +1981,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 118 "calculator.l"
+#line 118 "Calculator.l"
 
 

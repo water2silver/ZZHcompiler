@@ -10,5 +10,4 @@
  */
 #pragma once
 
-#include "calculator_lex.h"
-
+#include "CalculatorFlex.h"

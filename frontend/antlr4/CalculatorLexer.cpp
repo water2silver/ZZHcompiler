@@ -1,5 +1,5 @@
 
-// Generated from E:/GitDatabase/calculator/frontend/antlr4/Calculator.g4 by ANTLR 4.12.0
+// Generated from /Users/zenglj/Documents/GitDatabase/calculator/frontend/antlr4/Calculator.g4 by ANTLR 4.13.1
 
 
 #include "CalculatorLexer.h"
@@ -42,10 +42,19 @@ struct CalculatorLexerStaticData final {
 };
 
 ::antlr4::internal::OnceFlag calculatorlexerLexerOnceFlag;
+#if ANTLR4_USE_THREAD_LOCAL_CACHE
+static thread_local
+#endif
 CalculatorLexerStaticData *calculatorlexerLexerStaticData = nullptr;
 
 void calculatorlexerLexerInitialize() {
+#if ANTLR4_USE_THREAD_LOCAL_CACHE
+  if (calculatorlexerLexerStaticData != nullptr) {
+    return;
+  }
+#else
   assert(calculatorlexerLexerStaticData == nullptr);
+#endif
   auto staticData = std::make_unique<CalculatorLexerStaticData>(
     std::vector<std::string>{
       "T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6", "T_ADD", "T_SUB", 
@@ -160,5 +169,9 @@ const atn::ATN& CalculatorLexer::getATN() const {
 
 
 void CalculatorLexer::initialize() {
+#if ANTLR4_USE_THREAD_LOCAL_CACHE
+  calculatorlexerLexerInitialize();
+#else
   ::antlr4::internal::call_once(calculatorlexerLexerOnceFlag, calculatorlexerLexerInitialize);
+#endif
 }

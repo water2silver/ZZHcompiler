@@ -3,13 +3,13 @@
 #include <cstring>
 
 // 词法分析头文件
-#include "flex_lexer.h"
+#include "FlexLexer.h"
 
 // bison生成的头文件
-#include "bison_parser.h"
+#include "BisonParser.h"
 
 // 抽象语法树函数定义原型头文件
-#include "ast.h"
+#include "AST.h"
 
 // LR分析失败时所调用函数的原型声明
 void yyerror(char * msg);
