@@ -24,6 +24,7 @@
 #include "FlexBisonExecutor.h"
 #include "Graph.h"
 #include "IRGenerator.h"
+#include "RecursiveDescentExecutor.h"
 #include "SymbolTable.h"
 
 /// @brief 是否显示帮助信息
@@ -50,6 +51,9 @@ bool gFrontEndFlexBison = true;
 /// @brief 前端分析器Antlr4，是否选中
 bool gFrontEndAntlr4 = false;
 
+/// @brief 前端分析器用递归下降分析法，是否选中
+bool gFrontEndRecursiveDescentParsing = false;
+
 /// @brief 输入源文件
 std::string gInputFile;
 
@@ -60,7 +64,9 @@ std::string gOutputFile;
 /// @param exeName
 void showHelp(const std::string &exeName)
 {
-    std::cout << exeName + " -S [-a | -I] [-A] [-o output] source" << std::endl;
+    std::cout << exeName + " -S [-a | -I] [-o output] source" << std::endl;
+    std::cout << exeName + " -S -A [-a | -I] [-o output] source" << std::endl;
+    std::cout << exeName + " -S -D [-a | -I] [-o output] source" << std::endl;
     std::cout << exeName + " -R [-A] source" << std::endl;
 }
 
@@ -72,8 +78,8 @@ int ArgsAnalysis(int argc, char *argv[])
 {
     int ch;
 
-    // 指定参数解析的选项，可识别-h、-o、-S、-a、-I、-R、-A选项，并且-o要求必须要有附加参数
-    const char options[] = "ho:SaIRA";
+    // 指定参数解析的选项，可识别-h、-o、-S、-a、-I、-R、-A、-D选项，并且-o要求必须要有附加参数
+    const char options[] = "ho:SaIRAD";
 
     opterr = 1;
 
@@ -104,7 +110,13 @@ lb_check:
                 // 选用antlr4
                 gFrontEndAntlr4 = true;
                 gFrontEndFlexBison = false;
+                gFrontEndRecursiveDescentParsing = false;
                 break;
+            case 'D':
+                // 选用递归下降分析法与词法手动实现
+                gFrontEndAntlr4 = false;
+                gFrontEndFlexBison = false;
+                gFrontEndRecursiveDescentParsing = true;
             default:
                 return -1;
                 break; /* no break */
@@ -229,6 +241,9 @@ int main(int argc, char *argv[])
         if (gFrontEndAntlr4) {
             // Antlr4
             fontEndExecutor = new Antlr4Executor(gInputFile);
+        } else if (gFrontEndRecursiveDescentParsing) {
+            // 递归下降分析法
+            fontEndExecutor = new RecursiveDescentExecutor(gInputFile);
         } else {
             // 默认为Flex+Bison
             fontEndExecutor = new FlexBisonExecutor(gInputFile);

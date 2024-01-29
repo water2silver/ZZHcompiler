@@ -183,6 +183,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     frontend
     frontend/antlr4
     frontend/flexbison
+	frontend/recursivedescent
     DragonIR
     backend
     backend/simulation
