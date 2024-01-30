@@ -1,5 +1,5 @@
 
-// Generated from /Users/zenglj/Documents/GitDatabase/calculator/frontend/antlr4/Calculator.g4 by ANTLR 4.13.1
+// Generated from E:/GitDatabase/calculator/frontend/antlr4/Calculator.g4 by ANTLR 4.12.0
 
 
 #include "CalculatorVisitor.h"
@@ -37,19 +37,10 @@ struct CalculatorParserStaticData final {
 };
 
 ::antlr4::internal::OnceFlag calculatorParserOnceFlag;
-#if ANTLR4_USE_THREAD_LOCAL_CACHE
-static thread_local
-#endif
 CalculatorParserStaticData *calculatorParserStaticData = nullptr;
 
 void calculatorParserInitialize() {
-#if ANTLR4_USE_THREAD_LOCAL_CACHE
-  if (calculatorParserStaticData != nullptr) {
-    return;
-  }
-#else
   assert(calculatorParserStaticData == nullptr);
-#endif
   auto staticData = std::make_unique<CalculatorParserStaticData>(
     std::vector<std::string>{
       "compileUnit", "funcDef", "funcFormalParams", "funcFormalParam", "funcBasicParam", 
@@ -1290,9 +1281,5 @@ CalculatorParser::LValContext* CalculatorParser::lVal() {
 }
 
 void CalculatorParser::initialize() {
-#if ANTLR4_USE_THREAD_LOCAL_CACHE
-  calculatorParserInitialize();
-#else
   ::antlr4::internal::call_once(calculatorParserOnceFlag, calculatorParserInitialize);
-#endif
 }

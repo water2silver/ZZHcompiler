@@ -16,7 +16,8 @@ endif()
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 
 # 查找Java，若没有安装则错误。因ANTLR4需要，如果不不使用ANTLR4时可删除
-find_package(Java REQUIRED)
+find_package(Java COMPONENTS Runtime REQUIRED)
+message(STATUS ${Java_JAVA_EXECUTABLE})
 
 # 因AST输出图片需要借助Graphviz提供的C++接口来实现，因此若Graphviz没有安装则出错
 # 查找graphviz库是否在系统中安装，若安装则设置一系列的变量，如LIBGVC_INCLUDE_DIRS等
@@ -52,18 +53,13 @@ else()
     set(WINBISON_FOUND False)
 endif()
 
-# 查找antlr头文件的位置，也可以直接设置ANTLR4_INCLUDE_DIR为antlr4-runtime.h头文件所在的路径
-find_path(ANTLR4_INCLUDE_DIR NAMES antlr4-runtime.h PATH_SUFFIXES antlr4-runtime)
-
-# 查找antlr4-runtime库的位置
-find_library(ANTLR4_LIBRARIES NAMES antlr4-runtime)
-
 # 查找antlr-4.12.0-complete的位置
-find_program(ANTLR4_PATH NAMES antlr)
-#find_program(ANTLR4_JAR NAMES antlr-4.13.1-complete.jar)
-#message(STATUS ${ANTLR4_JAR})
-#set(ANTLR4_PATH "java -jar ${ANTLR4_JAR}")
-message(STATUS ${ANTLR4_PATH})
+set(ANTLR4_JAR_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/antlr4/antlr-4.12.0-complete.jar)
+message(STATUS ${ANTLR4_JAR_LOCATION})
+
+# 查找antlr4-runtime的包是否存在，若不存在则出错
+find_package(antlr4-runtime REQUIRED)
+message(STATUS ${ANTLR4_INCLUDE_DIR})
 
 # 配置创建一个可执行程序，以及该程序所依赖的所有源文件、头文件等
 add_executable(${PROJECT_NAME}
@@ -193,8 +189,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 # 指定graphviz的库文件以及位置，防止链接时找不到graphviz的库函数
 target_link_libraries(${PROJECT_NAME} PRIVATE ${Graphviz_LIBRARIES})
 
+add_dependencies(${PROJECT_NAME} antlr4_shared)
+
 # 指导antlr4的库名，防止链接时找不到antlr4-runtime
-target_link_libraries(${PROJECT_NAME} PRIVATE ${ANTLR4_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE antlr4_shared)
 
 # 采用win_flex产生词法文件时减少OS系统差异的问题
 if(CMAKE_HOST_WIN32)
@@ -255,7 +253,7 @@ add_custom_command(
     ${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/CalculatorParser.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/CalculatorParser.h
     COMMAND
-    ${ANTLR4_PATH} -Dlanguage=Cpp -no-listener -visitor -o ${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4 ${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/Calculator.g4
+    ${Java_JAVA_EXECUTABLE} -jar ${ANTLR4_JAR_LOCATION} -Dlanguage=Cpp -no-listener -visitor -o ${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4 ${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/Calculator.g4
     DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/Calculator.g4
 )
