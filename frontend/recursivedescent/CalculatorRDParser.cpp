@@ -55,8 +55,8 @@ static void semerror(char *msg)
     printf("Line(%d): %s\n", rd_line_no, msg);
 }
 
-// Factor ->  T_LPAREN Expr T_RPAREN | T_DIGIT | T_ID
-static ast_node *factor()
+// primaryExp: '(' expr ')' | T_DIGIT | lVal;
+static ast_node *primaryExp()
 {
     ast_node *node;
 
@@ -97,19 +97,34 @@ static ast_node *factor()
     return node;
 }
 
-// Expr  -> Term { T_ADD Term }
-static ast_node *expr()
+/// @brief unaryExp: primaryExp | T_ID '(' realParamList? ')'
+/// @return AST的节点
+static ast_node *unaryExp()
+{
+    // 本函数目前只处理primaryExp
+    // TODO 函数调用请自行处理，并且文法需要改造
+    ast_node *node = primaryExp();
+
+    return node;
+}
+
+/// @brief addExp -> unaryExp { T_ADD unaryExp) }
+/// @return AST的节点
+static ast_node *addExp()
 {
     ast_node *left_node, *right_node;
 
-    left_node = factor();
+    left_node = unaryExp();
 
     // 闭包{ T_ADD Term }通过循环识别
-    while (match(T_ADD)) {
+    // TODO 减法请自行增加
+    while (F(T_ADD)) {
 
-        // 加法运算
+        // 取下一个Token
+        advance();
 
-        right_node = factor();
+        // 这里只处理加法运算
+        right_node = unaryExp();
 
         // 创建加法节点
         left_node = new_ast_node(ast_operator_type::AST_OP_ADD, left_node, right_node);
@@ -118,8 +133,15 @@ static ast_node *expr()
     return left_node;
 }
 
-// assignstatement  -> Expr assignstatementTail
-// assignstatementTail -> T_ASSIGN Expr T_SEMICOLON | T_SEMICOLON | eps
+/// @brief expr -> addExp
+/// @return AST的节点
+static ast_node *expr()
+{
+    return addExp();
+}
+
+/// @brief assignstatement  -> Expr (T_ASSIGN Expr T_SEMICOLON | T_SEMICOLON | eps)
+/// @return AST的节点
 static ast_node *assignstatement()
 {
     ast_node *left_node, *right_node;
@@ -160,21 +182,41 @@ static ast_node *assignstatement()
     return left_node;
 }
 
-// statement  -> assignstatement
-static ast_node *statement()
+/// @brief returnstatement -> T_RETURN expr ';'
+/// @return AST的节点
+static ast_node *returnstatement()
 {
-    return assignstatement();
+    ast_node *expr_node = expr();
+
+    if (!match(T_SEMICOLON)) {
+        // 返回语句后没有分号
+        semerror("返回语句后没有分号");
+    }
+
+    return new_ast_node(ast_operator_type::AST_OP_RETURN_STATEMENT, expr_node, nullptr);
 }
 
-// Input -> {  }
-static void input()
+/// @brief statement  -> assignstatement | returnstatement
+/// @return AST的节点
+static ast_node *statement()
+{
+    if (F(T_RETURN)) {
+        return returnstatement();
+    } else {
+        return assignstatement();
+    }
+}
+
+// compileUnit: (statement | funcDef)+;
+static void compileUnit()
 {
     // 创建AST的根节点
-    ast_root = new_ast_node(ast_operator_type::AST_OP_BLOCK, nullptr);
+    ast_root = create_contain_node(ast_operator_type::AST_OP_COMPILE_UNIT, nullptr);
 
     for (;;) {
         if (F(T_LPAREN) _(T_DIGIT) _(T_ID)) {
             ast_node *statement_node = statement();
+            // 加入到父节点中
             ast_root->sons.push_back(statement_node);
             statement_node->parent = ast_root;
         } else if (F(T_EOF)) {
@@ -197,7 +239,7 @@ int rd_parse()
     // lookahead指向第一个Token
     advance();
 
-    input();
+    compileUnit();
 
     // 如果有错误信息，则返回-1，否则返回0
     if (errno_num != 0) {
