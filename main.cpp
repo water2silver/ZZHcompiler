@@ -64,10 +64,8 @@ std::string gOutputFile;
 /// @param exeName
 void showHelp(const std::string &exeName)
 {
-    std::cout << exeName + " -S [-a | -I] [-o output] source" << std::endl;
-    std::cout << exeName + " -S -A [-a | -I] [-o output] source" << std::endl;
-    std::cout << exeName + " -S -D [-a | -I] [-o output] source" << std::endl;
-    std::cout << exeName + " -R [-A] source" << std::endl;
+    std::cout << exeName + " -S [-A | -D] [-a | -I] [-o output] source" << std::endl;
+    std::cout << exeName + " -R [-A | -D] source" << std::endl;
 }
 
 /// @brief 参数解析与有效性检查
@@ -117,6 +115,7 @@ lb_check:
                 gFrontEndAntlr4 = false;
                 gFrontEndFlexBison = false;
                 gFrontEndRecursiveDescentParsing = true;
+                break;
             default:
                 return -1;
                 break; /* no break */

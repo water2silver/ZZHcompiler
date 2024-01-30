@@ -38,6 +38,8 @@ static RDTokenType getKeywordToken(std::string id)
     return RDTokenType::T_ID;
 }
 
+/// @brief 词法文法，获取下一个Token
+/// @return  Token，值保存在rd_lval中
 int rd_flex()
 {
     int c;
@@ -55,6 +57,8 @@ int rd_flex()
         /* Return end-of-input. */
         return RDTokenType::T_EOF;
     }
+
+    // TODO 请自行实现删除源文件中的注释，含单行注释和多行注释等
 
     /* Process numbers. */
     if (isdigit(c)) {

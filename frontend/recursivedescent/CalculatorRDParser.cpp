@@ -127,7 +127,7 @@ static ast_node *addExp()
         right_node = unaryExp();
 
         // 创建加法节点
-        left_node = new_ast_node(ast_operator_type::AST_OP_ADD, left_node, right_node);
+        left_node = new_ast_node(ast_operator_type::AST_OP_ADD, left_node, right_node, nullptr);
     }
 
     return left_node;
@@ -214,7 +214,10 @@ static void compileUnit()
     ast_root = create_contain_node(ast_operator_type::AST_OP_COMPILE_UNIT, nullptr);
 
     for (;;) {
-        if (F(T_LPAREN) _(T_DIGIT) _(T_ID)) {
+
+        // TODO 请自行实现函数定义的识别
+
+        if (F(T_LPAREN) _(T_DIGIT) _(T_ID) _(T_RETURN)) {
             ast_node *statement_node = statement();
             // 加入到父节点中
             ast_root->sons.push_back(statement_node);
