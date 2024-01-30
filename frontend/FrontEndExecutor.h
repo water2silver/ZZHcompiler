@@ -1,3 +1,13 @@
+/**
+ * @file FrontEndExecutor.h
+ * @author zenglj (zenglj@nwpu.edu.cn)
+ * @brief 前端分析执行器的类原型
+ * @version 0.1
+ * @date 2024-01-24
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #pragma once
 
 #include <string>
@@ -19,4 +29,3 @@ protected:
     /// @brief 要解析的文件路径
     std::string filename;
 };
-

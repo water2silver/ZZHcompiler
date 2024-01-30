@@ -1,5 +1,13 @@
-/// 手动实现的递归下降分析法实现代码
-
+/**
+ * @file CalculatorRDParser.h
+ * @author zenglj (zenglj@nwpu.edu.cn)
+ * @brief 递归下降分析法实现的语法分析后产生抽象语法树的实现
+ * @version 0.1
+ * @date 2024-01-24
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #include <cstring>
 
 #include "AST.h"
