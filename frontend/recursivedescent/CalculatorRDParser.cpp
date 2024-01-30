@@ -6,7 +6,6 @@
 #include "CalculatorRDFlex.h"
 #include "CalculatorRDParser.h"
 
-
 // 定义全局变量给词法分析使用，用于填充值
 RDSType rd_lval;
 
@@ -14,19 +13,22 @@ RDSType rd_lval;
 static int errno_num = 0;
 
 // 语法分析过程中的LookAhead，指向下一个Token
-static RDTokenType lookaheadTag = T_EMPTY;
+static RDTokenType lookaheadTag = RDTokenType::T_EMPTY;
 
 // 定义两个宏，用于判断是否是对应的Token
 #define _(T) || (lookaheadTag == T)
 #define F(C) (lookaheadTag == C)
 
-// lookahead指向下一个Token
+/// @brief lookahead指向下一个Token
 static void advance()
 {
     lookaheadTag = (RDTokenType) rd_flex();
 }
 
-/// flag若匹配则是否向前移动
+/// @brief flag若匹配则是否向前移动
+/// @param tag 是否匹配指定的Tag
+/// @param flag 若未true则获取下一个Token
+/// @return true：匹配，false：未匹配
 static bool match(RDTokenType tag, bool flag = true)
 {
     bool result = false;
@@ -45,7 +47,8 @@ static bool match(RDTokenType tag, bool flag = true)
 
 static ast_node *expr();
 
-// 语法错误输出
+/// @brief 语法错误输出
+/// @param msg 错误信息字符串
 static void semerror(char *msg)
 {
     errno_num++;
@@ -80,7 +83,7 @@ static ast_node *factor()
         advance();
     } else {
         // 出错
-        if (F(T_MUL) _(T_ADD) _(T_RPAREN)) {
+        if (F(T_SUB) _(T_ADD) _(T_RPAREN)) {
             semerror("缺少数值常量");
         } else {
             semerror("语法错误");
@@ -184,13 +187,19 @@ static void input()
     }
 }
 
+/// @brief 进入语法分析，若成功则生成抽象语法树，否则返回错误，输出错误信息
+/// @return 0: 成功 -1:失败
 int rd_parse()
 {
+    // 没有错误信息
+    errno_num = 0;
+
     // lookahead指向第一个Token
     advance();
 
     input();
 
+    // 如果有错误信息，则返回-1，否则返回0
     if (errno_num != 0) {
         return -1;
     }

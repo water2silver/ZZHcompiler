@@ -12,6 +12,32 @@ int rd_line_no = 1;
 
 FILE *rd_filein;
 
+/// @brief 关键字与Token类别的数据结构
+struct KeywordToken {
+    std::string name;
+    enum RDTokenType type;
+};
+
+static KeywordToken allKeywords[] = {
+        {"function", RDTokenType::T_FUNC},
+        {"return", RDTokenType::T_RETURN},
+
+};
+
+/// @brief 在标识符中检查是否时关键字，若是关键字则返回对应关键字的Token，否则返回T_ID
+/// @param id 标识符
+/// @return Token
+static RDTokenType getKeywordToken(std::string id)
+{
+    for (auto &keyword: allKeywords) {
+        if (keyword.name == id) {
+            return keyword.type;
+        }
+    }
+
+    return RDTokenType::T_ID;
+}
+
 int rd_flex()
 {
     int c;
@@ -27,7 +53,7 @@ int rd_flex()
     // file end
     if (c == EOF) {
         /* Return end-of-input. */
-        return 0;
+        return RDTokenType::T_EOF;
     }
 
     /* Process numbers. */
@@ -42,23 +68,22 @@ int rd_flex()
 
         ungetc(c, rd_filein);
 
-        c = T_DIGIT;
-    } else if (c == '*') {
-        c = T_MUL;
+        c = RDTokenType::T_DIGIT;
+    } else if (c == '-') {
+        c = RDTokenType::T_SUB;
     } else if (c == '+') {
-        c = T_ADD;
+        c = RDTokenType::T_ADD;
     } else if (c == '(') {
-        c = T_LPAREN;
+        c = RDTokenType::T_LPAREN;
     } else if (c == ')') {
-        c = T_RPAREN;
+        c = RDTokenType::T_RPAREN;
     } else if (c == '=') {
-        c = T_ASSIGN;
+        c = RDTokenType::T_ASSIGN;
     } else if (c == ';') {
-        c = T_SEMICOLON;
+        c = RDTokenType::T_SEMICOLON;
     } else if (isLetterUnderLine(c)) {
 
-        rd_lval.var_id.lineno = rd_line_no;
-
+        // 最长匹配标识符
         std::string name;
 
         do {
@@ -69,9 +94,16 @@ int rd_flex()
 
         ungetc(c, rd_filein);
 
-        strncpy(rd_lval.var_id.id, name.c_str(), sizeof(rd_lval.var_id.id));
+        // 检查是否是关键字，若是则返回对应的Token，否则返回T_ID
+        c = getKeywordToken(name);
+        if (c == RDTokenType::T_ID) {
 
-        c = T_ID;
+            // 设置ID的值
+            strncpy(rd_lval.var_id.id, name.c_str(), sizeof(rd_lval.var_id.id));
+
+            // 设置行号
+            rd_lval.var_id.lineno = rd_line_no;
+        }
     } else {
         printf("Line(%d): Invalid char %c\n", rd_line_no, c);
         c = -1;

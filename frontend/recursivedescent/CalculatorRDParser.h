@@ -8,14 +8,16 @@ enum RDTokenType {
     T_ERR = -1,
     T_EOF = 0,
 
-    T_DIGIT = 258,
-    T_ID = 259,
-    T_MUL = 260,
-    T_ADD = 261,
-    T_LPAREN = 262,
-    T_RPAREN = 263,
-    T_ASSIGN = 264,
-    T_SEMICOLON = 265
+    T_DIGIT,
+    T_ID,
+    T_ADD,
+    T_SUB,
+    T_LPAREN,
+    T_RPAREN,
+    T_ASSIGN,
+    T_SEMICOLON,
+    T_FUNC,
+    T_RETURN,
 };
 
 typedef union RDSType {
