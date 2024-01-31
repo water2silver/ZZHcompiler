@@ -24,9 +24,7 @@
 /// @param tab 符号表
 CodeGeneratorArm32::CodeGeneratorArm32(SymbolTable & tab) : CodeGeneratorAsm(tab)
 {
-    for (int k = 0; k < PlatformArm32::maxRegNum; k++) {
-        RegVal[k] = new IntRegValue(PlatformArm32::regName[k], k);
-    }
+    for (int k = 0; k < PlatformArm32::maxRegNum; k++) { RegVal[k] = new IntRegValue(PlatformArm32::regName[k], k); }
 }
 
 /// @brief 析构函数
@@ -92,12 +90,11 @@ void CodeGeneratorArm32::genCodeSection(Function * func)
 }
 
 /// @brief 寄存器分配
+/// @param func 函数指针
 void CodeGeneratorArm32::registerAllocation(Function * func)
 {
     // 内置函数不需要处理
-    if (func->isBuiltin()) {
-        return;
-    }
+    if (func->isBuiltin()) { return; }
 
 #ifndef FUNC_PARAM_STACK_ONE
     // 对于形参的前四个参数默认分配四个局部变量，用于保存前四个寄存器的值
@@ -117,9 +114,7 @@ void CodeGeneratorArm32::registerAllocation(Function * func)
     auto & protectedRegNo = func->getProtectedReg();
     protectedRegNo.push_back(REG_ALLOC_SIMPLE_TMP_REG_NO);
     protectedRegNo.push_back(REG_ALLOC_SIMPLE_FP_REG_NO);
-    if (func->getExistFuncCall()) {
-        protectedRegNo.push_back(REG_ALLOC_SIMPLE_LX_REG_NO);
-    }
+    if (func->getExistFuncCall()) { protectedRegNo.push_back(REG_ALLOC_SIMPLE_LX_REG_NO); }
 
     // 函数形参要求前四个寄存器分配，后面的参数采用栈传递
     // 针对后面的栈传递参数，一种处理方式为增加赋值操作，内存赋值给形参，形参再次分配空间
@@ -141,9 +136,7 @@ void CodeGeneratorArm32::adjustFormalParamStack(Function * func)
     for (int k = 4; k < (int) params.size(); k++) {
 
         // 形参名字无效，则忽略
-        if (params[k].name.empty()) {
-            continue;
-        }
+        if (params[k].name.empty()) { continue; }
 
         Value * val = params[k].val;
 
@@ -169,9 +162,7 @@ void CodeGeneratorArm32::adjustFormalParamInsts(Function * func)
     for (int k = 0; k < (int) params.size() && k <= 3; k++) {
 
         // 形参名字无效，则忽略
-        if (params[k].name.empty()) {
-            continue;
-        }
+        if (params[k].name.empty()) { continue; }
 
         Value * val = params[k].val;
 

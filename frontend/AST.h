@@ -10,16 +10,16 @@
  */
 #pragma once
 
-#include <cstdio>
-#include <vector>
-#include <string>
 #include <cstdint>
+#include <cstdio>
+#include <string>
+#include <vector>
 
 #include "IRCode.h"
 #include "Value.h"
 
 /// @brief AST节点的类型
-enum class ast_operator_type :int {
+enum class ast_operator_type : int {
 
     /* 以下为AST的叶子节点 */
 
@@ -40,7 +40,7 @@ enum class ast_operator_type :int {
     AST_OP_ADD,
 
     /// @brief 二元运算符*
-    AST_OP_SUB,   // 
+    AST_OP_SUB, //
 
     /// @brief 多个语句组成的块运算符
     AST_OP_BLOCK,
@@ -85,7 +85,7 @@ enum class ast_operator_type :int {
 class ast_node {
 public:
     /// @brief 父节点
-    ast_node *parent;
+    ast_node * parent;
 
     /// @brief 孩子节点
     std::vector<ast_node *> sons;
@@ -112,7 +112,7 @@ public:
     InterCode blockInsts;
 
     /// @brief 线性IR指令或者运行产生的Value，用于线性IR指令产生用
-    Value *val;
+    Value * val;
 
 public:
     /// @brief 构造函数
@@ -133,7 +133,7 @@ public:
     /// @brief 针对标识符ID的叶子构造函数
     /// @param _name 标识符名字
     /// @param _line_no 行号
-    ast_node(const char *_name, int32_t _line_no);
+    ast_node(const char * _name, int32_t _line_no);
 
     /// @brief 创建指定节点类型的节点
     /// @param _node_type 节点类型
@@ -150,39 +150,39 @@ bool isLeafNode(ast_operator_type type);
 /// @param type 节点类型
 /// @param  可变参数，最后一个孩子节点必须指定为nullptr。如果没有孩子，则指定为nullptr
 /// @return 创建的节点
-ast_node *new_ast_node(ast_operator_type type, ...);
+ast_node * new_ast_node(ast_operator_type type, ...);
 
 /// @brief 向父节点插入一个节点
 /// @param parent 父节点
 /// @param node 节点
-ast_node *insert_ast_node(ast_node *parent, ast_node *node);
+ast_node * insert_ast_node(ast_node * parent, ast_node * node);
 
 /// @brief 创建无符号整数的叶子节点
 /// @param val 词法值
 /// @param line_no 行号
-ast_node *new_ast_leaf_node(uint32_t val, int32_t line_no);
+ast_node * new_ast_leaf_node(uint32_t val, int32_t line_no);
 
 /// @brief 创建实数的叶子节点
 /// @param val 词法值
 /// @param line_no 行号
-ast_node *new_ast_leaf_node(float val, int32_t line_no);
+ast_node * new_ast_leaf_node(float val, int32_t line_no);
 
 /// @brief 创建标识符的叶子节点
 /// @param val 词法值
 /// @param line_no 行号
-ast_node *new_ast_leaf_node(const char *name, int32_t line_no);
+ast_node * new_ast_leaf_node(const char * name, int32_t line_no);
 
 /// @brief 创建具备指定类型的节点
 /// @param type 节点值类型
 /// @param line_no 行号
 /// @return 创建的节点
-ast_node *new_ast_leaf_node(BasicType type, int32_t line_no);
+ast_node * new_ast_leaf_node(BasicType type, int32_t line_no);
 
 /// @brief AST资源清理
 void free_ast();
 
 /// @brief抽象语法树的根节点指针
-extern ast_node *ast_root;
+extern ast_node * ast_root;
 
 /// @brief 创建函数定义类型的内部AST节点
 /// @param line_no 行号
@@ -190,23 +190,23 @@ extern ast_node *ast_root;
 /// @param block 函数体语句块
 /// @param params 函数形参，可以没有参数
 /// @return 创建的节点
-ast_node *create_func_def(uint32_t line_no, const char *func_name, ast_node *block, ast_node *params = nullptr);
+ast_node * create_func_def(uint32_t line_no, const char * func_name, ast_node * block, ast_node * params = nullptr);
 
 /// @brief 创建函数形式参数的节点
 /// @param line_no 行号
 /// @param param_name 参数名
 /// @return 创建的节点
-ast_node *create_func_formal_param(uint32_t line_no, const char *param_name);
+ast_node * create_func_formal_param(uint32_t line_no, const char * param_name);
 
 /// @brief 创建AST的内部节点
 /// @param node_type 节点类型
 /// @param first_param 第一个孩子节点
 /// @return 创建的节点
-ast_node *create_contain_node(ast_operator_type node_type, ast_node *first_param = nullptr);
+ast_node * create_contain_node(ast_operator_type node_type, ast_node * first_param = nullptr);
 
 /// @brief 创建函数调用的节点
 /// @param line_no 行号
 /// @param func_name 被调用的函数名
 /// @param params 实参节点
 /// @return 创建的节点
-ast_node *create_func_call(uint32_t line_no, const char *func_name, ast_node *params = nullptr);
+ast_node * create_func_call(uint32_t line_no, const char * func_name, ast_node * params = nullptr);

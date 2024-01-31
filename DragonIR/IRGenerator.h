@@ -20,8 +20,8 @@ class IRGenerator {
 
 public:
     /// @brief 构造函数
-    /// @param root 
-    /// @param symtab 
+    /// @param root
+    /// @param symtab
     IRGenerator(ast_node * root, SymbolTable * symtab);
 
     /// @brief 析构函数
@@ -31,7 +31,6 @@ public:
     bool run();
 
 protected:
-
     /// @brief 编译单元AST节点翻译成线性中间IR
     /// @param node AST节点
     /// @return 翻译是否成功，true：成功，false：失败
@@ -44,7 +43,7 @@ protected:
 
     /// @brief 形式参数AST节点翻译成线性中间IR
     /// @param node AST节点
-    /// @return 翻译是否成功，true：成功，false：失败    
+    /// @return 翻译是否成功，true：成功，false：失败
     bool ir_function_formal_params(ast_node * node);
 
     /// @brief 函数调用AST节点翻译成线性中间IR
@@ -54,33 +53,33 @@ protected:
 
     /// @brief 语句块（含函数体）AST节点翻译成线性中间IR
     /// @param node AST节点
-    /// @return 翻译是否成功，true：成功，false：失败    
+    /// @return 翻译是否成功，true：成功，false：失败
     bool ir_block(ast_node * node);
 
     /// @brief 表达式语句ST节点翻译成线性中间IR的共同函数
     /// @param node AST节点
     /// @param show 是否显示值，true：显示，false：不显示
-    /// @return 翻译是否成功，true：成功，false：失败    
+    /// @return 翻译是否成功，true：成功，false：失败
     bool ir_show_internal(ast_node * node, bool show);
 
     /// @brief 不显示表达式AST节点翻译成线性中间IR
     /// @param node AST节点
-    /// @return 翻译是否成功，true：成功，false：失败    
+    /// @return 翻译是否成功，true：成功，false：失败
     bool ir_expr_noshow(ast_node * node);
 
     /// @brief 显示表达式AST节点翻译成线性中间IR
     /// @param node AST节点
-    /// @return 翻译是否成功，true：成功，false：失败    
+    /// @return 翻译是否成功，true：成功，false：失败
     bool ir_expr_show(ast_node * node);
 
     /// @brief 整数加法AST节点翻译成线性中间IR
     /// @param node AST节点
-    /// @return 翻译是否成功，true：成功，false：失败    
+    /// @return 翻译是否成功，true：成功，false：失败
     bool ir_add(ast_node * node);
 
     /// @brief 整数减法AST节点翻译成线性中间IR
     /// @param node AST节点
-    /// @return 翻译是否成功，true：成功，false：失败  
+    /// @return 翻译是否成功，true：成功，false：失败
     bool ir_sub(ast_node * node);
 
     /// @brief 赋值AST节点翻译成线性中间IR
@@ -90,27 +89,27 @@ protected:
 
     /// @brief return节点翻译成线性中间IR
     /// @param node AST节点
-    /// @return 翻译是否成功，true：成功，false：失败    
+    /// @return 翻译是否成功，true：成功，false：失败
     bool ir_return(ast_node * node);
 
     /// @brief 标识符叶子节点翻译成线性中间IR
     /// @param node AST节点
-    /// @return 翻译是否成功，true：成功，false：失败        
+    /// @return 翻译是否成功，true：成功，false：失败
     bool ir_leaf_node_var_id(ast_node * node);
 
     /// @brief 无符号整数字面量叶子节点翻译成线性中间IR
     /// @param node AST节点
-    /// @return 翻译是否成功，true：成功，false：失败       
+    /// @return 翻译是否成功，true：成功，false：失败
     bool ir_leaf_node_uint(ast_node * node);
 
     /// @brief float数字面量叶子节点翻译成线性中间IR
     /// @param node AST节点
-    /// @return 翻译是否成功，true：成功，false：失败    
+    /// @return 翻译是否成功，true：成功，false：失败
     bool ir_leaf_node_float(ast_node * node);
 
     /// @brief 未知节点类型的节点处理
     /// @param node AST节点
-    /// @return 翻译是否成功，true：成功，false：失败   
+    /// @return 翻译是否成功，true：成功，false：失败
     bool ir_default(ast_node * node);
 
     /// @brief 根据AST的节点运算符查找对应的翻译函数并执行翻译动作
@@ -119,7 +118,7 @@ protected:
     ast_node * ir_visit_ast_node(ast_node * node);
 
     /// @brief AST的节点操作函数
-    typedef bool (IRGenerator:: * ast2ir_handler_t)(ast_node *);
+    typedef bool (IRGenerator::*ast2ir_handler_t)(ast_node *);
 
     /// @brief AST节点运算符与动作函数关联的映射表
     std::unordered_map<ast_operator_type, ast2ir_handler_t> ast2ir_handlers;

@@ -15,8 +15,7 @@
 
 /// @brief 构造函数
 /// @param tab 符号表
-CodeGenerator::CodeGenerator(SymbolTable & tab) : symtab(tab)
-{}
+CodeGenerator::CodeGenerator(SymbolTable & tab) : symtab(tab) {}
 
 /// @brief 代码产生器运行，结果保存到指定的文件中
 /// @param outFileName 输出内容所在文件

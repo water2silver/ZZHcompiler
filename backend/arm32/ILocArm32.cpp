@@ -46,10 +46,7 @@ void ArmInst::replace(std::string op, std::string rs, std::string s1, std::strin
 /*
     设置为无效指令
 */
-void ArmInst::setDead()
-{
-    dead = true;
-}
+void ArmInst::setDead() { dead = true; }
 
 /*
     输出函数
@@ -57,36 +54,24 @@ void ArmInst::setDead()
 std::string ArmInst::outPut()
 {
     // 无用代码，什么都不输出
-    if (dead) {
-        return "";
-    }
+    if (dead) { return ""; }
 
     // 占位指令,可能需要输出一个空操作，看是否支持 FIXME
-    if (opcode == "") {
-        return "";
-    }
+    if (opcode == "") { return ""; }
 
     std::string ret = opcode;
 
     // 结果输出
-    if (result != "") {
-        ret += " " + result;
-    }
+    if (result != "") { ret += " " + result; }
 
     // 第一元参数输出
-    if (arg1 != "") {
-        ret += "," + arg1;
-    }
+    if (arg1 != "") { ret += "," + arg1; }
 
     // 第二元参数输出
-    if (arg2 != "") {
-        ret += "," + arg2;
-    }
+    if (arg2 != "") { ret += "," + arg2; }
 
     // 其他附加信息输出
-    if (addition != "") {
-        ret += "," + addition;
-    }
+    if (addition != "") { ret += "," + addition; }
 
     return ret;
 }
@@ -101,9 +86,7 @@ std::string ILocArm32::toStr(int num, bool flag)
 {
     std::string ret = "";
 
-    if (flag) {
-        ret = "#";
-    }
+    if (flag) { ret = "#"; }
 
     std::stringstream ss;
     ss << num;
@@ -124,30 +107,20 @@ void ILocArm32::label(std::string name)
 /// @brief 0个源操作数指令
 /// @param op 操作码
 /// @param rs 操作数
-void ILocArm32::inst(std::string op, std::string rs)
-{
-    emit(op, rs);
-}
+void ILocArm32::inst(std::string op, std::string rs) { emit(op, rs); }
 
 /// @brief 一个操作数指令
 /// @param op 操作码
 /// @param rs 操作数
 /// @param arg1 源操作数
-void ILocArm32::inst(std::string op, std::string rs, std::string arg1)
-{
-    emit(op, rs, arg1);
-}
+void ILocArm32::inst(std::string op, std::string rs, std::string arg1) { emit(op, rs, arg1); }
 
 /// @brief 一个操作数指令
 /// @param op 操作码
 /// @param rs 操作数
 /// @param arg1 源操作数
 /// @param arg2 源操作数
-void ILocArm32::inst(std::string op, std::string rs, std::string arg1, std::string arg2)
-{
-
-    emit(op, rs, arg1, arg2);
-}
+void ILocArm32::inst(std::string op, std::string rs, std::string arg1, std::string arg2) { emit(op, rs, arg1, arg2); }
 
 /*
     加载立即数 ldr r0,=#100
@@ -195,7 +168,7 @@ void ILocArm32::load_base(int rs_reg_no, int base_reg_no, int disp)
         // ldr r8,=-4096
         load_imm(rs_reg_no, disp);
 
-        //fp,r8
+        // fp,r8
         base += "," + rsReg;
     }
 
@@ -221,9 +194,7 @@ void ILocArm32::store_base(int src_reg_no, int base_reg_no, int disp, int tmp_re
 
         // 若disp为0，则直接采用基址，否则采用基址+偏移
         // [fp,#-16] [fp]
-        if (disp) {
-            base += "," + toStr(disp);
-        }
+        if (disp) { base += "," + toStr(disp); }
     } else {
         // 先把立即数赋值给指定的寄存器tmpReg，然后采用基址+寄存器的方式进行
 
@@ -348,7 +319,7 @@ void ILocArm32::store_var(int src_reg_no, Value * var, int tmp_reg_no)
 
         // 目前只考虑局部变量
 
-        //栈帧偏移
+        // 栈帧偏移
         int32_t off = getAdjustOffset(var);
 
         // 基址寄存器名字
@@ -388,9 +359,7 @@ void ILocArm32::allocStack(Function * func, int tmp_reg_no)
 {
     // 超过四个的函数调用参数个数，多余4个，则需要栈传值
     int funcCallArgCnt = func->getMaxFuncCallArgCnt() - 4;
-    if (funcCallArgCnt < 0) {
-        funcCallArgCnt = 0;
-    }
+    if (funcCallArgCnt < 0) { funcCallArgCnt = 0; }
 
     // 计算栈帧大小
     int off = func->getMaxDep();
@@ -404,17 +373,15 @@ void ILocArm32::allocStack(Function * func, int tmp_reg_no)
         // sub sp,sp,#16
         emit("sub", "sp", "sp", toStr(off));
     } else {
-        //ldr r8,=257
+        // ldr r8,=257
         load_imm(tmp_reg_no, off);
 
-        //sub sp,sp,r8
+        // sub sp,sp,r8
         emit("sub", "sp", "sp", PlatformArm32::regName[tmp_reg_no]);
     }
 
     // 函数调用通过栈传递的基址寄存器设置
-    inst("add",
-         PlatformArm32::regName[REG_ALLOC_SIMPLE_FP_REG_NO],
-         "sp", toStr(funcCallArgCnt * 4));
+    inst("add", PlatformArm32::regName[REG_ALLOC_SIMPLE_FP_REG_NO], "sp", toStr(funcCallArgCnt * 4));
 }
 
 /// @brief 调用函数fun
@@ -434,19 +401,14 @@ void ILocArm32::nop()
 
 /// @brief 构造函数
 /// @param symtab 符号表
-ILocArm32::ILocArm32(SymbolTable * symtab)
-{
-    this->symtab = symtab;
-}
+ILocArm32::ILocArm32(SymbolTable * symtab) { this->symtab = symtab; }
 
 /// @brief 析构函数
 ILocArm32::~ILocArm32()
 {
     std::list<ArmInst *>::iterator pIter;
 
-    for (pIter = code.begin(); pIter != code.end(); ++pIter) {
-        delete (*pIter);
-    }
+    for (pIter = code.begin(); pIter != code.end(); ++pIter) { delete (*pIter); }
 }
 
 /// @brief 获取局部变量的偏移
@@ -469,9 +431,7 @@ void ILocArm32::deleteUsedLabel()
 {
     std::list<ArmInst *> labelInsts;
     for (ArmInst * arm: code) {
-        if ((!arm->dead) && (arm->opcode[0] == '.') && (arm->result == ":")) {
-            labelInsts.push_back(arm);
-        }
+        if ((!arm->dead) && (arm->opcode[0] == '.') && (arm->result == ":")) { labelInsts.push_back(arm); }
     }
 
     for (ArmInst * labelArm: labelInsts) {
@@ -485,9 +445,7 @@ void ILocArm32::deleteUsedLabel()
             }
         }
 
-        if (!labelUsed) {
-            labelArm->setDead();
-        }
+        if (!labelUsed) { labelArm->setDead(); }
     }
 }
 
@@ -514,7 +472,4 @@ void ILocArm32::outPut(FILE * file, bool outputEmpty)
 
 /// @brief 获取当前的代码序列
 /// @return 代码序列
-std::list<ArmInst *> & ILocArm32::getCode()
-{
-    return code;
-}
+std::list<ArmInst *> & ILocArm32::getCode() { return code; }

@@ -26,60 +26,60 @@ string getNodeName(ast_node * astnode)
     string nodeName;
 
     switch (astnode->node_type) {
-    case ast_operator_type::AST_OP_LEAF_LITERAL_UINT:
-        nodeName = to_string((int32_t)astnode->integer_val);
-        break;
-    case ast_operator_type::AST_OP_LEAF_LITERAL_FLOAT:
-        nodeName = to_string(astnode->float_val);
-        break;
-    case ast_operator_type::AST_OP_LEAF_VAR_ID:
-        nodeName = astnode->name;
-        break;
-    case ast_operator_type::AST_OP_ADD:
-        nodeName = "+";
-        break;
-    case ast_operator_type::AST_OP_SUB:
-        nodeName = "-";
-        break;
-    case ast_operator_type::AST_OP_ASSIGN:
-        nodeName = "=";
-        break;
-    case ast_operator_type::AST_OP_BLOCK:
-        nodeName = "block";
-        break;
-    case ast_operator_type::AST_OP_EXPR:
-        nodeName = "expr";
-        break;
-    case ast_operator_type::AST_OP_EXPR_SHOW:
-        nodeName = "expr-show";
-        break;
-    case ast_operator_type::AST_OP_RETURN_STATEMENT:
-        nodeName = "return";
-        break;
-    case ast_operator_type::AST_OP_FUNC_DEF:
-        nodeName = "func:" + astnode->name;
-        break;
-    case ast_operator_type::AST_OP_FUNC_FORMAL_PARAMS:
-        nodeName = "formal-params";
-        break;
-    case ast_operator_type::AST_OP_FUNC_FORMAL_PARAM:
-        nodeName = astnode->name;
-        break;
-    case ast_operator_type::AST_OP_COMPILE_UNIT:
-        nodeName = "Compile-Unit";
-        break;
-    case ast_operator_type::AST_OP_FUNC_CALL:
-        nodeName = "func-call:" + astnode->name;
-        break;
-    case ast_operator_type::AST_OP_FUNC_REAL_PARAMS:
-        nodeName = "real-params";
-        break;
-        
-        // TODO 这里追加其它类型的结点，返回对应结点的字符串
-        
-    default:
-        nodeName = "unknown";
-        break;
+        case ast_operator_type::AST_OP_LEAF_LITERAL_UINT:
+            nodeName = to_string((int32_t) astnode->integer_val);
+            break;
+        case ast_operator_type::AST_OP_LEAF_LITERAL_FLOAT:
+            nodeName = to_string(astnode->float_val);
+            break;
+        case ast_operator_type::AST_OP_LEAF_VAR_ID:
+            nodeName = astnode->name;
+            break;
+        case ast_operator_type::AST_OP_ADD:
+            nodeName = "+";
+            break;
+        case ast_operator_type::AST_OP_SUB:
+            nodeName = "-";
+            break;
+        case ast_operator_type::AST_OP_ASSIGN:
+            nodeName = "=";
+            break;
+        case ast_operator_type::AST_OP_BLOCK:
+            nodeName = "block";
+            break;
+        case ast_operator_type::AST_OP_EXPR:
+            nodeName = "expr";
+            break;
+        case ast_operator_type::AST_OP_EXPR_SHOW:
+            nodeName = "expr-show";
+            break;
+        case ast_operator_type::AST_OP_RETURN_STATEMENT:
+            nodeName = "return";
+            break;
+        case ast_operator_type::AST_OP_FUNC_DEF:
+            nodeName = "func:" + astnode->name;
+            break;
+        case ast_operator_type::AST_OP_FUNC_FORMAL_PARAMS:
+            nodeName = "formal-params";
+            break;
+        case ast_operator_type::AST_OP_FUNC_FORMAL_PARAM:
+            nodeName = astnode->name;
+            break;
+        case ast_operator_type::AST_OP_COMPILE_UNIT:
+            nodeName = "Compile-Unit";
+            break;
+        case ast_operator_type::AST_OP_FUNC_CALL:
+            nodeName = "func-call:" + astnode->name;
+            break;
+        case ast_operator_type::AST_OP_FUNC_REAL_PARAMS:
+            nodeName = "real-params";
+            break;
+
+            // TODO 这里追加其它类型的结点，返回对应结点的字符串
+
+        default:
+            nodeName = "unknown";
+            break;
     }
 
     return nodeName;
@@ -97,25 +97,25 @@ Agnode_t * genLeafGraphNode(Agraph_t * g, ast_node * astnode)
     // 新建结点，不指定名字
     // 第二个参数不指定名字则采用匿名，自动创建一个唯一的名字
     // 第三个参数若为1则g中没有找到则创建；若为0，则在g中根据第二个参数查找，找到返回有效值，否则返回NULL
-    Agnode_t *node = agnode(g, (char *) nullptr, 1);
+    Agnode_t * node = agnode(g, (char *) nullptr, 1);
     if (node != nullptr) {
 
         // 获取叶子结点对应的名字
         string nodeName = getNodeName(astnode);
 
         // 设置文本的颜色与字体
-        agsafeset(node, (char *)"fontcolor", (char *)"black", (char *)"");
-        agsafeset(node, (char *)"fontname", (char *)"SimSun", (char *)"");
-        
+        agsafeset(node, (char *) "fontcolor", (char *) "black", (char *) "");
+        agsafeset(node, (char *) "fontname", (char *) "SimSun", (char *) "");
+
         // 设置节点的label，在节点内显示
-        agsafeset(node, (char *)"label", (char *)nodeName.c_str(), "");
+        agsafeset(node, (char *) "label", (char *) nodeName.c_str(), "");
 
         // 设置节点的形状，矩形框
-        agsafeset(node, (char *)"shape", (char *)"record", (char *)"");
-        
+        agsafeset(node, (char *) "shape", (char *) "record", (char *) "");
+
         // 设置矩形框内的填充色，红色。必须线设置style，后设置fillcolor，否则fillcolor属性设置无效
-        agsafeset(node, (char *)"style", (char *)"filled", (char *)"");
-        agsafeset(node, (char *)"fillcolor", (char *)"yellow", (char *)"");
+        agsafeset(node, (char *) "style", (char *) "filled", (char *) "");
+        agsafeset(node, (char *) "fillcolor", (char *) "yellow", (char *) "");
     }
 
     return node;
@@ -139,21 +139,21 @@ Agnode_t * genInternalGraphNode(Agraph_t * g, ast_node * astnode)
     }
 
     // 创建一个父节点
-    Agnode_t * node = agnode(g, (char *)nullptr, 1);
+    Agnode_t * node = agnode(g, (char *) nullptr, 1);
     if (node != nullptr) {
 
         // 内部结点对应的运算符名称
         string nodeName = getNodeName(astnode);
 
         // 设置图形节点的属性，节点内文本label和节点形状
-        agsafeset(node, (char *)"label", (char *)nodeName.c_str(), (char *)"");
-        agsafeset(node, (char *)"shape", (char *)"ellipse", (char *)"");
+        agsafeset(node, (char *) "label", (char *) nodeName.c_str(), (char *) "");
+        agsafeset(node, (char *) "shape", (char *) "ellipse", (char *) "");
 
         // 本结点与孩子按照自左往右构造图形的边agedge
         // 这里演示C++的另外一种遍历方式，采用C++的新语法for
         // 如果指针类型可不用引用，否则请用引用，避免C++的复制操作带来的性能损失
         // 利用C++的auto关键字，让编译器自动推导类型
-        for (auto son_node : son_nodes) {
+        for (auto son_node: son_nodes) {
 
             // 创建一条边，关联两个节点，假定A和B，边为AB，边没有指定名字，则由函数内部创建唯一名称
             // 第二个参数：边的第一个节点A
@@ -174,9 +174,7 @@ Agnode_t * genInternalGraphNode(Agraph_t * g, ast_node * astnode)
 Agnode_t * graph_visit_ast_node(Agraph_t * g, ast_node * astnode)
 {
     // 非法节点
-    if (nullptr == astnode) {
-        return nullptr;
-    }
+    if (nullptr == astnode) { return nullptr; }
 
     Agnode_t * graph_node;
 
@@ -200,16 +198,16 @@ void OutputAST(ast_node * root, const std::string filePath)
     GVC_t * gv = gvContext();
 
     // 创建一个图形，Agdirected指明有向图
-    Agraph_t * g = agopen((char *)"ast", Agdirected, nullptr);
+    Agraph_t * g = agopen((char *) "ast", Agdirected, nullptr);
 
     // 设置graph的属性
     // agsafeset(g, (char *)"rankdir", (char *)"LR", (char *)"LR");
 
     // 指定输出的图像质量
-    agsafeset(g, (char *)"dpi", (char *)"600", (char *)"");
+    agsafeset(g, (char *) "dpi", (char *) "600", (char *) "");
 
     // 遍历AST产生图形的结点以及相关边
-    (void)graph_visit_ast_node(g, root);
+    (void) graph_visit_ast_node(g, root);
 
     // 设置图形的布局
     gvLayout(gv, g, "dot");
