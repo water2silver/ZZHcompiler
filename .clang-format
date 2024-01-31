@@ -1,34 +1,57 @@
-# Generated from CLion C/C++ Code Style settings
+# 工具 https://github.com/mapbox/XcodeClangFormat(需要添加签名使用)
+# 函数名详细地址 英文 http://clang.llvm.org/docs/ClangFormatStyleOptions.html
+# 函数名详细地址 中文 https://www.cnblogs.com/PaulpauL/p/5929753.html
 BasedOnStyle: LLVM
 AccessModifierOffset: -4
 AlignAfterOpenBracket: Align
+# 对齐注释
+AlignTrailingComments: true
+# 赋值=对齐
 AlignConsecutiveAssignments: None
+# 声明参数对齐
+AlignConsecutiveDeclarations: false
+# 换行的时候对齐操作符
 AlignOperands: Align
 AllowAllArgumentsOnNextLine: false
 AllowAllConstructorInitializersOnNextLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
+# 允许将简单的语句块放到同一行
 AllowShortBlocksOnASingleLine: Always
+# 允许case在同一行
 AllowShortCaseLabelsOnASingleLine: false
+# 允许短的函数放在同一行
 AllowShortFunctionsOnASingleLine: All
+# 允许if在同一行
 AllowShortIfStatementsOnASingleLine: Always
 AllowShortLambdasOnASingleLine: All
+# 允许while在同一行
 AllowShortLoopsOnASingleLine: true
 AlwaysBreakAfterReturnType: None
 AlwaysBreakTemplateDeclarations: Yes
 BreakBeforeBraces: Custom
 BraceWrapping:
-  AfterCaseLabel: false
-  AfterClass: false
+  # class定义后面
+  AfterClass: true
+  # 控制语句后面
   AfterControlStatement: Never
+  # enum定义后面
   AfterEnum: false
+  # 函数定义后面
   AfterFunction: true
+  # 命名空间定义后面
   AfterNamespace: false
+  # struct定义后面
+  AfterStruct: false
+  # union定义后面
   AfterUnion: false
+  # catch之前
   BeforeCatch: false
+  AfterCaseLabel: false
   BeforeElse: false
   IndentBraces: false
   SplitEmptyFunction: false
   SplitEmptyRecord: true
+# 运算符位置
 BreakBeforeBinaryOperators: None
 BreakBeforeTernaryOperators: true
 BreakConstructorInitializers: BeforeColon
@@ -40,7 +63,8 @@ IndentCaseLabels: true
 IndentPPDirectives: None
 IndentWidth: 4
 KeepEmptyLinesAtTheStartOfBlocks: true
-MaxEmptyLinesToKeep: 2
+# 连续的空行保留几行
+MaxEmptyLinesToKeep: 1
 NamespaceIndentation: All
 ObjCSpaceAfterProperty: false
 ObjCSpaceBeforeProtocolList: true
@@ -49,19 +73,29 @@ ReflowComments: true
 SpaceAfterCStyleCast: true
 SpaceAfterLogicalNot: false
 SpaceAfterTemplateKeyword: false
+# 赋值运算符前加空格
 SpaceBeforeAssignmentOperators: true
 SpaceBeforeCpp11BracedList: false
 SpaceBeforeCtorInitializerColon: true
 SpaceBeforeInheritanceColon: true
 SpaceBeforeParens: ControlStatements
 SpaceBeforeRangeBasedForLoopColon: false
+# 在空括号中加空格
 SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 1
+# 在<>中间插入空格
 SpacesInAngles: false
 SpacesInCStyleCastParentheses: false
+# 容器类前添加空格
 SpacesInContainerLiterals: false
+# ()中添加空格
 SpacesInParentheses: false
+# []中添加空格
 SpacesInSquareBrackets: false
 TabWidth: 4
 UseTab: Never
 SortIncludes: true
+# 形参 如果为false要么都在同一行，要么各有一行
+BinPackParameters: false
+# 实参 如果为false要么都在同一行，要么各有一行
+BinPackArguments: false
