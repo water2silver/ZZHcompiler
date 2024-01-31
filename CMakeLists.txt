@@ -15,7 +15,7 @@ endif()
 # graphviz查找文件
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 
-# 查找Java，若没有安装则错误。因ANTLR4需要，如果不不使用ANTLR4时可删除
+# 查找Java，若没有安装则错误。因ANTLR4需要，如果不使用ANTLR4时可删除
 find_package(Java COMPONENTS Runtime REQUIRED)
 message(STATUS ${Java_JAVA_EXECUTABLE})
 
@@ -188,8 +188,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 # 指定graphviz的库文件以及位置，防止链接时找不到graphviz的库函数
 target_link_libraries(${PROJECT_NAME} PRIVATE ${Graphviz_LIBRARIES})
-
-add_dependencies(${PROJECT_NAME} antlr4_shared)
 
 # 指导antlr4的库名，防止链接时找不到antlr4-runtime
 target_link_libraries(${PROJECT_NAME} PRIVATE antlr4_shared)
