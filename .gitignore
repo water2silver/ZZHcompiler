@@ -41,6 +41,7 @@ latex/
 # inner files
 ir.txt
 ast.png
+asm.s
 
 # history
 .history
