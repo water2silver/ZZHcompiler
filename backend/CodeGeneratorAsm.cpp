@@ -25,9 +25,10 @@ void CodeGeneratorAsm::genCodeSection()
     fprintf(fp, ".text\n");
 
     // 遍历所有的函数，以函数为单位，产生指令
-    for (auto func : symtab.getFunctionList()) {
+    for (auto func: symtab.getFunctionList()) {
 
         if (!func->isBuiltin()) {
+
             // 针对func产生汇编指令
             genCodeSection(func);
         }

@@ -21,7 +21,7 @@ const std::string PlatformArm32::regName[PlatformArm32::maxRegNum] = {
     "r7",
     "r8", //用于加载操作数1,保存表达式结果
     "r9", //用于加载操作数2,写回表达式结果,立即数，标签地址
-    "r10", //用于保存乘法结果，虽然mul r8,r8,r9也能正常执行，但是避免交叉编译提示错误！
+    "r10",//用于保存乘法结果，虽然mul r8,r8,r9也能正常执行，但是避免交叉编译提示错误！
     "fp", //r11,局部变量寻址
     "ip", //"r12"，临时寄存器
     "sp", //r13，栈指针
@@ -30,19 +30,19 @@ const std::string PlatformArm32::regName[PlatformArm32::maxRegNum] = {
 };
 
 /// @brief 循环左移两位
-/// @param num 
+/// @param num
 void PlatformArm32::roundLeftShiftTwoBit(unsigned int & num)
 {
     const unsigned int overFlow = num & 0xc0000000;//取左移即将溢出的两位
-    num = (num << 2) | (overFlow >> 30);//将溢出部分追加到尾部
+    num = (num << 2) | (overFlow >> 30);           //将溢出部分追加到尾部
 }
 
 /// @brief 判断num是否是常数表达式，8位数字循环右移偶数位得到
-/// @param num 
-/// @return 
+/// @param num
+/// @return
 bool PlatformArm32::__constExpr(int num)
 {
-    unsigned int new_num = (unsigned int)num;
+    unsigned int new_num = (unsigned int) num;
 
     for (int i = 0; i < 16; i++) {
 
@@ -59,16 +59,16 @@ bool PlatformArm32::__constExpr(int num)
 }
 
 /// @brief 同时处理正数和负数
-/// @param num 
-/// @return 
+/// @param num
+/// @return
 bool PlatformArm32::constExpr(int num)
 {
     return __constExpr(num) || __constExpr(-num);
 }
 
 /// @brief 判定是否是合法的偏移
-/// @param num 
-/// @return 
+/// @param num
+/// @return
 bool PlatformArm32::isDisp(int num)
 {
     return num < 4096 && num > -4096;
@@ -79,8 +79,5 @@ bool PlatformArm32::isDisp(int num)
 /// @return 是否是
 bool PlatformArm32::isReg(std::string name)
 {
-    return name == "r0" || name == "r1" || name == "r2" || name == "r3" || name == "r4"
-        || name == "r5" || name == "r6" || name == "r7" || name == "r8" || name == "r9"
-        || name == "r10" || name == "fp" || name == "ip" || name == "sp" || name == "lr"
-        || name == "pc";
+    return name == "r0" || name == "r1" || name == "r2" || name == "r3" || name == "r4" || name == "r5" || name == "r6" || name == "r7" || name == "r8" || name == "r9" || name == "r10" || name == "fp" || name == "ip" || name == "sp" || name == "lr" || name == "pc";
 }

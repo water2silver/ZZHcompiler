@@ -21,7 +21,7 @@
 /// @param _irCode 指令
 /// @param _iloc ILoc
 /// @param _func 函数
-InstSelectorArm32::InstSelectorArm32(vector<IRInst *> &_irCode, ILocArm32 &_iloc, Function *_func)
+InstSelectorArm32::InstSelectorArm32(vector<IRInst *> & _irCode, ILocArm32 & _iloc, Function * _func)
     : ir(_irCode), iloc(_iloc), func(_func)
 {
     translator_handlers[IRInstOperator::IRINST_OP_ENTRY] = &InstSelectorArm32::translate_entry;
@@ -52,7 +52,7 @@ void InstSelectorArm32::run()
 
 /// @brief NOP翻译成ARM32汇编
 /// @param inst IR指令
-void InstSelectorArm32::translate_nop(IRInst *inst)
+void InstSelectorArm32::translate_nop(IRInst * inst)
 {
     (void) inst;
     iloc.nop();
@@ -60,7 +60,7 @@ void InstSelectorArm32::translate_nop(IRInst *inst)
 
 /// @brief Label指令指令翻译成ARM32汇编
 /// @param inst IR指令
-void InstSelectorArm32::translate_label(IRInst *inst)
+void InstSelectorArm32::translate_label(IRInst * inst)
 {
     // iloc.label(inst->getLabel());
 }
@@ -68,17 +68,17 @@ void InstSelectorArm32::translate_label(IRInst *inst)
 
 /// @brief goto指令指令翻译成ARM32汇编
 /// @param inst IR指令
-void InstSelectorArm32::translate_goto(IRInst *inst)
+void InstSelectorArm32::translate_goto(IRInst * inst)
 {
 }
 
 /// @brief 函数入口指令翻译成ARM32汇编
 /// @param inst IR指令
-void InstSelectorArm32::translate_entry(IRInst *inst)
+void InstSelectorArm32::translate_entry(IRInst * inst)
 {
     // 查看保护的寄存器
-    auto &protectedRegNo = func->getProtectedReg();
-    auto &protectedRegStr = func->getProtectedRegStr();
+    auto & protectedRegNo = func->getProtectedReg();
+    auto & protectedRegStr = func->getProtectedRegStr();
 
     bool first = true;
     for (auto regno: protectedRegNo) {
@@ -100,17 +100,17 @@ void InstSelectorArm32::translate_entry(IRInst *inst)
 
 /// @brief 函数出口指令翻译成ARM32汇编
 /// @param inst IR指令
-void InstSelectorArm32::translate_exit(IRInst *inst)
+void InstSelectorArm32::translate_exit(IRInst * inst)
 {
     if (inst->getSrc().size()) {
         // 存在返回值
-        Value *retVal = inst->getSrc1();
+        Value * retVal = inst->getSrc1();
 
         // 赋值给寄存器R0
         iloc.load_var(0, retVal);
     }
 
-    auto &protectedRegStr = func->getProtectedRegStr();
+    auto & protectedRegStr = func->getProtectedRegStr();
 
     // 恢复栈空间
     iloc.inst("add", PlatformArm32::regName[REG_ALLOC_SIMPLE_FP_REG_NO],
@@ -129,10 +129,10 @@ void InstSelectorArm32::translate_exit(IRInst *inst)
 
 /// @brief 赋值指令翻译成ARM32汇编
 /// @param inst IR指令
-void InstSelectorArm32::translate_assign(IRInst *inst)
+void InstSelectorArm32::translate_assign(IRInst * inst)
 {
-    Value *rs = inst->getDst();
-    Value *arg1 = inst->getSrc1();
+    Value * rs = inst->getDst();
+    Value * arg1 = inst->getSrc1();
 
     if (arg1->regId != -1) {
         // 寄存器 => 内存
@@ -163,14 +163,14 @@ void InstSelectorArm32::translate_assign(IRInst *inst)
 /// @param rs_reg_no 结果寄存器号
 /// @param op1_reg_no 源操作数1寄存器号
 /// @param op2_reg_no 源操作数2寄存器号
-void InstSelectorArm32::translate_two_operator(IRInst *inst, const string operator_name,
+void InstSelectorArm32::translate_two_operator(IRInst * inst, const string operator_name,
                                                int rs_reg_no,
                                                int op1_reg_no,
                                                int op2_reg_no)
 {
-    Value *rs = inst->getDst();
-    Value *arg1 = inst->getSrc1();
-    Value *arg2 = inst->getSrc2();
+    Value * rs = inst->getDst();
+    Value * arg1 = inst->getSrc1();
+    Value * arg2 = inst->getSrc2();
 
     std::string arg1_reg_name, arg2_reg_name;
 
@@ -215,29 +215,29 @@ void InstSelectorArm32::translate_two_operator(IRInst *inst, const string operat
 
 /// @brief 整数加法指令翻译成ARM32汇编
 /// @param inst IR指令
-void InstSelectorArm32::translate_add_int32(IRInst *inst)
+void InstSelectorArm32::translate_add_int32(IRInst * inst)
 {
     translate_two_operator(inst, "add");
 }
 
 /// @brief 整数减法指令翻译成ARM32汇编
 /// @param inst IR指令
-void InstSelectorArm32::translate_sub_int32(IRInst *inst)
+void InstSelectorArm32::translate_sub_int32(IRInst * inst)
 {
     translate_two_operator(inst, "sub");
 }
 
 /// @brief 函数调用指令翻译成ARM32汇编
 /// @param inst IR指令
-void InstSelectorArm32::translate_call(IRInst *inst)
+void InstSelectorArm32::translate_call(IRInst * inst)
 {
-    FuncCallIRInst *callInst = dynamic_cast<FuncCallIRInst *>(inst);
+    FuncCallIRInst * callInst = dynamic_cast<FuncCallIRInst *>(inst);
     iloc.call_fun(callInst->name);
 }
 
 /// @brief 指令翻译成ARM32汇编
 /// @param inst IR指令
-void InstSelectorArm32::translate(IRInst *inst)
+void InstSelectorArm32::translate(IRInst * inst)
 {
     // 操作符
     IRInstOperator op = inst->getOp();

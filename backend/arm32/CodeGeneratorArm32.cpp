@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2023
  *
  */
-#include <cstdio>
 #include <cstdint>
+#include <cstdio>
 #include <vector>
 
 #include "CodeGeneratorArm32.h"
@@ -21,7 +21,7 @@
 #include "Value.h"
 
 /// @brief 构造函数
- /// @param tab 符号表
+/// @param tab 符号表
 CodeGeneratorArm32::CodeGeneratorArm32(SymbolTable & tab) : CodeGeneratorAsm(tab)
 {
     for (int k = 0; k < PlatformArm32::maxRegNum; k++) {
@@ -52,7 +52,6 @@ void CodeGeneratorArm32::genHeader()
     movt\cond \reg, #:upper16:\val
 .endm
     )");
-    
 }
 
 /// @brief 全局变量Section，主要包含初始化的和未初始化过的
@@ -107,7 +106,7 @@ void CodeGeneratorArm32::registerAllocation(Function * func)
     // 需要额外的赋值指令，把实参的值赋值给形参对应的局部变量
     adjustFormalParamStack(func);
 #endif
-    
+
     // 局部变量都保存在栈内，同时调整函数内栈内大小
     stackAlloc(func);
 
@@ -126,28 +125,28 @@ void CodeGeneratorArm32::registerAllocation(Function * func)
     // 针对后面的栈传递参数，一种处理方式为增加赋值操作，内存赋值给形参，形参再次分配空间
     // 另外一种处理方式，形参直接用实参的地址，也就是变为内存变量，具体见如下的函数处理
     adjustFormalParamInsts(func);
-    
+
     // 调整函数调用指令，主要是前四个寄存器传值，后面用栈传递
     adjustFuncCallInsts(func);
 }
 
 /// @brief 寄存器分配前对函数内的指令进行调整，以便方便寄存器分配
 /// @param func 要处理的函数
-void CodeGeneratorArm32::adjustFormalParamStack(Function *func)
+void CodeGeneratorArm32::adjustFormalParamStack(Function * func)
 {
     // 函数形参的前四个参数采用的是寄存器传值，需要把值拷贝到本地栈形参变量上
     auto & params = func->getParams();
-    
+
     // 根据C语言的约定，除前4个外的实参进行值传递，逆序入栈
-    for (int k = 4; k < (int)params.size(); k++) {
+    for (int k = 4; k < (int) params.size(); k++) {
 
         // 形参名字无效，则忽略
         if (params[k].name.empty()) {
             continue;
         }
 
-        Value *val = params[k].val;
-        
+        Value * val = params[k].val;
+
         // 栈内分配，但是寄存器偏移先不填写，待定
         val->baseRegNo = REG_ALLOC_SIMPLE_FP_REG_NO;
     }
@@ -155,7 +154,7 @@ void CodeGeneratorArm32::adjustFormalParamStack(Function *func)
 
 /// @brief 寄存器分配前对函数内的指令进行调整，以便方便寄存器分配
 /// @param func 要处理的函数
-void CodeGeneratorArm32::adjustFormalParamInsts(Function *func)
+void CodeGeneratorArm32::adjustFormalParamInsts(Function * func)
 {
     // 函数形参要求前四个寄存器分配，后面的参数采用栈传递
     // 针对后面的栈传递参数，一种处理方式为增加赋值操作，内存赋值给形参，形参再次分配空间
@@ -167,24 +166,24 @@ void CodeGeneratorArm32::adjustFormalParamInsts(Function *func)
 
     // 因为假定用的R1与R2进行运算，而寄存器传值也用R0到R3
     // 如果先处理了后面的参数，R1与R2的值会被更改。
-    for (int k = 0; k < (int)params.size() && k <= 3; k++) {
+    for (int k = 0; k < (int) params.size() && k <= 3; k++) {
 
         // 形参名字无效，则忽略
         if (params[k].name.empty()) {
             continue;
         }
 
-        Value *val = params[k].val;
+        Value * val = params[k].val;
 
         // 产生赋值指令,R#n寄存器赋值到对应的变量上，放到放到Entry指令的后面
         // 注意R#n寄存器需要事先分配几个Value
         newInsts.push_back(new AssignIRInst(val, RegVal[k]));
     }
-    
+
     // 形参的前四个采用fp+偏移寻址，后面的sp+偏移寻址实参空间
     // 根据C语言的约定，除前4个外的实参进行值传递，逆序入栈
-    int fp_esp = func->getMaxDep() + (int)func->getProtectedReg().size() * 4;
-    for (int k = 4; k < (int)params.size(); k++) {
+    int fp_esp = func->getMaxDep() + (int) func->getProtectedReg().size() * 4;
+    for (int k = 4; k < (int) params.size(); k++) {
 
         Value * val = params[k].val;
 
@@ -210,11 +209,11 @@ void CodeGeneratorArm32::adjustFormalParamInsts(Function *func)
 #else
         val->setOffset(fp_esp);
 #endif
-        
+
         // 增加4字节
         fp_esp += 4;
     }
-    
+
     // 当前函数的指令列表
     auto & insts = func->getInterCode().getInsts();
 
@@ -233,7 +232,7 @@ void CodeGeneratorArm32::adjustFuncCallInsts(Function * func)
 
     // 当前函数的指令列表
     auto & insts = func->getInterCode().getInsts();
-    
+
     // 函数返回值用R0寄存器，若函数调用有返回值，则赋值R0到对应寄存器
     for (auto pIter = insts.begin(); pIter != insts.end(); pIter++) {
 
@@ -249,7 +248,7 @@ void CodeGeneratorArm32::adjustFuncCallInsts(Function * func)
 
             // 前四个参数的后面采用栈传递
             int esp = 0;
-            for (int k = 4; k < (int)args.size(); k++) {
+            for (int k = 4; k < (int) args.size(); k++) {
 
                 // 新建一个内存变量，用于栈传值到形参变量中
                 Value * newVal = new MemValue(BasicType::TYPE_INT);
@@ -264,7 +263,7 @@ void CodeGeneratorArm32::adjustFuncCallInsts(Function * func)
                 pIter++;
             }
 
-            for (int k = 0; k < (int)args.size() && k < 4; k++) {
+            for (int k = 0; k < (int) args.size() && k < 4; k++) {
 
                 // 寄存器传值到形参变量中
                 assignInst = new AssignIRInst(RegVal[k], args[k]);
@@ -282,7 +281,7 @@ void CodeGeneratorArm32::adjustFuncCallInsts(Function * func)
             if (resultVal) {
 
                 if (resultVal->isTemp() && resultVal->regId == -1 && resultVal->baseRegNo == -1) {
-                    
+
                     // 该临时变量既没有寄存器分配，也没有设置基址寄存器，直接设置为寄存器即可
                     resultVal->regId = 0;
                 } else {
@@ -309,7 +308,7 @@ void CodeGeneratorArm32::stackAlloc(Function * func)
     // 获取函数变量列表
     std::vector<Value *> & vars = func->getVarValues();
 
-    for (auto var : vars) {
+    for (auto var: vars) {
 
         // 对于简单类型的寄存器分配策略，临时变量都会用寄存器，这里需要忽略
         // 而对于图着色等，临时变量可能会变更内存分配，这时应该调整类型

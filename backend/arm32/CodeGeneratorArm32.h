@@ -23,7 +23,6 @@ public:
     virtual ~CodeGeneratorArm32();
 
 protected:
-
     /// @brief 产生汇编头部分
     void genHeader() override;
 
@@ -44,15 +43,15 @@ protected:
 
     /// @brief 确保前四个参数之后的参数必须栈内分配
     /// @param func 要处理的函数
-    void adjustFormalParamStack(Function *func);
-    
+    void adjustFormalParamStack(Function * func);
+
     /// @brief 寄存器分配前对函数内的指令进行调整，以便方便寄存器分配
     /// @param func 要处理的函数
-    void adjustFuncCallInsts(Function *func);
+    void adjustFuncCallInsts(Function * func);
 
     /// @brief 寄存器分配前对形参指令调整，便于栈内空间分配以及寄存器分配
     /// @param func 要处理的函数
-    void adjustFormalParamInsts(Function *func);
+    void adjustFormalParamInsts(Function * func);
 
 private:
     /// @brief 对寄存器R0分配Value，记录位置

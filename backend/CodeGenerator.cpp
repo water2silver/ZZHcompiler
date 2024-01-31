@@ -14,7 +14,7 @@
 #include "SymbolTable.h"
 
 /// @brief 构造函数
- /// @param tab 符号表
+/// @param tab 符号表
 CodeGenerator::CodeGenerator(SymbolTable & tab) : symtab(tab)
 {}
 
@@ -47,5 +47,3 @@ bool CodeGenerator::run(std::string outFileName)
 
     return result;
 }
-
-

@@ -12,11 +12,10 @@
 #include <iostream>
 #include <stdarg.h>
 
-
 #include "AST.h"
 
 /* 整个AST的根节点 */
-ast_node *ast_root = nullptr;
+ast_node * ast_root = nullptr;
 
 /// @brief 创建指定节点类型的节点
 /// @param _node_type 节点类型
@@ -63,7 +62,7 @@ ast_node::ast_node(float _value, int32_t _line_no) : line_no(_line_no), float_va
 /// @brief 针对标识符ID的叶子构造函数
 /// @param _name 标识符名字
 /// @param _line_no 行号
-ast_node::ast_node(const char *_name, int32_t _line_no) : line_no(_line_no), name(_name)
+ast_node::ast_node(const char * _name, int32_t _line_no) : line_no(_line_no), name(_name)
 {
     node_type = ast_operator_type::AST_OP_LEAF_VAR_ID;
     // 目前这里默认设置为int类型
@@ -96,9 +95,9 @@ bool isLeafNode(ast_operator_type type)
 /// @param type 节点类型
 /// @param  可变参数，可支持插入若干个孩子节点，自左往右的次序，最后一个孩子节点必须指定为nullptr。如果没有孩子，则指定为nullptr
 /// @return 创建的节点
-ast_node *new_ast_node(ast_operator_type type, ...)
+ast_node * new_ast_node(ast_operator_type type, ...)
 {
-    ast_node *nd = new ast_node((ast_operator_type) type, -1);
+    ast_node * nd = new ast_node((ast_operator_type) type, -1);
 
     va_list valist;
 
@@ -107,7 +106,7 @@ ast_node *new_ast_node(ast_operator_type type, ...)
 
     for (;;) {
 
-        ast_node *node = va_arg(valist, ast_node *);
+        ast_node * node = va_arg(valist, ast_node *);
         if (nullptr == node) {
             break;
         }
@@ -125,7 +124,7 @@ ast_node *new_ast_node(ast_operator_type type, ...)
 /// @brief 向父节点插入一个节点
 /// @param parent 父节点
 /// @param node 节点
-ast_node *insert_ast_node(ast_node *parent, ast_node *node)
+ast_node * insert_ast_node(ast_node * parent, ast_node * node)
 {
     node->parent = parent;
     parent->sons.push_back(node);
@@ -135,9 +134,9 @@ ast_node *insert_ast_node(ast_node *parent, ast_node *node)
 /// @brief 创建无符号整数的叶子节点
 /// @param val 词法值
 /// @param line_no 行号
-ast_node *new_ast_leaf_node(uint32_t val, int32_t line_no)
+ast_node * new_ast_leaf_node(uint32_t val, int32_t line_no)
 {
-    ast_node *nd = new ast_node(val, line_no);
+    ast_node * nd = new ast_node(val, line_no);
 
     return nd;
 }
@@ -145,9 +144,9 @@ ast_node *new_ast_leaf_node(uint32_t val, int32_t line_no)
 /// @brief 创建实数的叶子节点
 /// @param val 词法值
 /// @param line_no 行号
-ast_node *new_ast_leaf_node(float val, int32_t line_no)
+ast_node * new_ast_leaf_node(float val, int32_t line_no)
 {
-    ast_node *nd = new ast_node(val, line_no);
+    ast_node * nd = new ast_node(val, line_no);
 
     return nd;
 }
@@ -155,9 +154,9 @@ ast_node *new_ast_leaf_node(float val, int32_t line_no)
 /// @brief 创建标识符的叶子节点
 /// @param val 词法值
 /// @param line_no 行号
-ast_node *new_ast_leaf_node(const char *name, int32_t line_no)
+ast_node * new_ast_leaf_node(const char * name, int32_t line_no)
 {
-    ast_node *nd = new ast_node(name, line_no);
+    ast_node * nd = new ast_node(name, line_no);
 
     return nd;
 }
@@ -166,16 +165,16 @@ ast_node *new_ast_leaf_node(const char *name, int32_t line_no)
 /// @param type 节点值类型
 /// @param line_no 行号
 /// @return 创建的节点
-ast_node *new_ast_leaf_node(BasicType type, int32_t line_no)
+ast_node * new_ast_leaf_node(BasicType type, int32_t line_no)
 {
-    ast_node *nd = new ast_node(type, line_no);
+    ast_node * nd = new ast_node(type, line_no);
 
     return nd;
 }
 
 /// @brief 递归清理抽象语法树
 /// @param node AST的节点
-void free_ast_node(ast_node *node)
+void free_ast_node(ast_node * node)
 {
     if (node) {
 
@@ -205,9 +204,9 @@ void free_ast()
 /// @param block 函数体语句块
 /// @param params 函数形参，可以没有参数
 /// @return 创建的节点
-ast_node *create_func_def(uint32_t line_no, const char *func_name, ast_node *block, ast_node *params)
+ast_node * create_func_def(uint32_t line_no, const char * func_name, ast_node * block, ast_node * params)
 {
-    ast_node *nd = new ast_node(ast_operator_type::AST_OP_FUNC_DEF, line_no);
+    ast_node * nd = new ast_node(ast_operator_type::AST_OP_FUNC_DEF, line_no);
     nd->type.type = BasicType::TYPE_VOID;
     nd->name = func_name;
 
@@ -234,9 +233,9 @@ ast_node *create_func_def(uint32_t line_no, const char *func_name, ast_node *blo
 /// @param line_no 行号
 /// @param param_name 参数名
 /// @return 创建的节点
-ast_node *create_func_formal_param(uint32_t line_no, const char *param_name)
+ast_node * create_func_formal_param(uint32_t line_no, const char * param_name)
 {
-    ast_node *nd = new ast_node(ast_operator_type::AST_OP_FUNC_FORMAL_PARAM, line_no);
+    ast_node * nd = new ast_node(ast_operator_type::AST_OP_FUNC_FORMAL_PARAM, line_no);
 
     // 这里假定整型
     nd->type.type = BasicType::TYPE_INT;
@@ -249,9 +248,9 @@ ast_node *create_func_formal_param(uint32_t line_no, const char *param_name)
 /// @param node_type 节点类型
 /// @param first_param 第一个孩子节点
 /// @return 创建的节点
-ast_node *create_contain_node(ast_operator_type node_type, ast_node *first_param)
+ast_node * create_contain_node(ast_operator_type node_type, ast_node * first_param)
 {
-    ast_node *nd = new ast_node(node_type);
+    ast_node * nd = new ast_node(node_type);
 
     if (first_param != NULL) {
         first_param->parent = nd;
@@ -266,9 +265,9 @@ ast_node *create_contain_node(ast_operator_type node_type, ast_node *first_param
 /// @param func_name 被调用的函数名
 /// @param params 实参节点
 /// @return 创建的节点
-ast_node *create_func_call(uint32_t line_no, const char *func_name, ast_node *params)
+ast_node * create_func_call(uint32_t line_no, const char * func_name, ast_node * params)
 {
-    ast_node *nd = new ast_node(ast_operator_type::AST_OP_FUNC_CALL, line_no);
+    ast_node * nd = new ast_node(ast_operator_type::AST_OP_FUNC_CALL, line_no);
     nd->type.type = BasicType::TYPE_MAX;
     nd->name = func_name;
 

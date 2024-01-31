@@ -13,7 +13,7 @@
 
 #include "CodeGenerator.h"
 
- /// @brief 生成汇编的代码生成器共同类
+/// @brief 生成汇编的代码生成器共同类
 class CodeGeneratorAsm : public CodeGenerator {
 
 protected:
@@ -42,7 +42,6 @@ public:
     virtual void registerAllocation(Function * func) = 0;
 
 protected:
-
     /// @brief 产生汇编文件
     /// @return true:成功，false:失败
     bool run() override;

@@ -37,26 +37,26 @@ struct ArmInst {
     bool dead;
 
     /// @brief 构造函数
-    /// @param op 
-    /// @param rs 
-    /// @param s1 
-    /// @param s2 
-    /// @param add 
+    /// @param op
+    /// @param rs
+    /// @param s1
+    /// @param s2
+    /// @param add
     ArmInst(std::string op, std::string rs = "", std::string s1 = "", std::string s2 = "", std::string extra = "");
 
     /// @brief 指令更新
-    /// @param op 
-    /// @param rs 
-    /// @param s1 
-    /// @param s2 
-    /// @param add 
+    /// @param op
+    /// @param rs
+    /// @param s1
+    /// @param s2
+    /// @param add
     void replace(std::string op, std::string rs = "", std::string s1 = "", std::string s2 = "", std::string extra = "");
 
     /// @brief 设置死指令
     void setDead();
 
     /// @brief 指令字符串输出函数
-    /// @return 
+    /// @return
     std::string outPut();
 };
 
@@ -81,14 +81,14 @@ class ILocArm32 {
 
     /// @brief 加载栈内变量地址
     /// @param rsReg 结果寄存器号
-    /// @param base_reg_no 基址寄存器 
+    /// @param base_reg_no 基址寄存器
     /// @param off 偏移
     void leaStack(int rs_reg_no, int base_reg_no, int offset);
 
 public:
     /// @brief 构造函数
     /// @param symtab 符号表
-    ILocArm32(SymbolTable *symtab);
+    ILocArm32(SymbolTable * symtab);
 
     /// @brief 析构函数
     ~ILocArm32();
@@ -122,7 +122,7 @@ public:
     void store_base(int src_reg_no, int base_reg_no, int disp, int tmp_reg_no);
 
     /// @brief 标签指令
-    /// @param name 
+    /// @param name
     void label(std::string name);
 
     /// @brief 一个操作数指令
@@ -165,16 +165,16 @@ public:
     void mov_reg(int rs_reg_no, int src_reg_no);
 
     /// @brief 调用函数fun
-    /// @param fun 
+    /// @param fun
     void call_fun(std::string name);
 
     /// @brief 分配栈帧
     /// @param func 函数
-    /// @param tmp_reg_No 
+    /// @param tmp_reg_No
     void allocStack(Function * func, int tmp_reg_No);
 
     /// @brief 加载函数的参数到寄存器
-    /// @param fun 
+    /// @param fun
     void ldr_args(Function * fun);
 
     /// @brief NOP操作
@@ -182,12 +182,9 @@ public:
 
     /// @brief 输出汇编
     /// @param file 输出的文件指针
-    /// @param outputEmpty 是否输出空语句 
+    /// @param outputEmpty 是否输出空语句
     void outPut(FILE * file, bool outputEmpty = false);
 
     /// @brief 删除无用的Label指令
     void deleteUsedLabel();
 };
-
-
-

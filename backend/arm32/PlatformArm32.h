@@ -20,32 +20,31 @@
 #define REG_ALLOC_SIMPLE_FP_REG_NO 11
 #define REG_ALLOC_SIMPLE_LX_REG_NO 14
 
- /// @brief ARM32平台信息
+/// @brief ARM32平台信息
 class PlatformArm32 {
 
     /// @brief 循环左移两位
-    /// @param num 
+    /// @param num
     static void roundLeftShiftTwoBit(unsigned int & num);
 
     /// @brief 判断num是否是常数表达式，8位数字循环右移偶数位得到
-    /// @param num 
-    /// @return 
+    /// @param num
+    /// @return
     static bool __constExpr(int num);
 
 public:
-
     /// @brief 同时处理正数和负数
-    /// @param num 
-    /// @return 
+    /// @param num
+    /// @return
     static bool constExpr(int num);
 
     /// @brief 判定是否是合法的偏移
-    /// @param num 
-    /// @return 
+    /// @param num
+    /// @return
     static bool isDisp(int num);
 
     /// @brief 判断是否是合法的寄存器名
-	/// @param name 寄存器名字
+    /// @param name 寄存器名字
     /// @return 是否是
     static bool isReg(std::string name);
 
@@ -58,4 +57,3 @@ public:
     /// @brief 寄存器的名字，r0-r15
     static const std::string regName[maxRegNum];
 };
-

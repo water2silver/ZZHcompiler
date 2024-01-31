@@ -44,4 +44,3 @@ protected:
     /// @brief 输出文件指针
     FILE * fp = nullptr;
 };
-

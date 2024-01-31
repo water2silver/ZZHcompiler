@@ -36,7 +36,6 @@ class InstSelectorArm32 {
     std::vector<Value *> realArgs;
 
 protected:
-
     /// @brief 指令翻译成ARM32汇编
     /// @param inst IR指令
     void translate(IRInst * inst);
@@ -89,7 +88,7 @@ protected:
     void translate_call(IRInst * inst);
 
     /// @brief IR翻译动作函数原型
-    typedef void (InstSelectorArm32:: * translate_handler)(IRInst *);
+    typedef void (InstSelectorArm32::*translate_handler)(IRInst *);
 
     /// @brief IR动作处理函数清单
     map<IRInstOperator, translate_handler> translator_handlers;
@@ -97,7 +96,7 @@ protected:
 public:
     /// @brief 构造函数
     /// @param _irCode IR指令
-    /// @param _func 函数 
+    /// @param _func 函数
     /// @param _iloc 后端指令
     InstSelectorArm32(std::vector<IRInst *> & _irCode, ILocArm32 & _iloc, Function * _func);
 

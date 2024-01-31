@@ -8,9 +8,9 @@
  * @copyright Copyright (c) 2023
  *
  */
+#include <cstdio>
 #include <sstream>
 #include <string>
-#include <cstdio>
 
 #include "ILocArm32.h"
 
@@ -202,7 +202,7 @@ void ILocArm32::load_base(int rs_reg_no, int base_reg_no, int disp)
     // 内存寻址
     base = "[" + base + "]";
 
-    // ldr r8,[fp,#-16] 
+    // ldr r8,[fp,#-16]
     // ldr r8,[fp,r8]
     emit("ldr", rsReg, base);
 }
@@ -253,7 +253,7 @@ void ILocArm32::mov_reg(int rs_reg_no, int src_reg_no)
 /// @brief 加载变量到寄存器，保证将变量放到reg中
 /// @param rs_reg_no 结果寄存器
 /// @param var 源操作数
-void ILocArm32::load_var(int rs_reg_no, Value *var)
+void ILocArm32::load_var(int rs_reg_no, Value * var)
 {
     if (!var) {
         // 无效变量
@@ -299,8 +299,8 @@ void ILocArm32::load_var(int rs_reg_no, Value *var)
 }
 
 /// @brief 加载变量地址到寄存器
-/// @param rs_reg_no 
-/// @param var 
+/// @param rs_reg_no
+/// @param var
 void ILocArm32::lea_var(int rs_reg_no, Value * var)
 {
     // 被加载的变量肯定不是常量！
@@ -362,13 +362,13 @@ void ILocArm32::store_var(int src_reg_no, Value * var, int tmp_reg_no)
 
 /// @brief 加载栈内变量地址
 /// @param rsReg 结果寄存器号
-/// @param base_reg_no 基址寄存器 
+/// @param base_reg_no 基址寄存器
 /// @param off 偏移
 void ILocArm32::leaStack(int rs_reg_no, int base_reg_no, int off)
 {
     std::string rs_reg_name = PlatformArm32::regName[rs_reg_no];
     std::string base_reg_name = PlatformArm32::regName[base_reg_no];
-    
+
     if (PlatformArm32::constExpr(off))
         // add r8,fp,#-16
         emit("add", rs_reg_name, base_reg_name, toStr(off));
@@ -383,15 +383,15 @@ void ILocArm32::leaStack(int rs_reg_no, int base_reg_no, int off)
 
 /// @brief 函数内栈内空间分配（局部变量、形参变量、函数参数传值，或不能寄存器分配的临时变量等）
 /// @param func 函数
-/// @param tmp_reg_No 
-void ILocArm32::allocStack(Function *func, int tmp_reg_no)
+/// @param tmp_reg_No
+void ILocArm32::allocStack(Function * func, int tmp_reg_no)
 {
     // 超过四个的函数调用参数个数，多余4个，则需要栈传值
     int funcCallArgCnt = func->getMaxFuncCallArgCnt() - 4;
     if (funcCallArgCnt < 0) {
         funcCallArgCnt = 0;
     }
-    
+
     // 计算栈帧大小
     int off = func->getMaxDep();
 
@@ -413,12 +413,12 @@ void ILocArm32::allocStack(Function *func, int tmp_reg_no)
 
     // 函数调用通过栈传递的基址寄存器设置
     inst("add",
-            PlatformArm32::regName[REG_ALLOC_SIMPLE_FP_REG_NO],
-            "sp", toStr(funcCallArgCnt * 4));
+         PlatformArm32::regName[REG_ALLOC_SIMPLE_FP_REG_NO],
+         "sp", toStr(funcCallArgCnt * 4));
 }
 
 /// @brief 调用函数fun
-/// @param fun 
+/// @param fun
 void ILocArm32::call_fun(std::string name)
 {
     // 函数返回值在r0,不需要保护
@@ -434,7 +434,7 @@ void ILocArm32::nop()
 
 /// @brief 构造函数
 /// @param symtab 符号表
-ILocArm32::ILocArm32(SymbolTable *symtab)
+ILocArm32::ILocArm32(SymbolTable * symtab)
 {
     this->symtab = symtab;
 }
@@ -461,23 +461,23 @@ int ILocArm32::getAdjustOffset(Value * var)
     }
 
     // 获取栈内偏移
-	return var->getOffset();
+    return var->getOffset();
 }
 
 /// @brief 删除无用的Label指令
 void ILocArm32::deleteUsedLabel()
 {
     std::list<ArmInst *> labelInsts;
-    for (ArmInst * arm : code) {
+    for (ArmInst * arm: code) {
         if ((!arm->dead) && (arm->opcode[0] == '.') && (arm->result == ":")) {
             labelInsts.push_back(arm);
         }
     }
 
-    for (ArmInst * labelArm : labelInsts) {
+    for (ArmInst * labelArm: labelInsts) {
         bool labelUsed = false;
 
-        for (ArmInst *arm : code) {
+        for (ArmInst * arm: code) {
             // TODO 转移语句的指令标识符根据定义修改判断
             if ((!arm->dead) && (arm->opcode[0] == 'b') && (arm->result == labelArm->opcode)) {
                 labelUsed = true;
@@ -493,10 +493,10 @@ void ILocArm32::deleteUsedLabel()
 
 /// @brief 输出汇编
 /// @param file 输出的文件指针
-/// @param outputEmpty 是否输出空语句 
+/// @param outputEmpty 是否输出空语句
 void ILocArm32::outPut(FILE * file, bool outputEmpty)
 {
-    for (auto arm : code) {
+    for (auto arm: code) {
 
         std::string s = arm->outPut();
         if (s != "") {
@@ -514,7 +514,7 @@ void ILocArm32::outPut(FILE * file, bool outputEmpty)
 
 /// @brief 获取当前的代码序列
 /// @return 代码序列
-std::list<ArmInst *> &ILocArm32::getCode()
+std::list<ArmInst *> & ILocArm32::getCode()
 {
     return code;
 }
