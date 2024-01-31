@@ -28,10 +28,7 @@ static RDTokenType lookaheadTag = RDTokenType::T_EMPTY;
 #define F(C) (lookaheadTag == C)
 
 /// @brief lookahead指向下一个Token
-static void advance()
-{
-    lookaheadTag = (RDTokenType) rd_flex();
-}
+static void advance() { lookaheadTag = (RDTokenType) rd_flex(); }
 
 /// @brief flag若匹配则是否向前移动
 /// @param tag 是否匹配指定的Tag
@@ -45,28 +42,26 @@ static bool match(RDTokenType tag, bool flag = true)
         result = true;
 
         // 若匹配，则向前获取下一个Token
-        if (flag) {
-            advance();
-        }
+        if (flag) { advance(); }
     }
 
     return result;
 }
 
-static ast_node *expr();
+static ast_node * expr();
 
 /// @brief 语法错误输出
 /// @param msg 错误信息字符串
-static void semerror(char *msg)
+static void semerror(char * msg)
 {
     errno_num++;
     printf("Line(%d): %s\n", rd_line_no, msg);
 }
 
 // primaryExp: '(' expr ')' | T_DIGIT | lVal;
-static ast_node *primaryExp()
+static ast_node * primaryExp()
 {
-    ast_node *node;
+    ast_node * node;
 
     if (match(T_LPAREN)) {
         // Factor -> T_LPAREN Expr T_RPAREN识别
@@ -107,18 +102,18 @@ static ast_node *primaryExp()
 
 /// @brief unaryExp: primaryExp | T_ID '(' realParamList? ')'
 /// @return AST的节点
-static ast_node *unaryExp()
+static ast_node * unaryExp()
 {
     // 本函数目前只处理primaryExp
     // TODO 函数调用请自行处理，并且文法需要改造
-    ast_node *node = primaryExp();
+    ast_node * node = primaryExp();
 
     return node;
 }
 
 /// @brief addExp -> unaryExp { T_ADD unaryExp) }
 /// @return AST的节点
-static ast_node *addExp()
+static ast_node * addExp()
 {
     ast_node *left_node, *right_node;
 
@@ -143,14 +138,11 @@ static ast_node *addExp()
 
 /// @brief expr -> addExp
 /// @return AST的节点
-static ast_node *expr()
-{
-    return addExp();
-}
+static ast_node * expr() { return addExp(); }
 
 /// @brief assignstatement  -> Expr (T_ASSIGN Expr T_SEMICOLON | T_SEMICOLON | eps)
 /// @return AST的节点
-static ast_node *assignstatement()
+static ast_node * assignstatement()
 {
     ast_node *left_node, *right_node;
 
@@ -165,9 +157,7 @@ static ast_node *assignstatement()
 
             right_node = expr();
 
-            if (!F(T_ERR) && !match(T_SEMICOLON)) {
-                semerror("赋值语句后没有分号");
-            }
+            if (!F(T_ERR) && !match(T_SEMICOLON)) { semerror("赋值语句后没有分号"); }
 
             left_node = new_ast_node(ast_operator_type::AST_OP_ASSIGN, left_node, right_node, nullptr);
         } else {
@@ -192,9 +182,9 @@ static ast_node *assignstatement()
 
 /// @brief returnstatement -> T_RETURN expr ';'
 /// @return AST的节点
-static ast_node *returnstatement()
+static ast_node * returnstatement()
 {
-    ast_node *expr_node = expr();
+    ast_node * expr_node = expr();
 
     if (!match(T_SEMICOLON)) {
         // 返回语句后没有分号
@@ -206,7 +196,7 @@ static ast_node *returnstatement()
 
 /// @brief statement  -> assignstatement | returnstatement
 /// @return AST的节点
-static ast_node *statement()
+static ast_node * statement()
 {
     if (F(T_RETURN)) {
         return returnstatement();
@@ -226,7 +216,7 @@ static void compileUnit()
         // TODO 请自行实现函数定义的识别
 
         if (F(T_LPAREN) _(T_DIGIT) _(T_ID) _(T_RETURN)) {
-            ast_node *statement_node = statement();
+            ast_node * statement_node = statement();
             // 加入到父节点中
             ast_root->sons.push_back(statement_node);
             statement_node->parent = ast_root;
@@ -253,9 +243,7 @@ int rd_parse()
     compileUnit();
 
     // 如果有错误信息，则返回-1，否则返回0
-    if (errno_num != 0) {
-        return -1;
-    }
+    if (errno_num != 0) { return -1; }
 
     return 0;
 }

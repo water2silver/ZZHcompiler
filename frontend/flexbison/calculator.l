@@ -45,12 +45,12 @@ white_line  [\r\n]
 %%
 "/*"        {
                 // 进入注释子有限自动机
-                BEGIN(COMMENT); 
+                BEGIN(COMMENT);
             }
 
-<COMMENT>"*/" { 
+<COMMENT>"*/" {
                 // 结束注释子有限自动机
-                BEGIN(INITIAL); 
+                BEGIN(INITIAL);
             }
 
 <COMMENT>([^*]|\n)+|.  {
@@ -59,7 +59,7 @@ white_line  [\r\n]
 
 <COMMENT><<EOF>> {
                 // 注释子有限自动机，没有遇到*/但是文件结束
-                printf("Line %d: Unterminated comment\n", yylineno); 
+                printf("Line %d: Unterminated comment\n", yylineno);
 
                 // 词法识别错误
                 return 257;
@@ -111,7 +111,6 @@ white_line  [\r\n]
 
 .			{
                 printf("Line %d: Invalid char %s\n", yylineno, yytext);
-                
                 // 词法识别错误
                 return 257;
             }

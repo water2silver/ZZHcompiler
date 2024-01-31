@@ -20,7 +20,7 @@
 int rd_line_no = 1;
 
 /// @brief 输入源文件指针
-FILE *rd_filein;
+FILE * rd_filein;
 
 /// @brief 关键字与Token类别的数据结构
 struct KeywordToken {
@@ -39,10 +39,8 @@ static KeywordToken allKeywords[] = {
 /// @return Token
 static RDTokenType getKeywordToken(std::string id)
 {
-    for (auto &keyword: allKeywords) {
-        if (keyword.name == id) {
-            return keyword.type;
-        }
+    for (auto & keyword: allKeywords) {
+        if (keyword.name == id) { return keyword.type; }
     }
 
     return RDTokenType::T_ID;
@@ -58,9 +56,7 @@ int rd_flex()
     while ((c = fgetc(rd_filein)) == ' ' || c == '\t' || c == '\n') {
 
         // TODO 请支持Linux/Windows/Mac系统的行号分析
-        if (c == '\n') {
-            rd_line_no++;
-        }
+        if (c == '\n') { rd_line_no++; }
     }
 
     // file end
@@ -81,9 +77,7 @@ int rd_flex()
         rd_lval.integer_num.val = c - '0';
 
         // 最长匹配，直到非数字结束
-        while (isdigit(c = fgetc(rd_filein))) {
-            rd_lval.integer_num.val = rd_lval.integer_num.val * 10 + c - '0';
-        }
+        while (isdigit(c = fgetc(rd_filein))) { rd_lval.integer_num.val = rd_lval.integer_num.val * 10 + c - '0'; }
 
         // 多读的字符回退
         ungetc(c, rd_filein);

@@ -33,10 +33,10 @@ enum RDTokenType {
 
 /// @brief 词法与语法分析数据交互的Token的值类型
 union RDSType {
-    ast_node *node;
-    digit_int_attr integer_num;// 整型字面量
-    digit_real_attr float_num; // 实数字面量
-    var_id_attr var_id;        // 标识符（变量名）
+    ast_node * node;
+    digit_int_attr integer_num; // 整型字面量
+    digit_real_attr float_num;  // 实数字面量
+    var_id_attr var_id;         // 标识符（变量名）
 };
 
 /// @brief 词法与语法分析数据交互的Token的值

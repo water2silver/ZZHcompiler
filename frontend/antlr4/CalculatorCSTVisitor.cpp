@@ -7,16 +7,10 @@ extern ast_node * ast_root;
 #define Instanceof(res, type, var) auto res = dynamic_cast<type>(var)
 
 /// @brief 构造函数
-CalculatorCSTVisitor::CalculatorCSTVisitor()
-{
-
-}
+CalculatorCSTVisitor::CalculatorCSTVisitor() {}
 
 /// @brief 析构函数
-CalculatorCSTVisitor::~CalculatorCSTVisitor()
-{
-
-}
+CalculatorCSTVisitor::~CalculatorCSTVisitor() {}
 
 /// @brief 遍历CST产生AST
 /// @param root CST语法树的根结点
@@ -34,15 +28,15 @@ std::any CalculatorCSTVisitor::visitCompileUnit(CalculatorParser::CompileUnitCon
 
     // compileUnit: (statement | funcDef) +
     // 正闭包，循环，每个孩子要么是statement，要么是funcDef
-    for (auto & item : ctx->children) {
+    for (auto & item: ctx->children) {
         if (Instanceof(funcdef, CalculatorParser::FuncDefContext *, item)) {
             auto temp_node = visitFuncDef(funcdef);
-            (void)insert_ast_node(compileUnitNode, std::any_cast<ast_node *>(temp_node));
+            (void) insert_ast_node(compileUnitNode, std::any_cast<ast_node *>(temp_node));
         } else if (Instanceof(statement, CalculatorParser::StatementContext *, item)) {
             auto temp_node = visitStatement(statement);
             insert_ast_node(compileUnitNode, std::any_cast<ast_node *>(temp_node));
         } else {
-            (void)assert(false);
+            (void) assert(false);
         }
     }
 
@@ -83,7 +77,7 @@ std::any CalculatorCSTVisitor::visitFuncFormalParams(CalculatorParser::FuncForma
     ast_node * paramsNode = create_contain_node(ast_operator_type::AST_OP_FUNC_FORMAL_PARAMS);
 
     // 会存在多个funcFormalParam
-    for (auto & paramCtx : ctx->funcFormalParam()) {
+    for (auto & paramCtx: ctx->funcFormalParam()) {
 
         // 遍历参数
         auto param = visitFuncFormalParam(paramCtx);
@@ -140,7 +134,7 @@ std::any CalculatorCSTVisitor::visitBlockItemList(CalculatorParser::BlockItemLis
 
     // blockItemList : blockItem +;
     // 正闭包 循环 至少一个blockItem
-    for (auto blockItemCtx : ctx->blockItem()) {
+    for (auto blockItemCtx: ctx->blockItem()) {
 
         auto blockItem = visitBlockItem(blockItemCtx);
 
@@ -192,8 +186,7 @@ std::any CalculatorCSTVisitor::visitAssignStatement(CalculatorParser::AssignStat
     auto exprNode = std::any_cast<ast_node *>(expr);
 
     // 创建一个AST_OP_ASSIGN类型的中间节点，孩子为T_ID和Expr
-    return new_ast_node(ast_operator_type::AST_OP_ASSIGN,
-        new_ast_leaf_node(varId.c_str(), -1), exprNode, nullptr);
+    return new_ast_node(ast_operator_type::AST_OP_ASSIGN, new_ast_leaf_node(varId.c_str(), -1), exprNode, nullptr);
 }
 
 /// @brief 非终结运算符statement中的expressionStatement的遍历
@@ -256,13 +249,13 @@ std::any CalculatorCSTVisitor::visitAddExp(CalculatorParser::AddExpContext * ctx
         return visitUnaryExp(ctx->unaryExp()[0]);
     }
 
-    ast_node * left, * right;
+    ast_node *left, *right;
 
     // 存在addOp运算符，自
     auto opsCtxVec = ctx->addOp();
 
     // 有操作符，肯定会进循环，使得right设置正确的值
-    for (int k = 0; k < (int)opsCtxVec.size(); k++) {
+    for (int k = 0; k < (int) opsCtxVec.size(); k++) {
 
         // 获取运算符
         ast_operator_type op = std::any_cast<ast_operator_type>(visitAddOp(opsCtxVec[k]));
@@ -329,7 +322,7 @@ std::any CalculatorCSTVisitor::visitPrimaryExp(CalculatorParser::PrimaryExpConte
 
     // primaryExp :  '(' expr ')' | T_DIGIT | lVal
     if (ctx->T_DIGIT()) {
-        uint32_t val = (uint32_t)stoul(ctx->T_DIGIT()->getText());
+        uint32_t val = (uint32_t) stoul(ctx->T_DIGIT()->getText());
         node = new_ast_leaf_node(val, 0);
     } else if (ctx->lVal()) {
         node = std::any_cast<ast_node *>(visitLVal(ctx->lVal()));
@@ -347,7 +340,7 @@ std::any CalculatorCSTVisitor::visitRealParamList(CalculatorParser::RealParamLis
     auto paramListNode = create_contain_node(ast_operator_type::AST_OP_FUNC_REAL_PARAMS);
 
     // realParamList : expr (',' expr)*;
-    for (auto paramCtx : ctx->expr()) {
+    for (auto paramCtx: ctx->expr()) {
 
         auto param = visitExpr(paramCtx);
         auto paramNode = std::any_cast<ast_node *>(param);

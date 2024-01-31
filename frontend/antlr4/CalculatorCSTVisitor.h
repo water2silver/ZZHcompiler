@@ -8,7 +8,6 @@
 class CalculatorCSTVisitor : public CalculatorBaseVisitor {
 
 public:
-
     /// @brief 构造函数
     CalculatorCSTVisitor();
 
@@ -21,28 +20,27 @@ public:
     ast_node * run(CalculatorParser::CompileUnitContext * root);
 
 protected:
-
     /* 下面的函数都是从CalculatorBaseVisitor继承下来的虚拟函数，需要重载实现 */
 
     /// @brief 非终结运算符compileUnit的遍历
     /// @param ctx CST上下文
     /// @return AST的节点
-    std::any visitCompileUnit(CalculatorParser::CompileUnitContext *ctx) override;
+    std::any visitCompileUnit(CalculatorParser::CompileUnitContext * ctx) override;
 
     /// @brief 非终结运算符funcDef的遍历
     /// @param ctx CST上下文
     /// @return AST的节点
-    std::any visitFuncDef(CalculatorParser::FuncDefContext *ctx) override;
+    std::any visitFuncDef(CalculatorParser::FuncDefContext * ctx) override;
 
     /// @brief 非终结运算符funcFormalParams的遍历
     /// @param ctx CST上下文
     /// @return AST的节点
-    std::any visitFuncFormalParams(CalculatorParser::FuncFormalParamsContext *ctx) override;
+    std::any visitFuncFormalParams(CalculatorParser::FuncFormalParamsContext * ctx) override;
 
     /// @brief 非终结运算符funcFormalParam的遍历
     /// @param ctx CST上下文
     /// @return AST的节点
-    std::any visitFuncFormalParam(CalculatorParser::FuncFormalParamContext *ctx) override;
+    std::any visitFuncFormalParam(CalculatorParser::FuncFormalParamContext * ctx) override;
 
     /// @brief 非终结运算符funcBasicParam的遍历
     /// @param ctx CST上下文
@@ -52,75 +50,75 @@ protected:
     /// @brief 非终结运算符block的遍历
     /// @param ctx CST上下文
     /// @return AST的节点
-    std::any visitBlock(CalculatorParser::BlockContext *ctx) override;
+    std::any visitBlock(CalculatorParser::BlockContext * ctx) override;
 
     /// @brief 非终结运算符blockItemList的遍历
     /// @param ctx CST上下文
     /// @return AST的节点
-    std::any visitBlockItemList(CalculatorParser::BlockItemListContext *ctx) override;
+    std::any visitBlockItemList(CalculatorParser::BlockItemListContext * ctx) override;
 
     /// @brief 非终结运算符blockItem的遍历
     /// @param ctx CST上下文
     /// @return AST的节点
-    std::any visitBlockItem(CalculatorParser::BlockItemContext *ctx) override;
+    std::any visitBlockItem(CalculatorParser::BlockItemContext * ctx) override;
 
     /// @brief 非终结运算符statement中的遍历
     /// @param ctx CST上下文
     /// @return AST的节点
-    std::any visitStatement(CalculatorParser::StatementContext *ctx);
+    std::any visitStatement(CalculatorParser::StatementContext * ctx);
 
     /// @brief 非终结运算符statement中的assignStatement的遍历
     /// @param ctx CST上下文
     /// @return AST的节点
-    std::any visitAssignStatement(CalculatorParser::AssignStatementContext *ctx) override;
+    std::any visitAssignStatement(CalculatorParser::AssignStatementContext * ctx) override;
 
     /// @brief 非终结运算符statement中的expressionStatement的遍历
     /// @param ctx CST上下文
     /// @return AST的节点
-    std::any visitExpressionStatement(CalculatorParser::ExpressionStatementContext *ctx) override;
+    std::any visitExpressionStatement(CalculatorParser::ExpressionStatementContext * ctx) override;
 
     /// @brief 非终结运算符statement中的expressionShowStatement的遍历
     /// @param ctx CST上下文
     /// @return AST的节点
-    std::any visitExpressionShowStatement(CalculatorParser::ExpressionShowStatementContext *ctx) override;
+    std::any visitExpressionShowStatement(CalculatorParser::ExpressionShowStatementContext * ctx) override;
 
     /// @brief 非终结运算符statement中的returnStatement的遍历
     /// @param ctx CST上下文
     /// @return AST的节点
-    std::any visitReturnStatement(CalculatorParser::ReturnStatementContext *ctx) override;
+    std::any visitReturnStatement(CalculatorParser::ReturnStatementContext * ctx) override;
 
     /// @brief 非终结运算符expr的遍历
     /// @param ctx CST上下文
     /// @return AST的节点
-    std::any visitExpr(CalculatorParser::ExprContext *ctx) override;
+    std::any visitExpr(CalculatorParser::ExprContext * ctx) override;
 
     /// @brief 非终结运算符addExp的遍历
     /// @param ctx CST上下文
     /// @return AST的节点
-    std::any visitAddExp(CalculatorParser::AddExpContext *ctx) override;
+    std::any visitAddExp(CalculatorParser::AddExpContext * ctx) override;
 
     /// @brief 非终结运算符addOp的遍历
     /// @param ctx CST上下文
     /// @return AST的节点
-    std::any visitAddOp(CalculatorParser::AddOpContext *ctx) override;
+    std::any visitAddOp(CalculatorParser::AddOpContext * ctx) override;
 
     /// @brief 非终结运算符unaryExp的遍历
     /// @param ctx CST上下文
     /// @return AST的节点
-    std::any visitUnaryExp(CalculatorParser::UnaryExpContext *ctx) override;
+    std::any visitUnaryExp(CalculatorParser::UnaryExpContext * ctx) override;
 
     /// @brief 非终结运算符primaryExp的遍历
     /// @param ctx CST上下文
     /// @return AST的节点
-    std::any visitPrimaryExp(CalculatorParser::PrimaryExpContext *ctx) override;
+    std::any visitPrimaryExp(CalculatorParser::PrimaryExpContext * ctx) override;
 
     /// @brief 非终结运算符realParamList的遍历
     /// @param ctx CST上下文
     /// @return AST的节点
-    std::any visitRealParamList(CalculatorParser::RealParamListContext *ctx) override;
+    std::any visitRealParamList(CalculatorParser::RealParamListContext * ctx) override;
 
     /// @brief 非终结运算符lVal的遍历
     /// @param ctx CST上下文
     /// @return AST的节点
-    std::any visitLVal(CalculatorParser::LValContext *ctx) override;
+    std::any visitLVal(CalculatorParser::LValContext * ctx) override;
 };
