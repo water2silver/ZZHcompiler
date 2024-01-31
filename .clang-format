@@ -16,11 +16,11 @@ AllowAllArgumentsOnNextLine: false
 AllowAllConstructorInitializersOnNextLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
 # 允许将简单的语句块放到同一行
-AllowShortBlocksOnASingleLine: Always
+AllowShortBlocksOnASingleLine: false
 # 允许case在同一行
 AllowShortCaseLabelsOnASingleLine: false
 # 允许短的函数放在同一行
-AllowShortFunctionsOnASingleLine: All
+AllowShortFunctionsOnASingleLine: false
 # 允许if在同一行
 AllowShortIfStatementsOnASingleLine: Always
 AllowShortLambdasOnASingleLine: All

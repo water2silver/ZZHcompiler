@@ -12,14 +12,17 @@
 
 #include <string>
 
-class FrontEndExecutor {
+class FrontEndExecutor
+{
 public:
     /// @brief 构造函数
     /// @param[in] 源文件路径
-    FrontEndExecutor(std::string _filename) : filename(_filename) {}
+    FrontEndExecutor(std::string _filename) : filename(_filename)
+    {}
 
     /// @brief 析构函数
-    virtual ~FrontEndExecutor() {}
+    virtual ~FrontEndExecutor()
+    {}
 
     /// @brief 前端执行器的运行函数
     /// @return true: 成功 false: 失败

@@ -49,7 +49,7 @@ void CodeGeneratorArm32::genHeader()
     movw\cond \reg, #:lower16:\val
     movt\cond \reg, #:upper16:\val
 .endm
-    )");
+)");
 }
 
 /// @brief 全局变量Section，主要包含初始化的和未初始化过的

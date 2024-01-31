@@ -62,7 +62,7 @@ std::string gOutputFile;
 
 /// @brief 显示帮助
 /// @param exeName
-void showHelp(const std::string &exeName)
+void showHelp(const std::string & exeName)
 {
     std::cout << exeName + " -S [-A | -D] [-a | -I] [-o output] source" << std::endl;
     std::cout << exeName + " -R [-A | -D] source" << std::endl;
@@ -72,7 +72,7 @@ void showHelp(const std::string &exeName)
 /// @param argc
 /// @param argv
 /// @return
-int ArgsAnalysis(int argc, char *argv[])
+int ArgsAnalysis(int argc, char * argv[])
 {
     int ch;
 
@@ -181,7 +181,7 @@ lb_check:
         } else if (gShowLineIR) {
             gOutputFile = "ir.txt";
         } else {
-            gOutputFile = "asm.txt";
+            gOutputFile = "asm.s";
         }
     } else {
 
@@ -198,7 +198,7 @@ lb_check:
 /// @param argc
 /// @param argv
 /// @return
-int main(int argc, char *argv[])
+int main(int argc, char * argv[])
 {
     // 函数返回值，默认-1
     int result = -1;
@@ -236,7 +236,7 @@ int main(int argc, char *argv[])
         }
 
         // 创建词法语法分析器
-        FrontEndExecutor *fontEndExecutor = nullptr;
+        FrontEndExecutor * fontEndExecutor = nullptr;
         if (gFrontEndAntlr4) {
             // Antlr4
             fontEndExecutor = new Antlr4Executor(gInputFile);
@@ -314,7 +314,7 @@ int main(int argc, char *argv[])
         // 这里提供两种模式：第一种是解释执行器CodeSimulator；第二种为面向ARM32的汇编产生器CodeGeneratorArm32
         // 需要时可根据需要修改或追加新的目标体系架构
 
-        CodeGenerator *generator;
+        CodeGenerator * generator;
 
         if (gShowASM) {
 
