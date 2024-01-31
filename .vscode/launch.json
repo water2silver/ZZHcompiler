@@ -11,7 +11,8 @@
 			"request": "launch",
 			"program": "${workspaceFolder}/cmake-build-debug/calculator",
 			"args": ["-S", "-I", "tests/test1.txt"],
-			"stopAtEntry": false,
+			// 程序的入口（main函数的入口）是否停止
+			"stopAtEntry": true,
 			"cwd": "${workspaceFolder}",
 			"environment": [],
 			"externalConsole": false,
@@ -27,7 +28,9 @@
 					"text": "-gdb-set disassembly-flavor intel",
 					"ignoreFailures": true
 				}
-			]
+			],
+			// 不需要编译时可注释掉
+			"preLaunchTask": "CMake: build"
 		},
 		{
 			// 可采用GCC或者Clang编译器
@@ -36,7 +39,8 @@
 			"request": "launch",
 			"program": "${workspaceFolder}/cmake-build-debug/calculator",
 			"args": ["-R", "tests/test1.txt"],
-			"stopAtEntry": false,
+			// 程序的入口（main函数的入口）是否停止
+			"stopAtEntry": true,
 			"cwd": "${workspaceFolder}",
 			"environment": [],
 			"externalConsole": false,
@@ -52,7 +56,9 @@
 					"text": "-gdb-set disassembly-flavor intel",
 					"ignoreFailures": true
 				}
-			]
+			],
+			// 不需要编译时可注释掉
+			"preLaunchTask": "CMake: build"
 		},
 		{
 			// 可采用GCC或者Clang编译器
@@ -61,7 +67,8 @@
 			"request": "launch",
 			"program": "${workspaceFolder}/cmake-build-debug/calculator",
 			"args": ["-S", "-A", "-a", "tests/test3.txt"],
-			"stopAtEntry": false,
+			// 程序的入口（main函数的入口）是否停止
+			"stopAtEntry": true,
 			"cwd": "${workspaceFolder}",
 			"environment": [],
 			"externalConsole": false,
@@ -77,7 +84,9 @@
 					"text": "-gdb-set disassembly-flavor intel",
 					"ignoreFailures": true
 				}
-			]
+			],
+			// 不需要编译时可注释掉
+			"preLaunchTask": "CMake: build"
 		},
 		{
 			// 可采用GCC或者Clang编译器
@@ -86,7 +95,8 @@
 			"request": "launch",
 			"program": "${workspaceFolder}/cmake-build-debug/calculator",
 			"args": ["-S", "tests/test3.txt"],
-			"stopAtEntry": false,
+			// 程序的入口（main函数的入口）是否停止
+			"stopAtEntry": true,
 			"cwd": "${workspaceFolder}",
 			"environment": [],
 			"externalConsole": false,
@@ -102,7 +112,9 @@
 					"text": "-gdb-set disassembly-flavor intel",
 					"ignoreFailures": true
 				}
-			]
+			],
+			// 不需要编译时可注释掉
+			"preLaunchTask": "CMake: build"
 		},
 		{
 			// MacOS平台专用lldb调试，请注意不能用Mac不要用GDB调试
@@ -111,11 +123,14 @@
 			"request": "launch",
 			"program": "${workspaceFolder}/cmake-build-debug/calculator",
 			"args": ["-S", "-I", "-D", "tests/test1.txt"],
-			"stopAtEntry": false,
+			// 程序的入口（main函数的入口）是否停止
+			"stopAtEntry": true,
 			"cwd": "${workspaceFolder}",
 			"environment": [],
 			"externalConsole": false,
-			"MIMode": "lldb"
+			"MIMode": "lldb",
+			// 不需要编译时可注释掉
+			"preLaunchTask": "CMake: build"
 		}
 	]
 }
