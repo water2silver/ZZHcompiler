@@ -17,7 +17,6 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 
 # 查找Java，若没有安装则错误。因ANTLR4需要，如果不使用ANTLR4时可删除
 find_package(Java COMPONENTS Runtime REQUIRED)
-message(STATUS ${Java_JAVA_EXECUTABLE})
 
 # 因AST输出图片需要借助Graphviz提供的C++接口来实现，因此若Graphviz没有安装则出错
 # 查找graphviz库是否在系统中安装，若安装则设置一系列的变量，如LIBGVC_INCLUDE_DIRS等
@@ -29,7 +28,7 @@ find_package(Graphviz REQUIRED)
 #set(CMAKE_FIND_DEBUG_MODE TRUE)
 find_package(FLEX REQUIRED)
 #find_program(FLEX_EXECUTABLE NAMES flex win_flex PATHS C:/ToolsApp/msys64/usr/bin REQUIRED)
-message(STATUS ${FLEX_EXECUTABLE})
+#message(STATUS ${FLEX_EXECUTABLE})
 
 # 检查查找的flex是否时win_flex
 string(FIND ${FLEX_EXECUTABLE} "win_flex.exe" result)
@@ -40,10 +39,10 @@ else()
 endif()
 
 # 查找bison工具，找不到则出错，注意设置PATHS的路径；BISON_EXECUTABLE记录bison程序的位置
-# 请优先使用find_package，不行用find_program，指定bion的位置
-# find_package(BISON REQUIRED)
-find_program(BISON_EXECUTABLE NAMES bison win_bison PATHS C:/ToolsApp/msys64/usr/bin REQUIRED)
-message(STATUS ${BISON_EXECUTABLE})
+# 请优先使用find_package，不行用find_program，指定bison的位置
+find_package(BISON REQUIRED)
+#find_program(BISON_EXECUTABLE NAMES bison win_bison PATHS C:/ToolsApp/msys64/usr/bin REQUIRED)
+#message(STATUS ${BISON_EXECUTABLE})
 
 # 检查查找的flex是否时win_flex
 string(FIND ${BISON_EXECUTABLE} "win_bison.exe" result)
@@ -53,7 +52,7 @@ else()
     set(WINBISON_FOUND False)
 endif()
 
-# 查找antlr-4.12.0-complete的位置
+# 设置antlr-4.12.0-complete的位置
 set(ANTLR4_JAR_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/antlr4/antlr-4.12.0-complete.jar)
 message(STATUS ${ANTLR4_JAR_LOCATION})
 
@@ -61,12 +60,8 @@ message(STATUS ${ANTLR4_JAR_LOCATION})
 find_package(antlr4-runtime REQUIRED)
 message(STATUS ${ANTLR4_INCLUDE_DIR})
 
-# 配置创建一个可执行程序，以及该程序所依赖的所有源文件、头文件等
-add_executable(${PROJECT_NAME}
-
-	# 主程序
-    main.cpp
-
+# 前端源代码集合
+set(FRONTEND_SRCS
 	# 前端共性代码
     frontend/AST.cpp
     frontend/AST.h
@@ -106,7 +101,10 @@ add_executable(${PROJECT_NAME}
 	frontend/recursivedescent/CalculatorRDParser.h
 	frontend/recursivedescent/RecursiveDescentExecutor.h
     frontend/recursivedescent/RecursiveDescentExecutor.cpp
+)
 
+# 后端源代码集合
+set(BACKEND_SRCS
 	# 后端共性代码
     backend/CodeGenerator.cpp
     backend/CodeGenerator.h
@@ -126,8 +124,20 @@ add_executable(${PROJECT_NAME}
     backend/arm32/PlatformArm32.h
     backend/arm32/CodeGeneratorArm32.cpp
     backend/arm32/CodeGeneratorArm32.h
+)
 
-	# 符号表共性代码
+# 中间IR(DragonIR)源代码集合
+set(IR_SRCS
+    DragonIR/IRInst.h
+    DragonIR/IRInst.cpp
+    DragonIR/IRCode.h
+    DragonIR/IRCode.cpp
+    DragonIR/IRGenerator.cpp
+    DragonIR/IRGenerator.h
+)
+
+# 符号表等共通化代码集合
+set(COMMON_SRCS
 	common/Common.cpp
 	common/Common.h
 	common/ValueType.h
@@ -138,18 +148,41 @@ add_executable(${PROJECT_NAME}
 	common/Function.h
 	common/SymbolTable.cpp
 	common/SymbolTable.h
+)
+
+# 系统差异性代码集合
+set(UTILS_SRCS
+	utils/getopt-port.cpp
+    utils/getopt-port.h
+)
+
+# 优化源代码集合
+# TODO 增加优化时可在这里指定源代码的相对路径
+set(OPT_SRCS)
+
+# 配置创建一个可执行程序，以及该程序所依赖的所有源文件、头文件等
+add_executable(${PROJECT_NAME}
+
+	# 主程序
+    main.cpp
+
+	# 前端源代码
+	${FRONTEND_SRCS}
+
+	# 后端源代码
+	${BACKEND_SRCS}
+
+	# 符号表共性代码
+	${COMMON_SRCS}
 
 	# 中间IR代码
-    DragonIR/IRInst.h
-    DragonIR/IRInst.cpp
-    DragonIR/IRCode.h
-    DragonIR/IRCode.cpp
-    DragonIR/IRGenerator.cpp
-    DragonIR/IRGenerator.h
+	${IR_SRCS}
+
+	# 优化代码，暂时未用
+	${OPT_SRCS}
 
 	# 操作系统差异化代码，VC编译时使用
-    utils/getopt-port.cpp
-    utils/getopt-port.h
+    ${UTILS_SRCS}
 )
 
 # 设置语言标准C++17，可根据需要调整
@@ -171,7 +204,7 @@ else()
 endif()
 
 # 引入graphviz库的头文件，防止编译时找不到graphviz的头文件
-target_include_directories(${PROJECT_NAME} PRIVATE 
+target_include_directories(${PROJECT_NAME} PRIVATE
     ${Graphviz_INCLUDE_DIRS}
     ${ANTLR4_INCLUDE_DIR}
     common

@@ -16,8 +16,6 @@
 #include <Windows.h>
 #endif
 
-#include "getopt-port.h"
-
 #include "Antlr4Executor.h"
 #include "CodeGeneratorArm32.h"
 #include "CodeSimulator.h"
@@ -26,6 +24,7 @@
 #include "IRGenerator.h"
 #include "RecursiveDescentExecutor.h"
 #include "SymbolTable.h"
+#include "getopt-port.h"
 
 /// @brief 是否显示帮助信息
 bool gShowHelp = false;
@@ -210,6 +209,8 @@ int main(int argc, char * argv[])
     SetConsoleOutputCP(65001);
 #endif
 
+    // 这里采用do {} while(0)架构的目的是如果处理出错可通过break退出循环，出口唯一
+    // 在编译器编译优化时会自动去除，因为while恒假的缘故
     do {
 
         // 参数解析
