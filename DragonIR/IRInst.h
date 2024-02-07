@@ -48,7 +48,8 @@ enum class IRInstOperator {
 };
 
 /// @brief IR指令的基类
-class IRInst {
+class IRInst
+{
 
 public:
     /// @brief 构造函数
@@ -86,15 +87,24 @@ public:
     virtual void toString(std::string & str);
 
     /// @brief 是否是Dead指令
-    bool isDead() { return dead; }
+    bool isDead()
+    {
+        return dead;
+    }
 
     /// @brief 设置指令是否是Dead指令
     /// @param _dead 是否是Dead指令，true：Dead, false: 非Dead
-    void setDead(bool _dead = true) { dead = _dead; }
+    void setDead(bool _dead = true)
+    {
+        dead = _dead;
+    }
 
     /// @brief 获取Label指令的命令
     /// @return Label名字
-    std::string getLabelName() { return labelName; }
+    std::string getLabelName()
+    {
+        return labelName;
+    }
 
 protected:
     /// @brief IR指令操作码
@@ -120,7 +130,8 @@ protected:
 };
 
 /// @brief Label指令
-class LabelIRInst : public IRInst {
+class LabelIRInst : public IRInst
+{
 
 public:
     /// @brief 构造函数
@@ -149,7 +160,8 @@ protected:
 };
 
 /// @brief 二元运算指令
-class BinaryIRInst : public IRInst {
+class BinaryIRInst : public IRInst
+{
 
 public:
     /// @brief 构造函数
@@ -167,7 +179,8 @@ public:
 };
 
 /// @brief 函数调用指令
-class FuncCallIRInst : public IRInst {
+class FuncCallIRInst : public IRInst
+{
 
 public:
     /// @brief 函数名
@@ -196,7 +209,8 @@ public:
 };
 
 /// @brief 赋值指令或者说复制指令
-class AssignIRInst : public IRInst {
+class AssignIRInst : public IRInst
+{
 
 public:
     /// @brief 构造函数
@@ -211,7 +225,8 @@ public:
     void toString(std::string & str) override;
 };
 
-class EntryIRInst : public IRInst {
+class EntryIRInst : public IRInst
+{
 
 public:
     /// @brief return语句指令
@@ -225,7 +240,8 @@ public:
 };
 
 /// @brief return语句指令
-class ExitIRInst : public IRInst {
+class ExitIRInst : public IRInst
+{
 
 public:
     /// @brief return语句指令
@@ -239,7 +255,8 @@ public:
     void toString(std::string & str) override;
 };
 
-class GotoIRInst : public IRInst {
+class GotoIRInst : public IRInst
+{
 
 public:
     /// @brief return语句指令

@@ -82,7 +82,8 @@ enum class ast_operator_type : int {
 };
 
 /// @brief 抽象语法树AST的节点描述类
-class ast_node {
+class ast_node
+{
 public:
     /// @brief 父节点
     ast_node * parent;

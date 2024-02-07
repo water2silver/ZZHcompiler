@@ -16,7 +16,8 @@
 #include "SymbolTable.h"
 
 /// @brief AST遍历产生线性IR类
-class IRGenerator {
+class IRGenerator
+{
 
 public:
     /// @brief 构造函数

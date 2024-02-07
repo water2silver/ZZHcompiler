@@ -11,13 +11,16 @@
 #include "IRCode.h"
 
 /// @brief 构造函数
-InterCode::InterCode() {}
+InterCode::InterCode()
+{}
 
 /// @brief 析构函数
 InterCode::~InterCode()
 {
     // 资源清理
-    for (auto inst: code) { delete inst; }
+    for (auto inst: code) {
+        delete inst;
+    }
 
     code.clear();
 }
@@ -37,8 +40,14 @@ void InterCode::addInst(InterCode & block)
 
 /// @brief 添加一条中间指令
 /// @param inst IR指令
-void InterCode::addInst(IRInst * inst) { code.push_back(inst); }
+void InterCode::addInst(IRInst * inst)
+{
+    code.push_back(inst);
+}
 
 /// @brief 获取指令序列
 /// @return 指令序列
-std::vector<IRInst *> & InterCode::getInsts() { return code; }
+std::vector<IRInst *> & InterCode::getInsts()
+{
+    return code;
+}
