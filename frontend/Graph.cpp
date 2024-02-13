@@ -174,7 +174,9 @@ Agnode_t * genInternalGraphNode(Agraph_t * g, ast_node * astnode)
 Agnode_t * graph_visit_ast_node(Agraph_t * g, ast_node * astnode)
 {
     // 非法节点
-    if (nullptr == astnode) { return nullptr; }
+    if (nullptr == astnode) {
+        return nullptr;
+    }
 
     Agnode_t * graph_node;
 

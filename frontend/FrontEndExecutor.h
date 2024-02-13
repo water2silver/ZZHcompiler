@@ -12,8 +12,7 @@
 
 #include <string>
 
-class FrontEndExecutor
-{
+class FrontEndExecutor {
 public:
     /// @brief 构造函数
     /// @param[in] 源文件路径

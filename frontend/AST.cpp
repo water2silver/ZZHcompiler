@@ -108,7 +108,9 @@ ast_node * new_ast_node(ast_operator_type type, ...)
     for (;;) {
 
         ast_node * node = va_arg(valist, ast_node *);
-        if (nullptr == node) { break; }
+        if (nullptr == node) {
+            break;
+        }
 
         nd->sons.push_back(node);
         node->parent = nd;
@@ -177,7 +179,9 @@ void free_ast_node(ast_node * node)
 {
     if (node) {
 
-        for (auto child: node->sons) { free_ast_node(child); }
+        for (auto child: node->sons) {
+            free_ast_node(child);
+        }
 
         // 清理孩子元素
         node->sons.clear();
@@ -207,10 +211,14 @@ ast_node * create_func_def(uint32_t line_no, const char * func_name, ast_node * 
     nd->name = func_name;
 
     // 如果没有参数，则创建参数节点
-    if (!params) { params = new ast_node(ast_operator_type::AST_OP_FUNC_FORMAL_PARAMS); }
+    if (!params) {
+        params = new ast_node(ast_operator_type::AST_OP_FUNC_FORMAL_PARAMS);
+    }
 
     // 如果没有函数体，则创建函数体，也就是语句块
-    if (!block) { block = new ast_node(ast_operator_type::AST_OP_BLOCK); }
+    if (!block) {
+        block = new ast_node(ast_operator_type::AST_OP_BLOCK);
+    }
 
     nd->sons.push_back(params);
     params->parent = nd;
@@ -264,7 +272,9 @@ ast_node * create_func_call(uint32_t line_no, const char * func_name, ast_node *
     nd->name = func_name;
 
     // 如果没有参数，则创建参数节点
-    if (!params) { params = new ast_node(ast_operator_type::AST_OP_FUNC_REAL_PARAMS); }
+    if (!params) {
+        params = new ast_node(ast_operator_type::AST_OP_FUNC_REAL_PARAMS);
+    }
 
     nd->sons.push_back(params);
     params->parent = nd;

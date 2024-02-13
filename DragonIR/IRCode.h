@@ -15,8 +15,7 @@
 #include "IRInst.h"
 
 /// @brief 中间IR指令序列管理类
-class InterCode
-{
+class InterCode {
 
 protected:
     /// @brief 指令块的指令序列
