@@ -9,19 +9,24 @@
  *
  */
 #include <algorithm>
+#include <cstdint>
+#include <cstdio>
+#include <string>
+#include <vector>
 
+#include "Function.h"
 #include "SymbolTable.h"
-
+#include "Value.h"
+#include "ValueType.h"
 
 /// @brief 构造函数
 SymbolTable::SymbolTable()
 {
     // 加入内置函数
-    (void)newFunction(
-        "putint",  // 函数名
-        BasicType::TYPE_VOID, // 返回值类型
-        { { "", BasicType::TYPE_INT} }, // 形参类型
-        true   // 内置函数
+    (void) newFunction("putint",                    // 函数名
+                       BasicType::TYPE_VOID,        // 返回值类型
+                       {{"", BasicType::TYPE_INT}}, // 形参类型
+                       true                         // 内置函数
     );
 }
 
@@ -52,7 +57,7 @@ bool SymbolTable::insertFunction(Function * func)
     if (pFunction == nullptr) {
         // 该函数不存在，则加入到函数中
 
-        funcMap.insert({ name, func });
+        funcMap.insert({name, func});
         funcVector.emplace_back(func);
 
         result = true;
@@ -62,7 +67,7 @@ bool SymbolTable::insertFunction(Function * func)
 }
 
 /// @brief 移动到函数列表的尾部
-/// @param func 
+/// @param func
 void SymbolTable::moveFunctionEnd(Function * func)
 {
     // 在向量中查找函数
@@ -87,7 +92,7 @@ void SymbolTable::outputIR(const std::string & filePath)
     }
 
     // 遍历所有的线性IR指令，文本输出
-    for (auto func : funcVector) {
+    for (auto func: funcVector) {
 
         std::string instStr;
         func->toString(instStr);
@@ -201,7 +206,7 @@ Value * SymbolTable::findValue(std::string name, bool create)
 void SymbolTable::freeValues()
 {
     // 清理Vector表中的所有创建的Value
-    for (auto var : varsVector) {
+    for (auto var: varsVector) {
         delete var;
     }
 
@@ -215,7 +220,8 @@ void SymbolTable::freeValues()
 /// @param params 形参列表
 /// @param builtin 是否内置函数
 /// @return 新建的函数对象实例
-Function * SymbolTable::newFunction(std::string name, BasicType returnType, std::vector<FuncFormalParam> params, bool builtin)
+Function *
+SymbolTable::newFunction(std::string name, BasicType returnType, std::vector<FuncFormalParam> params, bool builtin)
 {
     Function * func = new Function(name, returnType, builtin);
     func->getParams().assign(params.begin(), params.end());

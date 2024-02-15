@@ -23,7 +23,7 @@ protected:
 
 public:
     /// @brief 构造函数
-    InterCode();
+    InterCode() = default;
 
     /// @brief 析构函数
     ~InterCode();

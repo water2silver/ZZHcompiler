@@ -8,11 +8,10 @@
  * @copyright Copyright (c) 2023
  *
  */
-#include "IRCode.h"
+#include <vector>
 
-/// @brief 构造函数
-InterCode::InterCode()
-{}
+#include "IRCode.h"
+#include "IRInst.h"
 
 /// @brief 析构函数
 InterCode::~InterCode()

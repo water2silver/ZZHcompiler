@@ -5,6 +5,8 @@ project(calculator VERSION 1.0.0.2 LANGUAGES CXX)
 
 # 这个目前没有用处，可删除
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+# 默认设置为ON，这里可注释掉。开启时会产生compile_commands.json的文件，有了这个文件才能识别出clang-tidy的配置
+# set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # 禁止MSVC编译时出现C4819警告
 if(MSVC)

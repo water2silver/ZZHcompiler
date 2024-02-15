@@ -10,6 +10,8 @@
  */
 #include <cstdint>
 #include <cstdio>
+#include <unordered_map>
+#include <vector>
 
 #include "AST.h"
 #include "IRCode.h"
@@ -240,12 +242,12 @@ bool IRGenerator::ir_function_call(ast_node * node)
     symtab->currentFunc->setExistFuncCall(true);
 
     // 如果没有孩子，也认为是没有参数
-    if (node->sons.size() != 0) {
+    if (!node->sons.empty()) {
 
         // 只有一个节点，实际参数列表
         auto paramsNode = node->sons[0];
 
-        int argsCount = paramsNode->sons.size();
+        const size_t argsCount = paramsNode->sons.size();
 
         // 设置最大函数调用参数个数
         if (argsCount > symtab->currentFunc->getMaxFuncCallArgCnt()) {
@@ -471,7 +473,7 @@ bool IRGenerator::ir_return(ast_node * node)
     ast_node * right = nullptr;
 
     // return语句可能没有没有表达式，也可能有，因此这里必须进行区分判断
-    if (0 != node->sons.size()) {
+    if (!node->sons.empty()) {
 
         ast_node * son_node = node->sons[0];
 
@@ -586,10 +588,9 @@ ast_node * IRGenerator::ir_visit_ast_node(ast_node * node)
     }
 
     bool result;
-    ast_operator_type op = node->node_type;
 
     std::unordered_map<ast_operator_type, ast2ir_handler_t>::const_iterator pIter;
-    pIter = ast2ir_handlers.find(op);
+    pIter = ast2ir_handlers.find(node->node_type);
     if (pIter == ast2ir_handlers.end()) {
         // 没有找到，则说明当前不支持
         result = (this->ir_default)(node);
