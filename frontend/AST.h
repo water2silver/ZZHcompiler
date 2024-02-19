@@ -115,7 +115,6 @@ public:
     /// @brief 线性IR指令或者运行产生的Value，用于线性IR指令产生用
     Value * val;
 
-public:
     /// @brief 构造函数
     /// @param _type 节点值的类型
     /// @param line_no 行号

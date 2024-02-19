@@ -98,7 +98,7 @@ bool isLeafNode(ast_operator_type type)
 /// @return 创建的节点
 ast_node * new_ast_node(ast_operator_type type, ...)
 {
-    ast_node * node = new ast_node((ast_operator_type) type, -1);
+    ast_node * parent_node = new ast_node((ast_operator_type) type, -1);
 
     va_list valist;
 
@@ -112,14 +112,14 @@ ast_node * new_ast_node(ast_operator_type type, ...)
             break;
         }
 
-        node->sons.push_back(node);
-        node->parent = node;
+        parent_node->sons.push_back(node);
+        node->parent = parent_node;
     }
 
     /* 清理为 valist 保留的内存 */
     va_end(valist);
 
-    return node;
+    return parent_node;
 }
 
 /// @brief 向父节点插入一个节点

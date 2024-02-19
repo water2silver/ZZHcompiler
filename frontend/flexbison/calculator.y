@@ -138,8 +138,13 @@ Statement : T_ID '=' Expr ';' {
         // 归约到Statement时要执行的语义动作程序
         // 赋值语句，不显示值
 
+		// 变量节点
+		ast_node * id_node = new_ast_leaf_node(var_id_attr{$1.id, $1.lineno});
+
+		free($1.id);
+
         // 创建一个AST_OP_ASSIGN类型的中间节点，孩子为Id和Expr($3)
-        $$ = new_ast_node(ast_operator_type::AST_OP_ASSIGN, new_ast_leaf_node(var_id_attr{$1.id, -1}), $3, nullptr);
+        $$ = new_ast_node(ast_operator_type::AST_OP_ASSIGN, id_node, $3, nullptr);
     }
     | Expr ';' {
         // Expr归约到Statement时要执行的语义动作程序
