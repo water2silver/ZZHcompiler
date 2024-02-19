@@ -61,29 +61,29 @@ std::string ArmInst::outPut()
     }
 
     // 占位指令,可能需要输出一个空操作，看是否支持 FIXME
-    if (opcode == "") {
+    if (opcode.empty()) {
         return "";
     }
 
     std::string ret = opcode;
 
     // 结果输出
-    if (result != "") {
+    if (!result.empty()) {
         ret += " " + result;
     }
 
     // 第一元参数输出
-    if (arg1 != "") {
+    if (!arg1.empty()) {
         ret += "," + arg1;
     }
 
     // 第二元参数输出
-    if (arg2 != "") {
+    if (!arg2.empty()) {
         ret += "," + arg2;
     }
 
     // 其他附加信息输出
-    if (addition != "") {
+    if (!addition.empty()) {
         ret += "," + addition;
     }
 
@@ -97,7 +97,7 @@ std::string ArmInst::outPut()
  */
 std::string ILocArm32::toStr(int num, bool flag)
 {
-    std::string ret = "";
+    std::string ret;
 
     if (flag) {
         ret = "#";
@@ -349,7 +349,7 @@ void ILocArm32::store_var(int src_reg_no, Value * var, int tmp_reg_no)
         int32_t off = getAdjustOffset(var);
 
         // 基址寄存器名字
-        tmpReg = var->baseRegNo;
+        tmpReg = PlatformArm32::regName[var->baseRegNo];
 
         // str r8,[r9]
         // str r8, [fp, # - 16]
@@ -495,7 +495,7 @@ void ILocArm32::outPut(FILE * file, bool outputEmpty)
     for (auto arm: code) {
 
         std::string s = arm->outPut();
-        if (s != "") {
+        if (!s.empty()) {
             if (arm->opcode[0] == '.') {
                 // Label符号
                 fprintf(file, "%s\n", s.c_str());

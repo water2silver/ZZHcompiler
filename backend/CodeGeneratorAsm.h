@@ -25,7 +25,7 @@ public:
     CodeGeneratorAsm(SymbolTable & tab);
 
     /// @brief 析构函数
-    virtual ~CodeGeneratorAsm() = default;
+    ~CodeGeneratorAsm() override = default;
 
     /// @brief 产生汇编头部分
     virtual void genHeader() = 0;

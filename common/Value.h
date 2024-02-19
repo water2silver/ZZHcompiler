@@ -205,7 +205,7 @@ public:
     }
 
     /// @brief 析构函数
-    virtual ~TempValue() override
+    ~TempValue() override
     {
         // 如有资源清理，请这里追加代码
     }
@@ -234,14 +234,14 @@ public:
     }
 
     /// @brief 析构函数
-    virtual ~ConstValue() override
+    ~ConstValue() override
     {
         // 如有资源清理，请这里追加代码
     }
 
     /// @brief 获取名字
     /// @return
-    virtual std::string getName() const override
+    std::string getName() const override
     {
         if (type.type == BasicType::TYPE_INT) {
             return int2str(this->intVal);
@@ -271,7 +271,7 @@ public:
     }
 
     /// @brief 析构函数
-    virtual ~VarValue() override
+    ~VarValue() override
     {
         // 如有资源清理，请这里追加代码
     }
@@ -290,7 +290,7 @@ public:
     }
 
     /// @brief 析构函数
-    virtual ~IntRegValue() override
+    ~IntRegValue() override
     {
         // 如有资源清理，请这里追加代码
     }
@@ -309,7 +309,7 @@ public:
     }
 
     /// @brief 析构函数
-    virtual ~MemValue() override
+    ~MemValue() override
     {
         // 如有资源清理，请这里追加代码
     }
@@ -328,7 +328,7 @@ public:
     }
 
     /// @brief 析构函数
-    virtual ~RegValue() override
+    ~RegValue() override
     {
         // 如有资源清理，请这里追加代码
     }

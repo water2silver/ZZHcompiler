@@ -136,7 +136,7 @@ UseCRLF: false
 # 使用tab字符：ForIndentation——仅将制表符用于缩进
 UseTab: Never
 # include文件名排序
-SortIncludes: true
+SortIncludes: Never
 # 形参 如果为false要么都在同一行，要么各有一行
 BinPackParameters: false
 # 实参 如果为false要么都在同一行，要么各有一行

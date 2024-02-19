@@ -37,7 +37,6 @@ protected:
     /// @return true：成功，false：失败
     virtual bool run() = 0;
 
-protected:
     /// @brief 符号表
     SymbolTable & symtab;
 

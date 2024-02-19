@@ -19,7 +19,7 @@ public:
     CodeGeneratorArm32(SymbolTable & tab);
 
     /// @brief 析构函数
-    virtual ~CodeGeneratorArm32();
+    ~CodeGeneratorArm32() override;
 
 protected:
     /// @brief 产生汇编头部分

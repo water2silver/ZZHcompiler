@@ -103,6 +103,8 @@ readability-*,\
 -readability-uppercase-literal-suffix,\
 -readability-use-anyofallof,\
 -readability-identifier-length,\
+-readability-avoid-unconditional-preprocessor-if,\
+-readability-redundant-access-specifiers,\
 "
 
 # WarningsAsErrors: "*"

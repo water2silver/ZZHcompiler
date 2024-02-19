@@ -32,7 +32,6 @@ public:
     /// @brief 形参变量
     Value * val = nullptr;
 
-public:
     /// @brief 默认整型参数
     /// @param _name 形参的名字
     FuncFormalParam(std::string _name);

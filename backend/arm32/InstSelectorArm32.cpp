@@ -163,7 +163,7 @@ void InstSelectorArm32::translate_assign(IRInst * inst)
 /// @param op1_reg_no 源操作数1寄存器号
 /// @param op2_reg_no 源操作数2寄存器号
 void InstSelectorArm32::translate_two_operator(IRInst * inst,
-                                               const string operator_name,
+                                               string operator_name,
                                                int rs_reg_no,
                                                int op1_reg_no,
                                                int op2_reg_no)
