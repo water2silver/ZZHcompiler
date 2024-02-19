@@ -217,7 +217,7 @@ bool IRGenerator::ir_function_formal_params(ast_node * node)
         Value * var = symtab->currentFunc->newVarValue(son->name, BasicType::TYPE_INT);
 
         // 默认是整数类型
-        params.push_back({son->name, BasicType::TYPE_INT, var});
+        params.emplace_back(son->name, BasicType::TYPE_INT, var);
     }
 
     return true;

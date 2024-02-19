@@ -236,7 +236,7 @@ ExitIRInst::~ExitIRInst()
 /// @param str 转换后的字符串
 void ExitIRInst::toString(std::string & str)
 {
-    if (0 == srcValues.size()) {
+    if (srcValues.empty()) {
         str = "exit void";
     } else {
         Value * src1 = srcValues[0];
