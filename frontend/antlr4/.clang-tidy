@@ -1,1 +1,1 @@
-HeaderFilterRegex: 'Calculator[^/]*\.(h|hxx|hpp)$'
+HeaderFilterRegex: 'Calculator[^/]*\.(h|hxx|hpp|cpp|cxx)$'
