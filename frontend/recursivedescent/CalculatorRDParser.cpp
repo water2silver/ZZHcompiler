@@ -28,7 +28,10 @@ static RDTokenType lookaheadTag = RDTokenType::T_EMPTY;
 #define F(C) (lookaheadTag == C)
 
 /// @brief lookahead指向下一个Token
-static void advance() { lookaheadTag = (RDTokenType) rd_flex(); }
+static void advance()
+{
+    lookaheadTag = (RDTokenType) rd_flex();
+}
 
 /// @brief flag若匹配则是否向前移动
 /// @param tag 是否匹配指定的Tag
@@ -42,7 +45,9 @@ static bool match(RDTokenType tag, bool flag = true)
         result = true;
 
         // 若匹配，则向前获取下一个Token
-        if (flag) { advance(); }
+        if (flag) {
+            advance();
+        }
     }
 
     return result;
@@ -75,13 +80,16 @@ static ast_node * primaryExp()
     } else if (F(T_DIGIT)) {
         // Factor -> T_DIGIT识别
 
-        node = new_ast_leaf_node(rd_lval.integer_num.val, rd_lval.integer_num.lineno);
+        node = new_ast_leaf_node(digit_int_attr{rd_lval.integer_num.val, rd_lval.integer_num.lineno});
 
         advance();
     } else if (F(T_ID)) {
         // Factor -> T_ID识别
 
-        node = new_ast_leaf_node(rd_lval.var_id.id, rd_lval.integer_num.lineno);
+        node = new_ast_leaf_node(var_id_attr{rd_lval.var_id.id, rd_lval.integer_num.lineno});
+
+        // 对于字符型字面量的字符串空间需要释放，因词法用到了strdup进行了字符串复制
+        free(rd_lval.var_id.id);
 
         advance();
     } else {
@@ -94,7 +102,7 @@ static ast_node * primaryExp()
         }
 
         // 产生一个默认的叶子节点，数值为0，能够继续分析后面的代码
-        node = new_ast_leaf_node((uint32_t) 0, rd_lval.integer_num.lineno);
+        node = new_ast_leaf_node(digit_int_attr{(uint32_t) 0, rd_lval.integer_num.lineno});
     }
 
     return node;
@@ -138,7 +146,10 @@ static ast_node * addExp()
 
 /// @brief expr -> addExp
 /// @return AST的节点
-static ast_node * expr() { return addExp(); }
+static ast_node * expr()
+{
+    return addExp();
+}
 
 /// @brief assignstatement  -> Expr (T_ASSIGN Expr T_SEMICOLON | T_SEMICOLON | eps)
 /// @return AST的节点
@@ -157,7 +168,9 @@ static ast_node * assignstatement()
 
             right_node = expr();
 
-            if (!F(T_ERR) && !match(T_SEMICOLON)) { semerror("赋值语句后没有分号"); }
+            if (!F(T_ERR) && !match(T_SEMICOLON)) {
+                semerror("赋值语句后没有分号");
+            }
 
             left_node = new_ast_node(ast_operator_type::AST_OP_ASSIGN, left_node, right_node, nullptr);
         } else {
@@ -243,7 +256,9 @@ int rd_parse()
     compileUnit();
 
     // 如果有错误信息，则返回-1，否则返回0
-    if (errno_num != 0) { return -1; }
+    if (errno_num != 0) {
+        return -1;
+    }
 
     return 0;
 }

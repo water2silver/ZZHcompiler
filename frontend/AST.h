@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 
+#include "AttrType.h"
 #include "IRCode.h"
 #include "Value.h"
 
@@ -121,19 +122,16 @@ public:
     ast_node(ValueType _type, int32_t _line_no);
 
     /// @brief 针对无符号整数字面量的构造函数
-    /// @param _value 无符号整数叶子节点的无符号值
-    /// @param _line_no 行号
-    ast_node(uint32_t _value, int32_t _line_no);
+    /// @param attr 无符号整数字面量
+    ast_node(digit_int_attr attr);
 
     /// @brief 针对float字面量的构造函数
-    /// @param _value  float类型叶子节点的float值
-    /// @param _line_no 行号
-    ast_node(float _value, int32_t _line_no);
+    /// @param attr float型实数字面量
+    ast_node(digit_real_attr attr);
 
     /// @brief 针对标识符ID的叶子构造函数
-    /// @param _name 标识符名字
-    /// @param _line_no 行号
-    ast_node(const char * _name, int32_t _line_no);
+    /// @param attr 字符型标识符
+    ast_node(var_id_attr attr);
 
     /// @brief 创建指定节点类型的节点
     /// @param _node_type 节点类型
@@ -160,17 +158,17 @@ ast_node * insert_ast_node(ast_node * parent, ast_node * node);
 /// @brief 创建无符号整数的叶子节点
 /// @param val 词法值
 /// @param line_no 行号
-ast_node * new_ast_leaf_node(uint32_t val, int32_t line_no);
+ast_node * new_ast_leaf_node(digit_int_attr attr);
 
 /// @brief 创建实数的叶子节点
 /// @param val 词法值
 /// @param line_no 行号
-ast_node * new_ast_leaf_node(float val, int32_t line_no);
+ast_node * new_ast_leaf_node(digit_real_attr attr);
 
 /// @brief 创建标识符的叶子节点
 /// @param val 词法值
 /// @param line_no 行号
-ast_node * new_ast_leaf_node(const char * name, int32_t line_no);
+ast_node * new_ast_leaf_node(var_id_attr attr);
 
 /// @brief 创建具备指定类型的节点
 /// @param type 节点值类型

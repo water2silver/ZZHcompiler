@@ -7,10 +7,12 @@ extern ast_node * ast_root;
 #define Instanceof(res, type, var) auto res = dynamic_cast<type>(var)
 
 /// @brief 构造函数
-CalculatorCSTVisitor::CalculatorCSTVisitor() {}
+CalculatorCSTVisitor::CalculatorCSTVisitor()
+{}
 
 /// @brief 析构函数
-CalculatorCSTVisitor::~CalculatorCSTVisitor() {}
+CalculatorCSTVisitor::~CalculatorCSTVisitor()
+{}
 
 /// @brief 遍历CST产生AST
 /// @param root CST语法树的根结点
@@ -186,7 +188,10 @@ std::any CalculatorCSTVisitor::visitAssignStatement(CalculatorParser::AssignStat
     auto exprNode = std::any_cast<ast_node *>(expr);
 
     // 创建一个AST_OP_ASSIGN类型的中间节点，孩子为T_ID和Expr
-    return new_ast_node(ast_operator_type::AST_OP_ASSIGN, new_ast_leaf_node(varId.c_str(), -1), exprNode, nullptr);
+    return new_ast_node(ast_operator_type::AST_OP_ASSIGN,
+                        new_ast_leaf_node(var_id_attr{strdup(varId.c_str()), -1}),
+                        exprNode,
+                        nullptr);
 }
 
 /// @brief 非终结运算符statement中的expressionStatement的遍历
@@ -323,7 +328,7 @@ std::any CalculatorCSTVisitor::visitPrimaryExp(CalculatorParser::PrimaryExpConte
     // primaryExp :  '(' expr ')' | T_DIGIT | lVal
     if (ctx->T_DIGIT()) {
         uint32_t val = (uint32_t) stoul(ctx->T_DIGIT()->getText());
-        node = new_ast_leaf_node(val, 0);
+        node = new_ast_leaf_node(digit_int_attr{val, 0});
     } else if (ctx->lVal()) {
         node = std::any_cast<ast_node *>(visitLVal(ctx->lVal()));
     } else {
@@ -360,5 +365,5 @@ std::any CalculatorCSTVisitor::visitLVal(CalculatorParser::LValContext * ctx)
     auto token = ctx->getStart();
     unsigned int lineno = token->getLine();
 
-    return new_ast_leaf_node(ctx->T_ID()->getText().c_str(), lineno);
+    return new_ast_leaf_node(var_id_attr{(char *) ctx->T_ID()->getText().c_str(), (int32_t) lineno});
 }

@@ -40,7 +40,9 @@ static KeywordToken allKeywords[] = {
 static RDTokenType getKeywordToken(std::string id)
 {
     for (auto & keyword: allKeywords) {
-        if (keyword.name == id) { return keyword.type; }
+        if (keyword.name == id) {
+            return keyword.type;
+        }
     }
 
     return RDTokenType::T_ID;
@@ -56,7 +58,9 @@ int rd_flex()
     while ((c = fgetc(rd_filein)) == ' ' || c == '\t' || c == '\n') {
 
         // TODO 请支持Linux/Windows/Mac系统的行号分析
-        if (c == '\n') { rd_line_no++; }
+        if (c == '\n') {
+            rd_line_no++;
+        }
     }
 
     // file end
@@ -77,7 +81,9 @@ int rd_flex()
         rd_lval.integer_num.val = c - '0';
 
         // 最长匹配，直到非数字结束
-        while (isdigit(c = fgetc(rd_filein))) { rd_lval.integer_num.val = rd_lval.integer_num.val * 10 + c - '0'; }
+        while (isdigit(c = fgetc(rd_filein))) {
+            rd_lval.integer_num.val = rd_lval.integer_num.val * 10 + c - '0';
+        }
 
         // 多读的字符回退
         ungetc(c, rd_filein);
@@ -121,7 +127,7 @@ int rd_flex()
         if (c == RDTokenType::T_ID) {
 
             // 设置ID的值
-            strncpy(rd_lval.var_id.id, name.c_str(), sizeof(rd_lval.var_id.id));
+            rd_lval.var_id.id = strdup(name.c_str());
 
             // 设置行号
             rd_lval.var_id.lineno = rd_line_no;

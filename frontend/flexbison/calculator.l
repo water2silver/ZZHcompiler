@@ -71,7 +71,7 @@ white_line  [\r\n]
 
 {d}+		{
                 // 词法识别无符号整数，注意对于负数，则需要识别为负号和无符号数两个Token
-                yylval.integer_num.val = (int)strtol(yytext, (char **)NULL, 10);
+                yylval.integer_num.val = (uint32_t)strtol(yytext, (char **)NULL, 10);
                 yylval.integer_num.lineno = yylineno;
                 return T_DIGIT;
             }
@@ -86,7 +86,7 @@ white_line  [\r\n]
             }
 
 {l}+({d}|{l})* {
-                strncpy(yylval.var_id.id, yytext, sizeof(yylval.var_id.id) - 1);
+                yylval.var_id.id = strdup(yytext);
                 yylval.var_id.lineno = yylineno;
                 return T_ID;
             }

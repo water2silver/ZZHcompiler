@@ -16,10 +16,13 @@
 #include <Windows.h>
 #endif
 
+#include "AST.h"
 #include "Antlr4Executor.h"
+#include "CodeGenerator.h"
 #include "CodeGeneratorArm32.h"
 #include "CodeSimulator.h"
 #include "FlexBisonExecutor.h"
+#include "FrontEndExecutor.h"
 #include "Graph.h"
 #include "IRGenerator.h"
 #include "RecursiveDescentExecutor.h"
@@ -253,7 +256,7 @@ int main(int argc, char * argv[])
         subResult = fontEndExecutor->run();
         if (!subResult) {
 
-            printf("FrontEnd's analysis failed\n");
+            std::cout << "FrontEnd's analysis failed" << std::endl;
 
             // 退出循环
             break;
@@ -290,7 +293,7 @@ int main(int argc, char * argv[])
         if (!subResult) {
 
             // 输出错误信息
-            printf("GenIR failed\n");
+            std::cout << "GenIR failed" << std::endl;
 
             break;
         }
@@ -335,7 +338,7 @@ int main(int argc, char * argv[])
         symtab.freeValues();
 
         result = 0;
-    } while (0);
+    } while (false);
 
     return result;
 }

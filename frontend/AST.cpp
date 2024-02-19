@@ -13,6 +13,7 @@
 #include <string>
 
 #include "AST.h"
+#include "AttrType.h"
 #include "ValueType.h"
 
 /* 整个AST的根节点 */
@@ -39,9 +40,8 @@ ast_node::ast_node(ValueType _type, int32_t _line_no) : line_no(_line_no), type(
 }
 
 /// @brief 针对无符号整数字面量的构造函数
-/// @param _value 无符号整数叶子节点的无符号值
-/// @param _line_no 行号
-ast_node::ast_node(uint32_t _value, int32_t _line_no) : line_no(_line_no), integer_val(_value)
+/// @param attr 无符号整数字面量
+ast_node::ast_node(digit_int_attr attr) : line_no(attr.lineno), integer_val(attr.val)
 {
     node_type = ast_operator_type::AST_OP_LEAF_LITERAL_UINT;
     type.type = BasicType::TYPE_INT;
@@ -50,9 +50,8 @@ ast_node::ast_node(uint32_t _value, int32_t _line_no) : line_no(_line_no), integ
 }
 
 /// @brief 针对float字面量的构造函数
-/// @param _value  float类型叶子节点的float值
-/// @param _line_no 行号
-ast_node::ast_node(float _value, int32_t _line_no) : line_no(_line_no), float_val(_value)
+/// @param attr 浮点数整数字面量
+ast_node::ast_node(digit_real_attr attr) : line_no(attr.lineno), float_val(attr.val)
 {
     node_type = ast_operator_type::AST_OP_LEAF_LITERAL_FLOAT;
     type.type = BasicType::TYPE_FLOAT;
@@ -61,11 +60,11 @@ ast_node::ast_node(float _value, int32_t _line_no) : line_no(_line_no), float_va
 }
 
 /// @brief 针对标识符ID的叶子构造函数
-/// @param _name 标识符名字
-/// @param _line_no 行号
-ast_node::ast_node(const char * _name, int32_t _line_no) : line_no(_line_no), name(_name)
+/// @param attr 字符型字面量
+ast_node::ast_node(var_id_attr attr) : line_no(attr.lineno), name(attr.id)
 {
     node_type = ast_operator_type::AST_OP_LEAF_VAR_ID;
+
     // 目前这里默认设置为int类型
     type.type = BasicType::TYPE_INT;
 }
@@ -134,31 +133,28 @@ ast_node * insert_ast_node(ast_node * parent, ast_node * node)
 }
 
 /// @brief 创建无符号整数的叶子节点
-/// @param val 词法值
-/// @param line_no 行号
-ast_node * new_ast_leaf_node(uint32_t val, int32_t line_no)
+/// @param attr 无符号整数字面量
+ast_node * new_ast_leaf_node(digit_int_attr attr)
 {
-    ast_node * node = new ast_node(val, line_no);
+    ast_node * node = new ast_node(attr);
 
     return node;
 }
 
 /// @brief 创建实数的叶子节点
-/// @param val 词法值
-/// @param line_no 行号
-ast_node * new_ast_leaf_node(float val, int32_t line_no)
+/// @param attr 浮点数字面量
+ast_node * new_ast_leaf_node(digit_real_attr attr)
 {
-    ast_node * node = new ast_node(val, line_no);
+    ast_node * node = new ast_node(attr);
 
     return node;
 }
 
 /// @brief 创建标识符的叶子节点
-/// @param val 词法值
-/// @param line_no 行号
-ast_node * new_ast_leaf_node(const char * name, int32_t line_no)
+/// @param attr 字符型字面量
+ast_node * new_ast_leaf_node(var_id_attr attr)
 {
-    ast_node * node = new ast_node(name, line_no);
+    ast_node * node = new ast_node(attr);
 
     return node;
 }

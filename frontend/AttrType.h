@@ -27,6 +27,6 @@ typedef struct digit_real_attr {
 
 /// @brief 词法与语法通信的标识符（变量名、函数名等）
 typedef struct var_id_attr {
-    char id[256];   // 变量名
+    char * id;      // 标识符名称
     int32_t lineno; // 行号
 } var_id_attr;

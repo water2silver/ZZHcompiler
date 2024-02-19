@@ -1,3 +1,6 @@
+# -* 禁用所有默认检查
+# bugprone-*启用bugprone开头的所有检查
+# -bugprone-argument-comment 禁用bugprone-argument-comment的检查
 ---
 Checks: "-*,\
 boost-*,\
@@ -49,6 +52,8 @@ misc-*,\
 -misc-unconventional-assign-operator,\
 -misc-unused-parameters,\
 -misc-unused-using-decls,\
+-misc-include-cleaner,\
+-misc-use-anonymous-namespace,\
 modernize-*,\
 -modernize-avoid-c-arrays,\
 -modernize-deprecated-headers,\
@@ -63,6 +68,7 @@ modernize-*,\
 -modernize-use-equals-delete,\
 -modernize-use-trailing-return-type,\
 -modernize-use-using,\
+-modernize-use-equals-default,\
 mpi-*,\
 openmp-*,\
 performance-*,\
@@ -91,6 +97,9 @@ readability-*,\
 -readability-static-accessed-through-instance,\
 -readability-uppercase-literal-suffix,\
 -readability-use-anyofallof,\
+-readability-identifier-length,\
 "
-#WarningsAsErrors: "*"
+
+# WarningsAsErrors: "*"
+
 ...

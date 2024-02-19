@@ -139,7 +139,7 @@ Statement : T_ID '=' Expr ';' {
         // 赋值语句，不显示值
 
         // 创建一个AST_OP_ASSIGN类型的中间节点，孩子为Id和Expr($3)
-        $$ = new_ast_node(ast_operator_type::AST_OP_ASSIGN, new_ast_leaf_node($1.id, -1), $3, nullptr);
+        $$ = new_ast_node(ast_operator_type::AST_OP_ASSIGN, new_ast_leaf_node(var_id_attr{$1.id, -1}), $3, nullptr);
     }
     | Expr ';' {
         // Expr归约到Statement时要执行的语义动作程序
@@ -205,7 +205,7 @@ PrimaryExp :  '(' Expr ')' {
         // 无符号整数识别
 
         // 终结符作为抽象语法树的叶子节点进行创建
-        $$ = new_ast_leaf_node($1.val, $1.lineno);
+        $$ = new_ast_leaf_node(digit_int_attr{$1.val, $1.lineno});
     }
     | LVal  {
         // 左值
@@ -215,7 +215,10 @@ PrimaryExp :  '(' Expr ')' {
 
 LVal : T_ID {
         // 终结符作为抽象语法树的叶子节点进行创建
-        $$ = new_ast_leaf_node($1.id, $1.lineno);
+        $$ = new_ast_leaf_node(var_id_attr{$1.id, $1.lineno});
+
+		// 对于字符型字面量的字符串空间需要释放，因词法用到了strdup进行了字符串复制
+		free($1.id);
     }
 /* 实参列表 */
 RealParamList : Expr {
