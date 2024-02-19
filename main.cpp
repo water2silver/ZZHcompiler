@@ -66,8 +66,8 @@ std::string gOutputFile;
 /// @param exeName
 void showHelp(const std::string & exeName)
 {
-    std::cout << exeName + " -S [-A | -D] [-a | -I] [-o output] source" << std::endl;
-    std::cout << exeName + " -R [-A | -D] source" << std::endl;
+    std::cout << exeName + " -S [-A | -D] [-a | -I] [-o output] source\n";
+    std::cout << exeName + " -R [-A | -D] source\n";
 }
 
 /// @brief 参数解析与有效性检查
@@ -256,7 +256,7 @@ int main(int argc, char * argv[])
         subResult = fontEndExecutor->run();
         if (!subResult) {
 
-            std::cout << "FrontEnd's analysis failed" << std::endl;
+            std::cout << "FrontEnd's analysis failed\n";
 
             // 退出循环
             break;
@@ -293,7 +293,7 @@ int main(int argc, char * argv[])
         if (!subResult) {
 
             // 输出错误信息
-            std::cout << "GenIR failed" << std::endl;
+            std::cout << "GenIR failed\n";
 
             break;
         }

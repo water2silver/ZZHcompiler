@@ -12,7 +12,7 @@
 
 #include "CodeGenerator.h"
 
- /// @brief 中间代码指令的模拟/解释运行
+/// @brief 中间代码指令的模拟/解释运行
 class CodeSimulator : public CodeGenerator {
 
 public:
@@ -29,7 +29,6 @@ public:
     bool run() override;
 
 protected:
-
     /// @brief 函数入口指令计算
     /// @param inst IR中间指令
     bool calc_entry(IRInst * inst);
@@ -43,7 +42,7 @@ protected:
     bool calc_assign(IRInst * inst);
 
     /// @brief Label指令计算
-    /// @param inst IR中间指令    
+    /// @param inst IR中间指令
     bool calc_label(IRInst * inst);
 
     /// @brief 整数加法指令计算
@@ -67,9 +66,8 @@ protected:
     bool IRInstCalc(IRInst * inst);
 
     /// @brief 中间指令动作执行函数原型
-    typedef bool (CodeSimulator:: * calc_handler)(IRInst *);
+    typedef bool (CodeSimulator::*calc_handler)(IRInst *);
 
     /// @brief IR动作解释执行指令清单
     std::unordered_map<IRInstOperator, calc_handler> calc_handlers;
 };
-

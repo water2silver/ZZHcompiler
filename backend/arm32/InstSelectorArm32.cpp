@@ -21,30 +21,21 @@
 /// @param _irCode 指令
 /// @param _iloc ILoc
 /// @param _func 函数
-InstSelectorArm32::InstSelectorArm32(vector<IRInst *> & _irCode,
-                                     ILocArm32 & _iloc, Function * _func)
+InstSelectorArm32::InstSelectorArm32(vector<IRInst *> & _irCode, ILocArm32 & _iloc, Function * _func)
     : ir(_irCode), iloc(_iloc), func(_func)
 {
-    translator_handlers[IRInstOperator::IRINST_OP_ENTRY] =
-        &InstSelectorArm32::translate_entry;
-    translator_handlers[IRInstOperator::IRINST_OP_EXIT] =
-        &InstSelectorArm32::translate_exit;
+    translator_handlers[IRInstOperator::IRINST_OP_ENTRY] = &InstSelectorArm32::translate_entry;
+    translator_handlers[IRInstOperator::IRINST_OP_EXIT] = &InstSelectorArm32::translate_exit;
 
-    translator_handlers[IRInstOperator::IRINST_OP_LABEL] =
-        &InstSelectorArm32::translate_label;
-    translator_handlers[IRInstOperator::IRINST_OP_GOTO] =
-        &InstSelectorArm32::translate_goto;
+    translator_handlers[IRInstOperator::IRINST_OP_LABEL] = &InstSelectorArm32::translate_label;
+    translator_handlers[IRInstOperator::IRINST_OP_GOTO] = &InstSelectorArm32::translate_goto;
 
-    translator_handlers[IRInstOperator::IRINST_OP_ASSIGN] =
-        &InstSelectorArm32::translate_assign;
+    translator_handlers[IRInstOperator::IRINST_OP_ASSIGN] = &InstSelectorArm32::translate_assign;
 
-    translator_handlers[IRInstOperator::IRINST_OP_ADD_I] =
-        &InstSelectorArm32::translate_add_int32;
-    translator_handlers[IRInstOperator::IRINST_OP_SUB_I] =
-        &InstSelectorArm32::translate_sub_int32;
+    translator_handlers[IRInstOperator::IRINST_OP_ADD_I] = &InstSelectorArm32::translate_add_int32;
+    translator_handlers[IRInstOperator::IRINST_OP_SUB_I] = &InstSelectorArm32::translate_sub_int32;
 
-    translator_handlers[IRInstOperator::IRINST_OP_FUNC_CALL] =
-        &InstSelectorArm32::translate_call;
+    translator_handlers[IRInstOperator::IRINST_OP_FUNC_CALL] = &InstSelectorArm32::translate_call;
 }
 
 /// @brief 指令选择执行
@@ -53,7 +44,9 @@ void InstSelectorArm32::run()
     for (auto inst: ir) {
 
         // 逐个指令进行翻译
-        if (!inst->isDead()) { translate(inst); }
+        if (!inst->isDead()) {
+            translate(inst);
+        }
     }
 }
 
@@ -72,10 +65,10 @@ void InstSelectorArm32::translate_label(IRInst * inst)
     // iloc.label(inst->getLabel());
 }
 
-
 /// @brief goto指令指令翻译成ARM32汇编
 /// @param inst IR指令
-void InstSelectorArm32::translate_goto(IRInst * inst) {}
+void InstSelectorArm32::translate_goto(IRInst * inst)
+{}
 
 /// @brief 函数入口指令翻译成ARM32汇编
 /// @param inst IR指令
@@ -107,7 +100,7 @@ void InstSelectorArm32::translate_entry(IRInst * inst)
 /// @param inst IR指令
 void InstSelectorArm32::translate_exit(IRInst * inst)
 {
-    if (inst->getSrc().size()) {
+    if (!inst->getSrc().empty()) {
         // 存在返回值
         Value * retVal = inst->getSrc1();
 
@@ -118,7 +111,8 @@ void InstSelectorArm32::translate_exit(IRInst * inst)
     auto & protectedRegStr = func->getProtectedRegStr();
 
     // 恢复栈空间
-    iloc.inst("add", PlatformArm32::regName[REG_ALLOC_SIMPLE_FP_REG_NO],
+    iloc.inst("add",
+              PlatformArm32::regName[REG_ALLOC_SIMPLE_FP_REG_NO],
               PlatformArm32::regName[REG_ALLOC_SIMPLE_FP_REG_NO],
               iloc.toStr(func->getMaxDep()));
 
@@ -170,7 +164,8 @@ void InstSelectorArm32::translate_assign(IRInst * inst)
 /// @param op2_reg_no 源操作数2寄存器号
 void InstSelectorArm32::translate_two_operator(IRInst * inst,
                                                const string operator_name,
-                                               int rs_reg_no, int op1_reg_no,
+                                               int rs_reg_no,
+                                               int op1_reg_no,
                                                int op2_reg_no)
 {
     Value * rs = inst->getDst();

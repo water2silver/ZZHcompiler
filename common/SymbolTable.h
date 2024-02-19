@@ -10,8 +10,8 @@
  */
 #pragma once
 
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 #include "Function.h"
 #include "IRCode.h"
@@ -23,7 +23,6 @@ class Function;
 class SymbolTable {
 
 public:
-
     /// @brief 构造函数
     SymbolTable();
 
@@ -38,11 +37,11 @@ public:
     bool insertFunction(Function * func);
 
     /// @brief 移动到函数列表的尾部
-    /// @param func 
+    /// @param func
     void moveFunctionEnd(Function * func);
 
     /// @brief 输出线性IR指令列表
-    /// @param filePath 
+    /// @param filePath
     void outputIR(const std::string & filePath);
 
     /// @brief 获得函数列表
@@ -81,7 +80,8 @@ public:
     /// @param params 形参列表
     /// @param builtin 是否内置函数
     /// @return 新建的函数对象实例
-    Function * newFunction(std::string name, BasicType returnType, std::vector<FuncFormalParam> params, bool builtin = false);
+    Function *
+    newFunction(std::string name, BasicType returnType, std::vector<FuncFormalParam> params, bool builtin = false);
 
     /// @brief 新建函数并放到函数列表中
     /// @param name 函数名

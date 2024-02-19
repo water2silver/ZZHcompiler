@@ -14,9 +14,8 @@
 #include "Function.h"
 #include "SymbolTable.h"
 
-
 /// @brief 默认整型参数
- /// @param _name 形参的名字
+/// @param _name 形参的名字
 FuncFormalParam::FuncFormalParam(std::string _name) : name(_name)
 {
     type.type = BasicType::TYPE_INT;
@@ -26,12 +25,11 @@ FuncFormalParam::FuncFormalParam(std::string _name) : name(_name)
 /// @param _name 形参的名字
 /// @param _type 基本类型
 /// @param _val Value
-FuncFormalParam::FuncFormalParam(std::string _name, BasicType _type, Value * _val) :
-    name(_name), type(_type), val(_val)
+FuncFormalParam::FuncFormalParam(std::string _name, BasicType _type, Value * _val) : name(_name), type(_type), val(_val)
 {}
 
 /// @brief 函数形参转字符串输出
-/// @return 
+/// @return
 std::string FuncFormalParam::toString()
 {
     std::string typeName;
@@ -48,19 +46,20 @@ Function::Function()
 }
 
 /// @brief 指定有函数类型与名字的构造函数
-/// @param _name 
-/// @param _type 
-/// @param _builtin 
+/// @param _name
+/// @param _type
+/// @param _builtin
 Function::Function(std::string _name, BasicType _type, bool _builtin) : name(_name), builtIn(_builtin)
 {
     returnType.type = _type;
 }
 
 /// @brief 指定函数名字、函数返回类型以及函数形式参数的构造函数
-/// @param _name 
-/// @param _type 
-/// @param _param 
-Function::Function(std::string _name, BasicType _type, FuncFormalParam _param, bool _builtin) : name(_name), builtIn(_builtin)
+/// @param _name
+/// @param _type
+/// @param _param
+Function::Function(std::string _name, BasicType _type, FuncFormalParam _param, bool _builtin)
+    : name(_name), builtIn(_builtin)
 {
     returnType.type = _type;
     params.emplace_back(_param);
@@ -120,7 +119,7 @@ void Function::toString(std::string & str)
     str = returnType.toString() + " " + name + "(";
 
     bool firstParam = false;
-    for (auto & param : params) {
+    for (auto & param: params) {
 
         if (!firstParam) {
             firstParam = true;
@@ -138,7 +137,7 @@ void Function::toString(std::string & str)
     str += "{\n";
 
     // 遍历所有的线性IR指令，文本输出
-    for (auto & inst : code.getInsts()) {
+    for (auto & inst: code.getInsts()) {
 
         std::string instStr;
         inst->toString(instStr);
@@ -230,7 +229,7 @@ void Function::setMaxDep(int dep)
 {
     maxDepth = dep;
 
-    //设置函数栈帧被重定位标记，用于生成不同的栈帧保护代码
+    // 设置函数栈帧被重定位标记，用于生成不同的栈帧保护代码
     relocated = true;
 }
 
@@ -261,7 +260,6 @@ void Function::setMaxFuncCallArgCnt(int count)
 {
     maxFuncCallArgCnt = count;
 }
-
 
 /// @brief 函数内是否存在函数调用
 /// @return 是否存在函调用

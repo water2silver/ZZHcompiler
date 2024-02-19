@@ -12,26 +12,26 @@ bool Antlr4Executor::run()
     std::ifstream ifs;
     ifs.open(filename);
     if (!ifs.is_open()) {
-        std::cout << "Can't open file " << filename << std::endl;
+        std::cout << "Can't open file " << filename << "\n";
         return false;
     }
 
     // antlr4的输入流类实例
-    antlr4::ANTLRInputStream input{ ifs };
+    antlr4::ANTLRInputStream input{ifs};
 
     // 词法分析器实例
-    CalculatorLexer lexer{ &input };
+    CalculatorLexer lexer{&input};
 
     // 词法分析器实例转化成记号(Token)流
-    antlr4::CommonTokenStream tokenStream{ &lexer };
+    antlr4::CommonTokenStream tokenStream{&lexer};
 
     // 利用antlr4进行分析，从compileUnit开始分析输入字符串
-    CalculatorParser parser{ &tokenStream };
+    CalculatorParser parser{&tokenStream};
 
     // 从具体语法树的根结点进行深度优先遍历，生成抽象语法树
     auto root = parser.compileUnit();
     if (!root) {
-        std::cout << "antlr4 analys failed " << std::endl;
+        std::cout << "antlr4 analys failed\n";
         return false;
     }
 

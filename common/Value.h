@@ -20,7 +20,6 @@
 class Value {
 
 protected:
-
     /// @brief 新建一个常量名字，全局编号，没有考虑常量的重用
     /// \return 常量名字
     static std::string createConstVarName()
@@ -54,7 +53,6 @@ protected:
     static uint64_t tempVarCount; // 临时变量计数，默认从0开始
 
 protected:
-
     /// @brief 是否是常量
     bool _const = false;
 
@@ -68,7 +66,6 @@ protected:
     bool _mem = false;
 
 public:
-
     /// @brief 变量名或内部标识的名字
     std::string name;
 
@@ -91,7 +88,6 @@ public:
     int32_t baseRegNo = -1;
 
 protected:
-
     /// @brief 默认实数类型的构造函数，初始值为0
     Value(BasicType _type) : type(_type)
     {
@@ -99,15 +95,14 @@ protected:
     }
 
     /// @brief 构造函数
-    /// @param _name 
-    /// @param _type 
+    /// @param _name
+    /// @param _type
     Value(std::string _name, BasicType _type) : name(_name), type(_type)
     {
         // 不需要增加代码
     }
 
 public:
-
     /// @brief 析构函数
     virtual ~Value()
     {
@@ -245,7 +240,7 @@ public:
     }
 
     /// @brief 获取名字
-    /// @return 
+    /// @return
     virtual std::string getName() const override
     {
         if (type.type == BasicType::TYPE_INT) {
@@ -305,7 +300,6 @@ public:
 class MemValue : public Value {
 
 public:
-
     /// @brief 创建内存Value，用于保存中间IR指令的值
     /// \param val
     MemValue(BasicType type) : Value(type)
@@ -325,7 +319,6 @@ public:
 class RegValue : public Value {
 
 public:
-
     /// @brief 创建寄存器Value
     /// \param reg_no 寄存器编号
     RegValue(int reg_no, std::string reg_name) : Value(BasicType::TYPE_INT)

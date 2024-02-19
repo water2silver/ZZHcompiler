@@ -11,16 +11,23 @@
 #include "PlatformArm32.h"
 
 const std::string PlatformArm32::regName[PlatformArm32::maxRegNum] = {
-    "r0", "r1", "r2", "r3", "r4", "r5", "r6", "r7",
-    "r8", // 用于加载操作数1,保存表达式结果
-    "r9", // 用于加载操作数2,写回表达式结果,立即数，标签地址
+    "r0",
+    "r1",
+    "r2",
+    "r3",
+    "r4",
+    "r5",
+    "r6",
+    "r7",
+    "r8",  // 用于加载操作数1,保存表达式结果
+    "r9",  // 用于加载操作数2,写回表达式结果,立即数，标签地址
     "r10", // 用于保存乘法结果，虽然mul
            // r8,r8,r9也能正常执行，但是避免交叉编译提示错误！
-    "fp", // r11,局部变量寻址
-    "ip", //"r12"，临时寄存器
-    "sp", // r13，栈指针
-    "lr", // r14，链接寄存器
-    "pc", // r15，程序计数器
+    "fp",  // r11,局部变量寻址
+    "ip",  //"r12"，临时寄存器
+    "sp",  // r13，栈指针
+    "lr",  // r14，链接寄存器
+    "pc",  // r15，程序计数器
 };
 
 /// @brief 循环左移两位
@@ -66,15 +73,17 @@ bool PlatformArm32::constExpr(int num)
 /// @brief 判定是否是合法的偏移
 /// @param num
 /// @return
-bool PlatformArm32::isDisp(int num) { return num < 4096 && num > -4096; }
+bool PlatformArm32::isDisp(int num)
+{
+    return num < 4096 && num > -4096;
+}
 
 /// @brief 判断是否是合法的寄存器名
 /// @param s 寄存器名字
 /// @return 是否是
 bool PlatformArm32::isReg(std::string name)
 {
-    return name == "r0" || name == "r1" || name == "r2" || name == "r3" ||
-           name == "r4" || name == "r5" || name == "r6" || name == "r7" ||
-           name == "r8" || name == "r9" || name == "r10" || name == "fp" ||
+    return name == "r0" || name == "r1" || name == "r2" || name == "r3" || name == "r4" || name == "r5" ||
+           name == "r6" || name == "r7" || name == "r8" || name == "r9" || name == "r10" || name == "fp" ||
            name == "ip" || name == "sp" || name == "lr" || name == "pc";
 }

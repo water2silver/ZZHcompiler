@@ -78,7 +78,8 @@ protected:
     /// @param rs_reg_no 结果寄存器号
     /// @param op1_reg_no 源操作数1寄存器号
     /// @param op2_reg_no 源操作数2寄存器号
-    void translate_two_operator(IRInst * inst, const string operator_name,
+    void translate_two_operator(IRInst * inst,
+                                const string operator_name,
                                 int rs_reg_no = REG_ALLOC_SIMPLE_DST_REG_NO,
                                 int op1_reg_no = REG_ALLOC_SIMPLE_SRC1_REG_NO,
                                 int op2_reg_no = REG_ALLOC_SIMPLE_SRC2_REG_NO);

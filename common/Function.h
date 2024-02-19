@@ -11,8 +11,8 @@
 #pragma once
 
 #include <string>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 #include "IRCode.h"
 #include "Value.h"
@@ -23,7 +23,6 @@ class SymbolTable;
 class FuncFormalParam {
 
 public:
-
     /// @brief 参数名字，可为空
     std::string name;
 
@@ -34,7 +33,6 @@ public:
     Value * val = nullptr;
 
 public:
-
     /// @brief 默认整型参数
     /// @param _name 形参的名字
     FuncFormalParam(std::string _name);
@@ -46,7 +44,7 @@ public:
     FuncFormalParam(std::string _name, BasicType _type, Value * _val = nullptr);
 
     /// @brief 输出字符串
-    /// @param str 
+    /// @param str
     std::string toString();
 };
 
@@ -58,14 +56,14 @@ public:
     Function();
 
     /// @brief 指定有函数类型与名字的构造函数
-    /// @param name 
-    /// @param type 
+    /// @param name
+    /// @param type
     Function(std::string _name, BasicType _type = BasicType::TYPE_INT, bool _builtin = false);
 
     /// @brief 指定函数名字、函数返回类型以及函数形式参数的构造函数
-    /// @param _name 
-    /// @param _type 
-    /// @param _param 
+    /// @param _name
+    /// @param _type
+    /// @param _param
     Function(std::string _name, BasicType _type, FuncFormalParam _param, bool _builtin = false);
 
     /// @brief 取得函数名字
@@ -199,7 +197,6 @@ protected:
     void insertValue(Value * val);
 
 private:
-
     /// @brief 函数名
     std::string name;
 

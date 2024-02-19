@@ -1,6 +1,9 @@
 # -* 禁用所有默认检查
-# bugprone-*启用bugprone开头的所有检查
-# -bugprone-argument-comment 禁用bugprone-argument-comment的检查
+
+# bugprone-*启用 bugprone 开头的所有检查
+
+# -bugprone-argument-comment 禁用 bugprone-argument-comment 的检查
+
 ---
 Checks: "-*,\
 boost-*,\
@@ -18,6 +21,7 @@ bugprone-*,\
 -bugprone-reserved-identifier,\
 -bugprone-signed-char-misuse,\
 -bugprone-unhandled-self-assignment,\
+-bugprone-exception-escape,\
 clang-analyzer-*,\
 -clang-analyzer-core.CallAndMessage,\
 -clang-analyzer-core.DivideZero,\
@@ -54,6 +58,7 @@ misc-*,\
 -misc-unused-using-decls,\
 -misc-include-cleaner,\
 -misc-use-anonymous-namespace,\
+-misc-const-correctness,\
 modernize-*,\
 -modernize-avoid-c-arrays,\
 -modernize-deprecated-headers,\

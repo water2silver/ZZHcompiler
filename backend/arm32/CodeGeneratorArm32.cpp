@@ -4,7 +4,6 @@
  * @brief ARM32的后端处理源文件
  * @version 0.1
  * @date 2023-09-26
- *
  * @copyright Copyright (c) 2023
  *
  */
@@ -24,7 +23,9 @@
 /// @param tab 符号表
 CodeGeneratorArm32::CodeGeneratorArm32(SymbolTable & tab) : CodeGeneratorAsm(tab)
 {
-    for (int k = 0; k < PlatformArm32::maxRegNum; k++) { RegVal[k] = new IntRegValue(PlatformArm32::regName[k], k); }
+    for (int k = 0; k < PlatformArm32::maxRegNum; k++) {
+        RegVal[k] = new IntRegValue(PlatformArm32::regName[k], k);
+    }
 }
 
 /// @brief 析构函数
@@ -94,7 +95,9 @@ void CodeGeneratorArm32::genCodeSection(Function * func)
 void CodeGeneratorArm32::registerAllocation(Function * func)
 {
     // 内置函数不需要处理
-    if (func->isBuiltin()) { return; }
+    if (func->isBuiltin()) {
+        return;
+    }
 
 #ifndef FUNC_PARAM_STACK_ONE
     // 对于形参的前四个参数默认分配四个局部变量，用于保存前四个寄存器的值
@@ -114,7 +117,9 @@ void CodeGeneratorArm32::registerAllocation(Function * func)
     auto & protectedRegNo = func->getProtectedReg();
     protectedRegNo.push_back(REG_ALLOC_SIMPLE_TMP_REG_NO);
     protectedRegNo.push_back(REG_ALLOC_SIMPLE_FP_REG_NO);
-    if (func->getExistFuncCall()) { protectedRegNo.push_back(REG_ALLOC_SIMPLE_LX_REG_NO); }
+    if (func->getExistFuncCall()) {
+        protectedRegNo.push_back(REG_ALLOC_SIMPLE_LX_REG_NO);
+    }
 
     // 函数形参要求前四个寄存器分配，后面的参数采用栈传递
     // 针对后面的栈传递参数，一种处理方式为增加赋值操作，内存赋值给形参，形参再次分配空间
@@ -136,7 +141,9 @@ void CodeGeneratorArm32::adjustFormalParamStack(Function * func)
     for (int k = 4; k < (int) params.size(); k++) {
 
         // 形参名字无效，则忽略
-        if (params[k].name.empty()) { continue; }
+        if (params[k].name.empty()) {
+            continue;
+        }
 
         Value * val = params[k].val;
 
@@ -162,7 +169,9 @@ void CodeGeneratorArm32::adjustFormalParamInsts(Function * func)
     for (int k = 0; k < (int) params.size() && k <= 3; k++) {
 
         // 形参名字无效，则忽略
-        if (params[k].name.empty()) { continue; }
+        if (params[k].name.empty()) {
+            continue;
+        }
 
         Value * val = params[k].val;
 
@@ -303,7 +312,8 @@ void CodeGeneratorArm32::stackAlloc(Function * func)
 
         // 对于简单类型的寄存器分配策略，临时变量都会用寄存器，这里需要忽略
         // 而对于图着色等，临时变量可能会变更内存分配，这时应该调整类型
-        if (var->isTemp()) continue;
+        if (var->isTemp())
+            continue;
 
         if ((var->regId == -1) && (var->baseRegNo == -1)) {
 

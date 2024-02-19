@@ -15,7 +15,8 @@
 #include "SymbolTable.h"
 
 /// @brief 构造函数
-CodeGeneratorAsm::CodeGeneratorAsm(SymbolTable & tab) : CodeGenerator(tab) {}
+CodeGeneratorAsm::CodeGeneratorAsm(SymbolTable & tab) : CodeGenerator(tab)
+{}
 
 /// @brief .text代码段，主要存放CPU指令，以函数为单位
 void CodeGeneratorAsm::genCodeSection()

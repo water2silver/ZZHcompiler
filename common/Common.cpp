@@ -8,48 +8,62 @@
  * @copyright Copyright (c) 2023
  *
  */
-#include <string>
 #include <cstdint>
+#include <string>
 
 using namespace std;
 
-// 整数变字符串
+/// @brief 整数变字符串
+/// @param num 无符号数
+/// @return 字符串
 string int2str(uint64_t num)
 {
     return std::to_string(num);
 }
 
-// 整数变字符串
+/// @brief 浮点数变字符串
+/// @param num 浮点数
+/// @return 字符串
 string double2str(double num)
 {
     return std::to_string(num);
 }
 
-// 检查字符是否是字母（大小写字母）
+/// @brief 检查字符是否是字母（大小写字母）
+/// @param ch 字符
+/// @return true：是，false：不是
 bool isLetter(char ch)
 {
     return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
 }
 
-// 检查字符是否为数字(0-9)
+/// @brief 检查字符是否为数字(0-9)
+/// @param ch 字符
+/// @return true：字符是数字字符(0-9) false:不是
 bool isDigital(char ch)
 {
     return (ch >= '0' && ch <= '9');
 }
 
-// 检查字符是否为大小写字符或数字(0-9)
+/// @brief 检查字符是否为大小写字符或数字(0-9)
+/// @param ch 字符
+/// @return true：是，false：不是
 bool isLetterDigital(char ch)
 {
     return isLetter(ch) || isDigital(ch);
 }
 
-// 检查字符是否为大小写字符或数字(0-9)或下划线
+/// @brief 检查字符是否为大小写字符或数字(0-9)或下划线
+/// @param ch 字符
+/// @return true：是，false: 不是
 bool isLetterDigitalUnderLine(char ch)
 {
     return isLetterDigital(ch) || (ch == '_');
 }
 
-// 检查字符是否为大小写字符或下划线
+/// @brief 检查字符是否为大小写字符或下划线
+/// @param ch 字符
+/// @return true：是，false：不是
 bool isLetterUnderLine(char ch)
 {
     return isLetter(ch) || (ch == '_');
