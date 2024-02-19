@@ -16,10 +16,12 @@ class RecursiveDescentExecutor : public FrontEndExecutor {
 public:
     /// @brief 构造函数
     /// @param filename 输入的源文件
-    RecursiveDescentExecutor(std::string filename) : FrontEndExecutor(filename) {}
+    RecursiveDescentExecutor(std::string filename) : FrontEndExecutor(filename)
+    {}
 
     /// @brief 析构函数
-    virtual ~RecursiveDescentExecutor() {}
+    ~RecursiveDescentExecutor() override
+    {}
 
     /// @brief 前端词法与语法解析生成AST
     /// @return true: 成功 false：错误

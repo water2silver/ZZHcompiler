@@ -103,10 +103,10 @@ set(FRONTEND_SRCS
 	frontend/antlr4/Antlr4Executor.h
 
 	# 递归下降分析法
-	frontend/recursivedescent/CalculatorRDFlex.cpp
-	frontend/recursivedescent/CalculatorRDFlex.h
-	frontend/recursivedescent/CalculatorRDParser.cpp
-	frontend/recursivedescent/CalculatorRDParser.h
+	frontend/recursivedescent/RecursiveDescentFlex.cpp
+	frontend/recursivedescent/RecursiveDescentFlex.h
+	frontend/recursivedescent/RecursiveDescentParser.cpp
+	frontend/recursivedescent/RecursiveDescentParser.h
 	frontend/recursivedescent/RecursiveDescentExecutor.h
 	frontend/recursivedescent/RecursiveDescentExecutor.cpp
 )
