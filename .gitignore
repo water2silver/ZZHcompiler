@@ -4,9 +4,16 @@
 # folder
 cmake-build-*/
 build/
+
+# 忽略doxygen产生的文件夹
 html/
 latex/
+
+# antlr插件安装后会自动产生文件夹，忽略
 .antlr/
+
+# 忽略tests下的文件
+tests/
 
 # Compiled Object files
 *.slo
@@ -46,7 +53,7 @@ asm.s
 # history
 .history
 
-#clion
+# clion
 .idea/
 
 # Visual Studio
