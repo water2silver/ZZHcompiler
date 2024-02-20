@@ -7,11 +7,17 @@
 		{
 			"type": "antlr-debug",
 			"request": "launch",
+			// 调试的名称，可修改
 			"name": "Debug Calculator Antlr4 Grammar",
+			// 文法解析的输入文件
 			"input": "tests/test1.txt",
+			// 显示分析树，也就是具体语法树AST
 			"visualParseTree": true,
-			"printParseTree": true,
+			// 输出分析树
+			"printParseTree": false,
+			// 语法的开始符号
 			"startRule": "compileUnit",
+			// 描述语法的g4文件
 			"grammar": "${workspaceFolder}/frontend/antlr4/Calculator.g4"
 		},
 		{
