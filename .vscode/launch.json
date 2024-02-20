@@ -11,9 +11,9 @@
 			"name": "Debug Calculator Antlr4 Grammar",
 			// 文法解析的输入文件
 			"input": "tests/test1.txt",
-			// 显示分析树，也就是具体语法树AST
+			// 分析树可视化，也就是具体语法树AST
 			"visualParseTree": true,
-			// 输出分析树
+			// 文本输出分析树
 			"printParseTree": false,
 			// 语法的开始符号
 			"startRule": "compileUnit",
