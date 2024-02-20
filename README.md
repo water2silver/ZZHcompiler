@@ -199,35 +199,104 @@ cd latex
 make
 ```
 
-## 后端汇编
+## 后端编译与运行
 
-<https://godbolt.org/>
+通过网址<https://godbolt.org/>可查看各种目标后端的汇编。
 
-arm-none-eabi-gcc-12.2.0.exe -S  --specs=nosys.specs  -o test.s tests/test3.c
+在 Ubuntu 上安装交叉编译环境后编译，然后借助 qemu 来运行
 
-## 用户模式的 qemu
+tests 目录下存放了一些简单的测试用例。其中 test1.c 是 test1.txt 的 C 语言版本实现，用于运行的对比。
 
-qemu 的用户模式下可直接运行交叉编译的用户态程序。但这种模式只在 Linux 和 BSD 系统下支持，Windows 下不支持。
+### 相关软件安装
+
+以 ubuntu 为例进行说明。
+
+```shell
+# MIPS 交叉编译器
+sudo apt-get install -y gcc-mips-linux-gnu g++-mips-linux-gnu
+
+# 龙芯 LA64 交叉编译器
+sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+
+# ARM32 交叉编译器
+sudo apt-get install -y gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf
+
+# RISCV64 交叉编译器
+sudo apt-get install -y gcc-riscv64-linux-gnu g++-riscv64-linux-gnu
+
+# 用户态 qemu
+sudo apt-get install -y qemu-user-static
+```
+
+### 生成 ARM32 的汇编
+
+```shell
+./cmake-build-debug/calculator -S -o tests/test1.s tests/test1.txt
+arm-linux-gnueabihf-gcc -S --include tests/std.h -o tests/test1-1.s tests/test1-1.c
+```
+
+如果不指定--include tests/std.h，编译会提示函数 putint 没有声明的警告信息。
+
+### 生成可执行程序
+
+通过 gcc 的 arm 交叉编译器对生成的汇编进行编译，生成可执行程序。
+
+```shell
+arm-linux-gnueabihf-gcc -static -o tests/test1 tests/std.c tests/test1.s
+arm-linux-gnueabihf-gcc -static -o tests/test1-1 tests/std.c tests/test1-1.s
+```
+
+有以下几个点需要注意：
+
+用-static 进行静态编译，不依赖动态库，否则后续通过 qemu-arm-static 运行时会提示动态库找不到的错误
+
+生成的汇编中包含了 putint 等函数的调用，用来进行数据的输出或输出等，
+因此在通过 arm-linux-gnueabihf-gcc 进行交叉编译时，需要和 std.c 一起进行编译链接才可以。
+
+这些函数的具体实现放在了 tests/std.c 中，其原型在 tests/std.h 中，很简单，请自行查阅。
+
+### 运行可执行程序
+
+借助用户模式的 qemu 来运行，arm 架构可使用 qemu-arm-static 命令。
+
+```shell
+qemu-arm-static tests/test1
+qemu-arm-static tests/test1-1
+```
+
+## qemu 的用户模式
+
+qemu 的用户模式下可直接运行交叉编译的用户态程序。这种模式只在 Linux 和 BSD 系统下支持，Windows 下不支持。
 
 因此，为便于后端开发与调试，请用 Linux 系统进行程序的模拟运行与调试。
 
-## qemu 用户与程序调试
+## qemu 用户程序调试
 
-假定通过交叉编译出的程序为 test
+### 安装 gdb 调试器
+
+```shell
+sudo apt-get install -y gdb-multiarch
+```
+
+假定通过交叉编译出的程序为 tests/test1
 
 首先通过用户态模式的 qemu 运行程序，其中-g 指定远程调试的端口，这里指定端口号为 1234，这样 qemu 会开启 gdb 的远程调试服务。
 
 ```shell
-qemu-arm -L /usr/arm-linux-gnueabi/ -g 1234 hello
+# 启动 gdb server，监视的端口号为 1234
+qemu-arm-static -g 1234 tests/test1
 ```
 
-其次，在另一个命令行界面启动 gdb 进行远程调试，需要指定远程机器的主机与端口。注意这里的 gdb 要支持目标 CPU 的 gdb，而不是
-本地的 gdb。
+其次，在另一个命令行界面启动 gdb 进行远程调试，需要指定远程机器的主机与端口。
+注意这里的 gdb 要支持目标 CPU 的 gdb，而不是本地的 gdb。
 
 ```shell
-gdb-multiarch -tui
->> target remote:1234    // 远程连接 qemu 的 gdb server
-file hello               // 读取 hello 的符号，前提是 hello 是用-g 编译的
-b main                   // 设置断点
-c                        // 继续运行
+gdb-multiarch -tui tests/test1
+# 输入如下的命令，远程连接 qemu 的 gdb server
+target remote :1234
+# 在 main 函数入口设置断点
+b main
+# 继续程序的运行
+c
+# 之后可使用 gdb 的其它命令进行单步运行与调试
 ```
