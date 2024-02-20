@@ -86,7 +86,7 @@
 
 
 /* Copy the first part of user declarations.  */
-#line 1 "Calculator.y"
+#line 1 "../Calculator.y"
 
 #include <cstdio>
 #include <cstring>
@@ -125,7 +125,7 @@ void yyerror(char * msg);
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 20 "Calculator.y"
+#line 20 "../Calculator.y"
 {
     class ast_node * node;
     
@@ -1382,7 +1382,7 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 59 "Calculator.y"
+#line 59 "../Calculator.y"
     {
         (yyval.node) = create_contain_node(ast_operator_type::AST_OP_COMPILE_UNIT, (yyvsp[(1) - (1)].node));
         ast_root = (yyval.node);
@@ -1390,7 +1390,7 @@ yyreduce:
     break;
 
   case 3:
-#line 63 "Calculator.y"
+#line 63 "../Calculator.y"
     {
         (yyval.node) = create_contain_node(ast_operator_type::AST_OP_COMPILE_UNIT, (yyvsp[(1) - (1)].node));
         ast_root = (yyval.node);
@@ -1398,63 +1398,63 @@ yyreduce:
     break;
 
   case 4:
-#line 67 "Calculator.y"
+#line 67 "../Calculator.y"
     {
         (yyval.node) = insert_ast_node((yyvsp[(1) - (2)].node), (yyvsp[(2) - (2)].node));
     ;}
     break;
 
   case 5:
-#line 70 "Calculator.y"
+#line 70 "../Calculator.y"
     {
         (yyval.node) = insert_ast_node((yyvsp[(1) - (2)].node), (yyvsp[(2) - (2)].node));
     ;}
     break;
 
   case 6:
-#line 76 "Calculator.y"
+#line 76 "../Calculator.y"
     {
         (yyval.node) = create_func_def((yyvsp[(2) - (5)].var_id).lineno, (yyvsp[(2) - (5)].var_id).id, (yyvsp[(5) - (5)].node), nullptr);
     ;}
     break;
 
   case 7:
-#line 79 "Calculator.y"
+#line 79 "../Calculator.y"
     {
         (yyval.node) = create_func_def((yyvsp[(2) - (6)].var_id).lineno, (yyvsp[(2) - (6)].var_id).id, (yyvsp[(6) - (6)].node), (yyvsp[(4) - (6)].node));
     ;}
     break;
 
   case 8:
-#line 85 "Calculator.y"
+#line 85 "../Calculator.y"
     {
         (yyval.node) = create_contain_node(ast_operator_type::AST_OP_FUNC_FORMAL_PARAMS, (yyvsp[(1) - (1)].node));
     ;}
     break;
 
   case 9:
-#line 88 "Calculator.y"
+#line 88 "../Calculator.y"
     {
         (yyval.node) = insert_ast_node((yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node));
     ;}
     break;
 
   case 10:
-#line 94 "Calculator.y"
+#line 94 "../Calculator.y"
     {
         (yyval.node) = (yyvsp[(1) - (1)].node);
     ;}
     break;
 
   case 11:
-#line 100 "Calculator.y"
+#line 100 "../Calculator.y"
     {
         (yyval.node) = create_func_formal_param((yyvsp[(1) - (1)].var_id).lineno, (yyvsp[(1) - (1)].var_id).id);
     ;}
     break;
 
   case 12:
-#line 106 "Calculator.y"
+#line 106 "../Calculator.y"
     {
         // 语句块没有语句
         (yyval.node) = nullptr;
@@ -1462,7 +1462,7 @@ yyreduce:
     break;
 
   case 13:
-#line 110 "Calculator.y"
+#line 110 "../Calculator.y"
     {
         // 语句块含有语句
         (yyval.node) = (yyvsp[(2) - (3)].node);
@@ -1470,7 +1470,7 @@ yyreduce:
     break;
 
   case 14:
-#line 117 "Calculator.y"
+#line 117 "../Calculator.y"
     {
         // 第一个左侧的孩子节点归约成Block父节点，后续语句可不断作为孩子追加到block中
         // 创建一个AST_OP_BLOCK类型的中间节点，孩子为Statement($1)
@@ -1479,7 +1479,7 @@ yyreduce:
     break;
 
   case 15:
-#line 122 "Calculator.y"
+#line 122 "../Calculator.y"
     {
         // 采用左递归的文法产生式，可以使得Block节点在上个产生式创建，后续递归追加孩子节点
         // 请注意，不要采用右递归，左递归翻遍孩子的追加
@@ -1489,14 +1489,14 @@ yyreduce:
     break;
 
   case 16:
-#line 131 "Calculator.y"
+#line 131 "../Calculator.y"
     {
         (yyval.node) = (yyvsp[(1) - (1)].node);
     ;}
     break;
 
   case 17:
-#line 137 "Calculator.y"
+#line 137 "../Calculator.y"
     {
         // 归约到Statement时要执行的语义动作程序
         // 赋值语句，不显示值
@@ -1512,7 +1512,7 @@ yyreduce:
     break;
 
   case 18:
-#line 149 "Calculator.y"
+#line 149 "../Calculator.y"
     {
         // Expr归约到Statement时要执行的语义动作程序
         // 表达式语句，不显示表达式的值
@@ -1523,7 +1523,7 @@ yyreduce:
     break;
 
   case 19:
-#line 156 "Calculator.y"
+#line 156 "../Calculator.y"
     {
         // Expr归约到Statement时要执行的语义动作程序
         // 表达式语句，需要显示表达式的值
@@ -1534,7 +1534,7 @@ yyreduce:
     break;
 
   case 20:
-#line 163 "Calculator.y"
+#line 163 "../Calculator.y"
     {
         // 返回语句
         (yyval.node) = new_ast_node(ast_operator_type::AST_OP_RETURN_STATEMENT, (yyvsp[(2) - (3)].node), nullptr);
@@ -1542,14 +1542,14 @@ yyreduce:
     break;
 
   case 21:
-#line 169 "Calculator.y"
+#line 169 "../Calculator.y"
     { 
         (yyval.node) = (yyvsp[(1) - (1)].node); 
     ;}
     break;
 
   case 22:
-#line 175 "Calculator.y"
+#line 175 "../Calculator.y"
     {
         /* Expr = Expr + Term */
 
@@ -1559,7 +1559,7 @@ yyreduce:
     break;
 
   case 23:
-#line 181 "Calculator.y"
+#line 181 "../Calculator.y"
     {
         /* Expr = Expr + Term */
 
@@ -1569,7 +1569,7 @@ yyreduce:
     break;
 
   case 24:
-#line 187 "Calculator.y"
+#line 187 "../Calculator.y"
     {
         /* Expr = Term */
         (yyval.node) = (yyvsp[(1) - (1)].node);
@@ -1577,14 +1577,14 @@ yyreduce:
     break;
 
   case 25:
-#line 193 "Calculator.y"
+#line 193 "../Calculator.y"
     {
         (yyval.node) = (yyvsp[(1) - (1)].node);
     ;}
     break;
 
   case 26:
-#line 196 "Calculator.y"
+#line 196 "../Calculator.y"
     {
         // 用户自定义的不含实参的函数调用
         (yyval.node) = create_func_call((yyvsp[(1) - (3)].var_id).lineno, (yyvsp[(1) - (3)].var_id).id, nullptr);
@@ -1592,7 +1592,7 @@ yyreduce:
     break;
 
   case 27:
-#line 200 "Calculator.y"
+#line 200 "../Calculator.y"
     {
         // 用户自定义的含有实参的参数调用
         (yyval.node) = create_func_call((yyvsp[(1) - (4)].var_id).lineno, (yyvsp[(1) - (4)].var_id).id, (yyvsp[(3) - (4)].node));
@@ -1600,7 +1600,7 @@ yyreduce:
     break;
 
   case 28:
-#line 205 "Calculator.y"
+#line 205 "../Calculator.y"
     {
         /* PrimaryExp = Expr */
         (yyval.node) = (yyvsp[(2) - (3)].node);
@@ -1608,7 +1608,7 @@ yyreduce:
     break;
 
   case 29:
-#line 209 "Calculator.y"
+#line 209 "../Calculator.y"
     {
         // 无符号整数识别
 
@@ -1618,7 +1618,7 @@ yyreduce:
     break;
 
   case 30:
-#line 215 "Calculator.y"
+#line 215 "../Calculator.y"
     {
         // 左值
         (yyval.node) = (yyvsp[(1) - (1)].node);
@@ -1626,7 +1626,7 @@ yyreduce:
     break;
 
   case 31:
-#line 221 "Calculator.y"
+#line 221 "../Calculator.y"
     {
         // 终结符作为抽象语法树的叶子节点进行创建
         (yyval.node) = new_ast_leaf_node(var_id_attr{(yyvsp[(1) - (1)].var_id).id, (yyvsp[(1) - (1)].var_id).lineno});
@@ -1637,14 +1637,14 @@ yyreduce:
     break;
 
   case 32:
-#line 229 "Calculator.y"
+#line 229 "../Calculator.y"
     {
         (yyval.node) = create_contain_node(ast_operator_type::AST_OP_FUNC_REAL_PARAMS, (yyvsp[(1) - (1)].node));
     ;}
     break;
 
   case 33:
-#line 232 "Calculator.y"
+#line 232 "../Calculator.y"
     {
         (yyval.node) = insert_ast_node((yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node));
     ;}
@@ -1866,7 +1866,7 @@ yyreturn:
 }
 
 
-#line 236 "Calculator.y"
+#line 236 "../Calculator.y"
 
 
 // 语法识别错误要调用函数的定义

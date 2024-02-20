@@ -79,24 +79,24 @@ set(FRONTEND_SRCS
 	frontend/AttrType.h
 
 	# Flex与Bison相关代码
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/CalculatorFlex.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/CalculatorFlex.h
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/CalculatorBison.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/CalculatorBison.h
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/autogerated/CalculatorFlex.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/autogerated/CalculatorFlex.h
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/autogerated/CalculatorBison.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/autogerated/CalculatorBison.h
 	frontend/flexbison/FlexBisonExecutor.h
 	frontend/flexbison/FlexBisonExecutor.cpp
 	frontend/flexbison/FlexLexer.h
 	frontend/flexbison/BisonParser.h
 
 	# ANTLR4相关代码
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/CalculatorBaseVisitor.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/CalculatorBaseVisitor.h
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/CalculatorVisitor.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/CalculatorVisitor.h
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/CalculatorLexer.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/CalculatorLexer.h
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/CalculatorParser.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/CalculatorParser.h
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorBaseVisitor.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorBaseVisitor.h
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorVisitor.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorVisitor.h
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorLexer.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorLexer.h
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorParser.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorParser.h
 	frontend/antlr4/Antlr4CSTVisitor.cpp
 	frontend/antlr4/Antlr4CSTVisitor.h
 	frontend/antlr4/Antlr4Executor.cpp
@@ -220,7 +220,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 	utils
 	frontend
 	frontend/antlr4
+	frontend/antlr4/autogerated
 	frontend/flexbison
+	frontend/flexbison/autogerated
 	frontend/recursivedescent
 	DragonIR
 	backend
@@ -246,14 +248,14 @@ endif()
 # 通过flex产生词法分析源代码
 add_custom_command(
 	OUTPUT
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/CalculatorFlex.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/CalculatorFlex.h
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/autogerated/CalculatorFlex.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/autogerated/CalculatorFlex.h
 	COMMAND
-	${FLEX_EXECUTABLE} ${FLEX_OPTION} -o CalculatorFlex.cpp --header-file=CalculatorFlex.h Calculator.l
+	${FLEX_EXECUTABLE} ${FLEX_OPTION} -o CalculatorFlex.cpp --header-file=CalculatorFlex.h ../Calculator.l
 	DEPENDS
 	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/Calculator.l
 	WORKING_DIRECTORY
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/autogerated
 )
 
 # Window版和Linux版产生头文件时选项名字不一样，根据不同系统设置
@@ -270,30 +272,32 @@ endif()
 # 通过bison生成语法分析源代码
 add_custom_command(
 	OUTPUT
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/CalculatorBison.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/CalculatorBison.h
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/autogerated/CalculatorBison.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/autogerated/CalculatorBison.h
 	COMMAND
-	${BISON_EXECUTABLE} -d --debug -o CalculatorBison.cpp ${BISON_HEADFILE_OPTION}=CalculatorBison.h Calculator.y
+	${BISON_EXECUTABLE} -d --debug -o CalculatorBison.cpp ${BISON_HEADFILE_OPTION}=CalculatorBison.h ../Calculator.y
 	DEPENDS
 	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/Calculator.y
 	WORKING_DIRECTORY
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/autogerated
 )
 
 # 通过antlr4.12.0生成词法与语法分析源代码
 # WORKING_DIRECTORY指定工作目录时Mac平台有问题，因此使用绝对地址
 add_custom_command(
 	OUTPUT
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/CalculatorBaseVisitor.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/CalculatorBaseVisitor.h
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/CalculatorVisitor.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/CalculatorVisitor.h
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/CalculatorLexer.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/CalculatorLexer.h
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/CalculatorParser.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/CalculatorParser.h
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorBaseVisitor.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorBaseVisitor.h
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorVisitor.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorVisitor.h
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorLexer.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorLexer.h
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorParser.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorParser.h
 	COMMAND
-	${Java_JAVA_EXECUTABLE} -jar ${ANTLR4_JAR_LOCATION} -Dlanguage=Cpp -no-listener -visitor -o ${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4 ${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/Calculator.g4
+	${Java_JAVA_EXECUTABLE} -jar ${ANTLR4_JAR_LOCATION} -Dlanguage=Cpp -no-listener -visitor -o ${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated Calculator.g4
 	DEPENDS
 	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/Calculator.g4
+	WORKING_DIRECTORY
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4
 )

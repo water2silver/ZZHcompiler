@@ -107,8 +107,6 @@ readability-*,\
 -readability-redundant-access-specifiers,\
 "
 
-HeaderFilterRegex: 'Calculator[^/]*\.(h|hxx|hpp)$'
-
 # WarningsAsErrors: "*"
 
 ...

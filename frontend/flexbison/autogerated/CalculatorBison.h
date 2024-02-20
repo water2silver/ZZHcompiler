@@ -60,7 +60,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 20 "Calculator.y"
+#line 20 "../Calculator.y"
 {
     class ast_node * node;
     
