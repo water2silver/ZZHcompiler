@@ -64,8 +64,44 @@ set(ANTLR4_JAR_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/antlr4/antlr-4.12
 message(STATUS ${ANTLR4_JAR_LOCATION})
 
 # 查找antlr4-runtime的包是否存在，若不存在则出错
-find_package(antlr4-runtime REQUIRED)
+find_package(ANTLR4 REQUIRED)
 message(STATUS ${ANTLR4_INCLUDE_DIR})
+
+# flex工具的输入和输出文件
+set(FLEX_GEN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/autogerated)
+set(FLEX_INPUT
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/Calculator.l
+)
+set(FLEX_OUTPUT 
+	${FLEX_GEN_DIR}/CalculatorFlex.cpp
+	${FLEX_GEN_DIR}/CalculatorFlex.h
+)
+
+# bison工具的输入和输出文件
+set(BISON_GEN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/autogerated)
+set(BISON_INPUT 
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/Calculator.y
+)
+set(BISON_OUTPUT 
+	${BISON_GEN_DIR}/CalculatorBison.cpp
+	${BISON_GEN_DIR}/CalculatorBison.h
+)
+
+# antlr4工具的输入和输出文件
+set(ANTLR4_GEN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated)
+set(ANTLR4_INPUT 
+	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/Calculator.g4
+)
+set(ANTLR4_OUTPUT
+	${ANTLR4_GEN_DIR}/CalculatorBaseVisitor.cpp
+	${ANTLR4_GEN_DIR}/CalculatorBaseVisitor.h
+	${ANTLR4_GEN_DIR}/CalculatorVisitor.cpp
+	${ANTLR4_GEN_DIR}/CalculatorVisitor.h
+	${ANTLR4_GEN_DIR}/CalculatorLexer.cpp
+	${ANTLR4_GEN_DIR}/CalculatorLexer.h
+	${ANTLR4_GEN_DIR}/CalculatorParser.cpp
+	${ANTLR4_GEN_DIR}/CalculatorParser.h
+)
 
 # 前端源代码集合
 set(FRONTEND_SRCS
@@ -79,24 +115,15 @@ set(FRONTEND_SRCS
 	frontend/AttrType.h
 
 	# Flex与Bison相关代码
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/autogerated/CalculatorFlex.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/autogerated/CalculatorFlex.h
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/autogerated/CalculatorBison.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/autogerated/CalculatorBison.h
+	${FLEX_OUTPUT}
+	${BISON_OUTPUT}
 	frontend/flexbison/FlexBisonExecutor.h
 	frontend/flexbison/FlexBisonExecutor.cpp
 	frontend/flexbison/FlexLexer.h
 	frontend/flexbison/BisonParser.h
 
 	# ANTLR4相关代码
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorBaseVisitor.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorBaseVisitor.h
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorVisitor.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorVisitor.h
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorLexer.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorLexer.h
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorParser.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorParser.h
+	${ANTLR4_OUTPUT}
 	frontend/antlr4/Antlr4CSTVisitor.cpp
 	frontend/antlr4/Antlr4CSTVisitor.h
 	frontend/antlr4/Antlr4Executor.cpp
@@ -234,7 +261,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 target_link_libraries(${PROJECT_NAME} PRIVATE ${Graphviz_LIBRARIES})
 
 # 指导antlr4的库名，防止链接时找不到antlr4-runtime
-target_link_libraries(${PROJECT_NAME} PRIVATE antlr4_shared)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${ANTLR4_LIBRARY})
 
 # 采用win_flex产生词法文件时减少OS系统差异的问题
 if(CMAKE_HOST_WIN32)
@@ -248,14 +275,13 @@ endif()
 # 通过flex产生词法分析源代码
 add_custom_command(
 	OUTPUT
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/autogerated/CalculatorFlex.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/autogerated/CalculatorFlex.h
+	${FLEX_OUTPUT}
 	COMMAND
 	${FLEX_EXECUTABLE} ${FLEX_OPTION} -o CalculatorFlex.cpp --header-file=CalculatorFlex.h ../Calculator.l
 	DEPENDS
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/Calculator.l
+	${FLEX_INPUT}
 	WORKING_DIRECTORY
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/autogerated
+	${FLEX_GEN_DIR}
 )
 
 # Window版和Linux版产生头文件时选项名字不一样，根据不同系统设置
@@ -272,32 +298,24 @@ endif()
 # 通过bison生成语法分析源代码
 add_custom_command(
 	OUTPUT
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/autogerated/CalculatorBison.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/autogerated/CalculatorBison.h
+	${BISON_OUTPUT}
 	COMMAND
 	${BISON_EXECUTABLE} -d --debug -o CalculatorBison.cpp ${BISON_HEADFILE_OPTION}=CalculatorBison.h ../Calculator.y
 	DEPENDS
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/Calculator.y
+	${BISON_INPUT}
 	WORKING_DIRECTORY
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/flexbison/autogerated
+	${BISON_GEN_DIR}
 )
 
 # 通过antlr4.12.0生成词法与语法分析源代码
 # WORKING_DIRECTORY指定工作目录时Mac平台有问题，因此使用绝对地址
 add_custom_command(
 	OUTPUT
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorBaseVisitor.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorBaseVisitor.h
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorVisitor.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorVisitor.h
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorLexer.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorLexer.h
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorParser.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated/CalculatorParser.h
+	${ANTLR4_OUTPUT}
 	COMMAND
-	${Java_JAVA_EXECUTABLE} -jar ${ANTLR4_JAR_LOCATION} -Dlanguage=Cpp -no-listener -visitor -o ${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/autogerated Calculator.g4
+	${Java_JAVA_EXECUTABLE} -jar ${ANTLR4_JAR_LOCATION} -Dlanguage=Cpp -no-listener -visitor -o ${ANTLR4_GEN_DIR} Calculator.g4
 	DEPENDS
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4/Calculator.g4
+	${ANTLR4_INPUT}
 	WORKING_DIRECTORY
-	${CMAKE_CURRENT_SOURCE_DIR}/frontend/antlr4
+	${ANTLR4_GEN_DIR}/..
 )
