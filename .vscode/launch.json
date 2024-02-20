@@ -5,6 +5,16 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"type": "antlr-debug",
+			"request": "launch",
+			"name": "Debug Calculator Antlr4 Grammar",
+			"input": "tests/test1.txt",
+			"visualParseTree": true,
+			"printParseTree": true,
+			"startRule": "compileUnit",
+			"grammar": "${workspaceFolder}/frontend/antlr4/Calculator.g4"
+		},
+		{
 			// 可采用GCC或者Clang编译器
 			"name": "GDB IR",
 			"type": "cppdbg",
