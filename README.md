@@ -168,14 +168,6 @@ pacman -U https://mirrors.ustc.edu.cn/msys2/mingw/mingw64/mingw-w64-x86_64-antlr
 
 可通过 Docker Desktop Installer 安装 Docker 运行环境，Docker 配置运行详细见 tools/docker.md 文件。
 
-## 计算器强化
-
-在 CPU 中，整数与实数不能直接进行数学运算，整数靠 ALU 进行运算，实数靠浮点协处理器或者数学库进行运算，
-所以整数需要先转换成实数，然后做实数运算。
-
-因此，对于线性 IR 指令，必须区分整数运算与实数运算。例如加法，IR 指令必须区分为整数加法和实数加法。
-还需要追加整数转换为实数的指令，需要时追加实数转整数的指令。
-
 ## doxygen 生成文档
 
 前提要安装软件 doxygen 和 graphviz 程序
@@ -238,7 +230,7 @@ arm-linux-gnueabihf-gcc -static -g -o tests/test1-1 tests/std.c tests/test1-1.s
 1. 这里必须用-static 进行静态编译，不依赖动态库，否则后续通过 qemu-arm-static 运行时会提示动态库找不到的错误
 2. 生成的汇编中包含了 内置 putint 等函数的调用，用来进行数据的输出或输出等，因此在通过 arm-linux-gnueabihf-gcc 进行交叉编译时，需要和 std.c 一起进行编译链接才可以。
 3. 可通过网址<https://godbolt.org/>输入 C 语言源代码后查看各种目标后端的汇编。下图是选择 ARM GCC 11.4.0 的源代码与汇编对应。
-![godbolt 效果图](figures/godbolt-test1-1-arm32-gcc.png)
+![godbolt 效果图](doc/figures/godbolt-test1-1-arm32-gcc.png)
 4. 这些内置函数的具体实现放在了 tests/std.c 中，其原型在 tests/std.h 中，很简单，请自行查阅与理解。
 
 ### 运行可执行程序
@@ -262,21 +254,30 @@ qemu 的用户模式下可直接运行交叉编译的用户态程序。这种模
 
 ### 安装 gdb 调试器
 
+该软件 gdb-multiarch 在前面工具安装时已经安装。如没有，则通过下面的命令进行安装。
+
 ```shell
 sudo apt-get install -y gdb-multiarch
 ```
 
-假定通过交叉编译出的程序为 tests/test1
+### 启动具有 gdbserver 功能的 qemu
 
-首先通过用户态模式的 qemu 运行程序，其中-g 指定远程调试的端口，这里指定端口号为 1234，这样 qemu 会开启 gdb 的远程调试服务。
+假定通过交叉编译出的程序为 tests/test1，执行的命令如下：
 
 ```shell
 # 启动 gdb server，监视的端口号为 1234
 qemu-arm-static -g 1234 tests/test1
 ```
 
-其次，在另一个命令行界面启动 gdb 进行远程调试，需要指定远程机器的主机与端口。
-注意这里的 gdb 要支持目标 CPU 的 gdb，而不是本地的 gdb。
+其中-g 指定远程调试的端口，这里指定端口号为 1234，这样 qemu 会开启 gdb 的远程调试服务。
+
+### 启动 gdb 作为客户端远程调试
+
+建议通过 vscode 的调试，选择 Qemu Debug 进行调试，可开启图形化调试界面。
+可根据需要修改相关的配置，如 miDebuggerServerAddress、program 等选项。
+
+也可以在命令行终端上启动 gdb 进行远程调试，需要指定远程机器的主机与端口。
+注意这里的 gdb 要支持目标 CPU 的 gdb-multiarch，而不是本地的 gdb。
 
 ```shell
 gdb-multiarch tests/test1
@@ -288,3 +289,37 @@ b main
 c
 # 之后可使用 gdb 的其它命令进行单步运行与调试
 ```
+
+在调试完毕后前面启动的 qemu-arm-static 程序会自动退出。因此，要想重新调试，请启动第一步的 qemu-arm-static 程序。
+
+## 计算器强化
+
+理解基于 Flex+Bison 的 LR 分析法、基于 ANTLR4 的 LL 分析法以及递归下降分析法等实现词法与语法分析功能。
+
+目前三者都实现了无符号整数的识别以及加减运算运算、赋值运算等，函数定义与调用没有全部支持。
+
+### 强化递归下降分析法的功能
+
+目前递归下降分析法分析的语法没有支持全面，请支持函数的定义、函数调用功能，使得三者都实现同样的功能。
+
+### 强化运算符和整数的支持
+
+工具请从 Flex/Bison 和 ANTLR4 中选择其中一种，优先选择 ANTLR4。
+
+请追加如下的功能支持：
+
+1. 无符号整数支持 8 进制和 16 进制，八进制以 0 开头，16 进制以 0x 或 0X 开头，与 C 语言保持一致
+2. 支持单目运算符求负运算-
+3. 支持乘法*、除法/、求余%运算
+4. ARM32 后端和解析执行实现对应的功能
+
+### 支持浮点数与相关运算
+
+目前只支持了整数的相关运算，请引入浮点数，可以进行整数与浮点数的混合运算。
+
+具体要求有：
+
+1. 词法要支持浮点数的检测
+2. 抽象语法树要区分整数与实数运算
+3. 要求整数的结果为整数、浮点数的运算结果是浮点数、混合运算的结果为浮点数
+4. 根据源操作数的类型自行推导变量的类型

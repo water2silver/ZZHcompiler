@@ -22,7 +22,7 @@
 		},
 		{
 			// 可采用GCC或者Clang编译器
-			"name": "GDB IR",
+			"name": "Debug IR",
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}/cmake-build-debug/calculator",
@@ -32,7 +32,16 @@
 			"cwd": "${workspaceFolder}",
 			"environment": [],
 			"externalConsole": false,
-			"MIMode": "gdb",
+			"linux": {
+				"MIMode": "gdb",
+				"miDebuggerPath": "/usr/bin/gdb"
+			},
+			"osx": {
+				"MIMode": "lldb"
+			},
+			"windows": {
+				"MIMode": "gdb"
+			},
 			"setupCommands": [
 				{
 					"description": "Enable pretty-printing for gdb",
@@ -50,35 +59,7 @@
 		},
 		{
 			// 可采用GCC或者Clang编译器
-			"name": "GDB Calculation",
-			"type": "cppdbg",
-			"request": "launch",
-			"program": "${workspaceFolder}/cmake-build-debug/calculator",
-			"args": ["-R", "tests/test1.txt"],
-			// 程序的入口（main函数的入口）是否停止
-			"stopAtEntry": true,
-			"cwd": "${workspaceFolder}",
-			"environment": [],
-			"externalConsole": false,
-			"MIMode": "gdb",
-			"setupCommands": [
-				{
-					"description": "Enable pretty-printing for gdb",
-					"text": "-enable-pretty-printing",
-					"ignoreFailures": true
-				},
-				{
-					"description": "Set Disassembly Flavor to Intel",
-					"text": "-gdb-set disassembly-flavor intel",
-					"ignoreFailures": true
-				}
-			],
-			// 不需要编译时可注释掉
-			"preLaunchTask": "CMake: build"
-		},
-		{
-			// 可采用GCC或者Clang编译器
-			"name": "GDB AST",
+			"name": "Debug AST",
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}/cmake-build-debug/calculator",
@@ -88,7 +69,16 @@
 			"cwd": "${workspaceFolder}",
 			"environment": [],
 			"externalConsole": false,
-			"MIMode": "gdb",
+			"linux": {
+				"MIMode": "gdb",
+				"miDebuggerPath": "/usr/bin/gdb"
+			},
+			"osx": {
+				"MIMode": "lldb"
+			},
+			"windows": {
+				"MIMode": "gdb"
+			},
 			"setupCommands": [
 				{
 					"description": "Enable pretty-printing for gdb",
@@ -106,7 +96,7 @@
 		},
 		{
 			// 可采用GCC或者Clang编译器
-			"name": "GDB ARM32",
+			"name": "Debug Backend ARM32",
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}/cmake-build-debug/calculator",
@@ -116,7 +106,16 @@
 			"cwd": "${workspaceFolder}",
 			"environment": [],
 			"externalConsole": false,
-			"MIMode": "gdb",
+			"linux": {
+				"MIMode": "gdb",
+				"miDebuggerPath": "/usr/bin/gdb"
+			},
+			"osx": {
+				"MIMode": "lldb"
+			},
+			"windows": {
+				"MIMode": "gdb"
+			},
 			"setupCommands": [
 				{
 					"description": "Enable pretty-printing for gdb",
@@ -133,20 +132,63 @@
 			"preLaunchTask": "CMake: build"
 		},
 		{
-			// MacOS平台专用lldb调试，请注意不能用Mac不要用GDB调试
-			"name": "LLDB Mac Calculation",
+			// 可采用GCC或者Clang编译器
+			"name": "Debug Backend Simulation",
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}/cmake-build-debug/calculator",
-			"args": ["-S", "-I", "-D", "tests/test1.txt"],
+			"args": ["-R", "tests/test1.txt"],
 			// 程序的入口（main函数的入口）是否停止
 			"stopAtEntry": true,
 			"cwd": "${workspaceFolder}",
 			"environment": [],
 			"externalConsole": false,
-			"MIMode": "lldb",
+			"linux": {
+				"MIMode": "gdb",
+				"miDebuggerPath": "/usr/bin/gdb"
+			},
+			"osx": {
+				"MIMode": "lldb"
+			},
+			"windows": {
+				"MIMode": "gdb"
+			},
+			"setupCommands": [
+				{
+					"description": "Enable pretty-printing for gdb",
+					"text": "-enable-pretty-printing",
+					"ignoreFailures": true
+				},
+				{
+					"description": "Set Disassembly Flavor to Intel",
+					"text": "-gdb-set disassembly-flavor intel",
+					"ignoreFailures": true
+				}
+			],
 			// 不需要编译时可注释掉
 			"preLaunchTask": "CMake: build"
+		},
+		{
+			"name": "Qemu Debug",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/tests/test1",
+			"args": [],
+			// 程序的入口（main函数的入口）是否停止
+			"stopAtEntry": true,
+			"cwd": "${workspaceFolder}",
+			"miDebuggerServerAddress": "localhost:1234",
+			"miDebuggerPath": "/usr/bin/gdb-multiarch",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"setupCommands": [
+				{
+					"description": "pretty printing",
+					"text": "-enable-pretty-printing",
+					"ignoreFailures": true
+				}
+			]
 		}
 	]
 }
