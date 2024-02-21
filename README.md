@@ -3,7 +3,7 @@
 ## 主要功能
 
 命令格式：
-calculator -S [-a | -I] [-A | -D] [-o output] source
+calculator -S [-A | -D] [-a | -I] [-o output] source
 calculator -R [-A | -D] source
 
 选项-S -a 借助 flex+bison 产生抽象语法树 AST
@@ -140,7 +140,7 @@ pacman -U https://mirrors.ustc.edu.cn/msys2/mingw/mingw64/mingw-w64-x86_64-antlr
 
 ### vscode 安装
 
-请从官网下载 vscode 并安装
+请从官网下载 vscode 并安装，下载网址：<https://code.visualstudio.com/Download>
 
 配置文件可参考 tools/vscode/settings.json
 
@@ -148,11 +148,9 @@ pacman -U https://mirrors.ustc.edu.cn/msys2/mingw/mingw64/mingw-w64-x86_64-antlr
 
 ### msys2 安装与软件安装
 
-首先从网址
-'<http://mirrors.ustc.edu.cn/msys2/distrib/msys2-x86_64-latest.exe>'
-下载最新的 msys2 的安装包。
+首先从中科大的镜像源中下载安装 msys2，下载网址：<http://mirrors.ustc.edu.cn/msys2/distrib/msys2-x86_64-latest.exe>
 
-其次，进入安装路径下，执行 clang64.exe 程序后执行 tools 路径下的 msys2.sh 进行相关软件的安装。
+其次，进入安装路径下，执行 clang64.exe 程序，执行 tools/msys2.sh 进行相关软件的安装。
 
 ### Windows 上 WSL 安装 Ubuntu 与软件安装
 
@@ -207,30 +205,7 @@ make
 
 通过网址<https://godbolt.org/>可查看各种目标后端的汇编。
 
-在 Ubuntu 上安装交叉编译环境后编译，然后借助 qemu 来运行
-
 tests 目录下存放了一些简单的测试用例。其中 test1.c 是 test1.txt 的 C 语言版本实现，用于运行的对比。
-
-### 相关软件安装
-
-以 ubuntu 为例进行说明。
-
-```shell
-# MIPS 交叉编译器
-sudo apt-get install -y gcc-mips-linux-gnu g++-mips-linux-gnu
-
-# 龙芯 LA64 交叉编译器
-sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
-
-# ARM32 交叉编译器
-sudo apt-get install -y gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf
-
-# RISCV64 交叉编译器
-sudo apt-get install -y gcc-riscv64-linux-gnu g++-riscv64-linux-gnu
-
-# 用户态 qemu
-sudo apt-get install -y qemu-user-static
-```
 
 ### 生成 ARM32 的汇编
 
