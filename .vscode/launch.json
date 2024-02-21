@@ -32,6 +32,8 @@
 			"cwd": "${workspaceFolder}",
 			"environment": [],
 			"externalConsole": false,
+			// 根据需要修改修改目标架构，这里假定amd64
+			"targetArchitecture": "amd64",
 			"linux": {
 				"MIMode": "gdb",
 				"miDebuggerPath": "/usr/bin/gdb"
@@ -69,6 +71,8 @@
 			"cwd": "${workspaceFolder}",
 			"environment": [],
 			"externalConsole": false,
+			// 根据需要修改修改目标架构，这里假定amd64
+			// "targetArchitecture": "amd64",
 			"linux": {
 				"MIMode": "gdb",
 				"miDebuggerPath": "/usr/bin/gdb"
@@ -106,6 +110,8 @@
 			"cwd": "${workspaceFolder}",
 			"environment": [],
 			"externalConsole": false,
+			// 根据需要修改修改目标架构，这里假定amd64
+			// "targetArchitecture": "amd64",
 			"linux": {
 				"MIMode": "gdb",
 				"miDebuggerPath": "/usr/bin/gdb"
@@ -143,6 +149,8 @@
 			"cwd": "${workspaceFolder}",
 			"environment": [],
 			"externalConsole": false,
+			// 根据需要修改修改目标架构，这里假定amd64
+			// "targetArchitecture": "amd64",
 			"linux": {
 				"MIMode": "gdb",
 				"miDebuggerPath": "/usr/bin/gdb"
