@@ -82,7 +82,7 @@ ObjCSpaceBeforeProtocolList: true
 # 指针的对齐: Left, Right, Middle
 PointerAlignment: Middle
 # 缩进预处理器语句的列数
-PPIndentWidth:   -1
+PPIndentWidth: -1
 # 引用的对齐
 ReferenceAlignment: Pointer
 # 允许重新排版注释
@@ -143,5 +143,3 @@ SortIncludes: Never
 BinPackParameters: false
 # 实参 如果为false要么都在同一行，要么各有一行
 BinPackArguments: false
-
-...
