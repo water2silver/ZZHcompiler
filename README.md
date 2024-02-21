@@ -203,36 +203,47 @@ make
 
 ## 后端编译与运行
 
-通过网址<https://godbolt.org/>可查看各种目标后端的汇编。
-
 tests 目录下存放了一些简单的测试用例。其中 test1.c 是 test1.txt 的 C 语言版本实现，用于运行的对比。
+
+由于 qemu 的用户模式在 Window 系统下不支持，因此要么在真实的开发板上运行，或者用 Linux 系统下的 qemu 来运行。
+
+这里介绍用 Linux 系统下的 qemu 来运行。
 
 ### 生成 ARM32 的汇编
 
 ```shell
+# 通过计算器翻译 test1.txt 成 ARM32 汇编
 ./cmake-build-debug/calculator -S -o tests/test1.s tests/test1.txt
-arm-linux-gnueabihf-gcc -S --include tests/std.h -o tests/test1-1.s tests/test1-1.c
+# 把 test1-1.c 通过 arm 版的交叉编译器 gcc 翻译成汇编
+arm-linux-gnueabihf-gcc -S -g --include tests/std.h -o tests/test1-1.s tests/test1-1.c
 ```
 
 如果不指定--include tests/std.h，编译会提示函数 putint 没有声明的警告信息。
+
+test1-1.c 是脚本型语言 test1.txt 的 C 语言表达。
 
 ### 生成可执行程序
 
 通过 gcc 的 arm 交叉编译器对生成的汇编进行编译，生成可执行程序。
 
 ```shell
-arm-linux-gnueabihf-gcc -static -o tests/test1 tests/std.c tests/test1.s
-arm-linux-gnueabihf-gcc -static -o tests/test1-1 tests/std.c tests/test1-1.s
+# 通过 ARM gcc 编译器把汇编程序翻译成可执行程序，目标平台 ARM32
+arm-linux-gnueabihf-gcc -static -g -o tests/test1 tests/std.c tests/test1.s
+# 通过 ARM gcc 编译器把汇编程序翻译成可执行程序，目标平台 ARM32
+arm-linux-gnueabihf-gcc -static -g -o tests/test1-1 tests/std.c tests/test1-1.s
 ```
 
 有以下几个点需要注意：
 
-用-static 进行静态编译，不依赖动态库，否则后续通过 qemu-arm-static 运行时会提示动态库找不到的错误
+这里必须用-static 进行静态编译，不依赖动态库，否则后续通过 qemu-arm-static 运行时会提示动态库找不到的错误
 
-生成的汇编中包含了 putint 等函数的调用，用来进行数据的输出或输出等，
+生成的汇编中包含了 内置 putint 等函数的调用，用来进行数据的输出或输出等，
 因此在通过 arm-linux-gnueabihf-gcc 进行交叉编译时，需要和 std.c 一起进行编译链接才可以。
 
-这些函数的具体实现放在了 tests/std.c 中，其原型在 tests/std.h 中，很简单，请自行查阅。
+也可以通过网址<https://godbolt.org/>输入 C 语言源代码后查看各种目标后端的汇编。下图是选择 ARM GCC 11.4.0 的源代码与汇编对应。
+![godbolt 效果图](figures/godbolt-test1-1-arm32-gcc.png)
+
+这些内置函数的具体实现放在了 tests/std.c 中，其原型在 tests/std.h 中，很简单，请自行查阅与理解。
 
 ### 运行可执行程序
 
@@ -242,6 +253,8 @@ arm-linux-gnueabihf-gcc -static -o tests/test1-1 tests/std.c tests/test1-1.s
 qemu-arm-static tests/test1
 qemu-arm-static tests/test1-1
 ```
+
+这里可比较运行的结果，如果两者不一致，则计算器程序有问题。
 
 ## qemu 的用户模式
 
