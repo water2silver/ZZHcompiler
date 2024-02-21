@@ -112,7 +112,7 @@ void CodeGeneratorArm32::registerAllocation(Function * func)
 
     // 目前采用最简单的寄存器分配策略，2个寄存器，最多三个寄存器使用，除了函数调用
 
-    // 目前使用的寄存器有R0,R1,R2,R3，这些不需要保护
+    // R0,R1,R2,R3这些寄存器不需要保护
     // R10(10), fp(11), lx(14)需要保护
     auto & protectedRegNo = func->getProtectedReg();
     protectedRegNo.push_back(REG_ALLOC_SIMPLE_TMP_REG_NO);

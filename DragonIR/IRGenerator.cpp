@@ -280,6 +280,9 @@ bool IRGenerator::ir_function_call(ast_node * node)
     // 创建函数调用指令
     node->blockInsts.addInst(new FuncCallIRInst(node->name, realParams, resultVal));
 
+    // 设置存在函数调用，后面要根据是否函数调用进行调整栈分配策略
+    symtab->currentFunc->setExistFuncCall(true);
+
     // 函数调用结果保存到node中，用于外部使用
     node->val = resultVal;
 
@@ -325,7 +328,12 @@ bool IRGenerator::ir_show_internal(ast_node * node, bool show)
     node->blockInsts.addInst(result->blockInsts);
 
     if (show && (result->val != nullptr)) {
+
+        // 创建函数调用指令
         node->blockInsts.addInst(new FuncCallIRInst("putint", result->val));
+
+        // 设置存在函数调用，后面要根据是否函数调用进行调整栈分配策略
+        symtab->currentFunc->setExistFuncCall(true);
     }
 
     node->val = nullptr;

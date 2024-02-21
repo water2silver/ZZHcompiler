@@ -291,7 +291,7 @@ qemu-arm-static -g 1234 tests/test1
 注意这里的 gdb 要支持目标 CPU 的 gdb，而不是本地的 gdb。
 
 ```shell
-gdb-multiarch -tui tests/test1
+gdb-multiarch tests/test1
 # 输入如下的命令，远程连接 qemu 的 gdb server
 target remote :1234
 # 在 main 函数入口设置断点
