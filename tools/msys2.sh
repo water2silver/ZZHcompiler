@@ -37,7 +37,7 @@ pacman -S --noconfirm ${MSYS2_KIND}-doxygen
 pacman -S --noconfirm ${MSYS2_KIND}-texlive-lang-chinese ${MSYS2_KIND}-texlive-lang-english ${MSYS2_KIND}-texlive-latex-extra ${MSYS2_KIND}-texlive-science ${MSYS2_KIND}-texlive-plain-generic
 
 # 安装gcc和gdb
-pacman -S --noconfirm ${MSYS2_KIND}-gcc ${MSYS2_KIND}-gdb
+pacman -S --noconfirm ${MSYS2_KIND}-gcc ${MSYS2_KIND}-gdb ${MSYS2_KIND}-gdb-multiarch
 
 # 安装clang和lldb
 pacman -S --noconfirm ${MSYS2_KIND}-llvm ${MSYS2_KIND}-clang ${MSYS2_KIND}-clang-tools-extra ${MSYS2_KIND}-clang-analyzer ${MSYS2_KIND}-lldb
@@ -62,13 +62,13 @@ wget -O /usr/bin/antlr-${ANTLR4_VERSION}-complete.jar ${PROXY_URL}https://github
 # 安装oh-my-zsh
 git clone ${PROXY_URL}https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
 cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
-git clone ${PROXY_URL}https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-git clone ${PROXY_URL}https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+git clone ${PROXY_URL}https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}"/plugins/zsh-autosuggestions
+git clone ${PROXY_URL}https://github.com/zsh-users/zsh-syntax-highlighting.git "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}"/plugins/zsh-syntax-highlighting
 sed -i 's/^plugins=(/plugins=(zsh-autosuggestions zsh-syntax-highlighting z /' ~/.zshrc
 
 # 如果Windows已经安装JDK，这里就不需要安装了
 
-if ["x${JDK_NEED_INSTALL}" == "xON" || "x${JDK_NEED_INSTALL}" == "xOn" || "x${JDK_NEED_INSTALL}" == "xon"];
+if [ "${JDK_NEED_INSTALL}" = "ON" ] || [ "${JDK_NEED_INSTALL}" = "On" ] || [ "${JDK_NEED_INSTALL}" = "on" ];
 then
     # 安装openjdk，这里选择微软发布的openjdk 17.0.9
     # wget -O ~/openlogic-openjdk-17.0.9+9-windows-x64.zip https://builds.openlogic.com/downloadJDK/openlogic-openjdk/17.0.9+9/openlogic-openjdk-17.0.9+9-windows-x64.zip
@@ -78,11 +78,11 @@ then
     # 追加Java的可执行路径到PATH环境变量中
     if [ -f ~/.bashrc ];
     then
-        echo 'export PATH=/opt/jdk-17.0.9+8/bin:$PATH' >> ~/.bashrc
+        echo "export PATH=/opt/jdk-17.0.9+8/bin:$PATH" >> ~/.bashrc
     fi
 
     if [ -f ~/.zshrc ];
     then
-        echo 'export PATH=/opt/jdk-17.0.9+8/bin:$PATH' >> ~/.zshrc
+        echo "export PATH=/opt/jdk-17.0.9+8/bin:$PATH" >> ~/.zshrc
     fi
 fi

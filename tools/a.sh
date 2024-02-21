@@ -33,7 +33,7 @@ wget -O /usr/local/bin/antlr-4.12.0-complete.jar ${PROXY_URL}https://github.com/
 chmod +x /usr/local/bin/antlr-4.12.0-complete.jar
 wget -O ~/antlr4-cpp-runtime-4.12.0-source.zip ${PROXY_URL}https://github.com/antlr/website-antlr4/blob/gh-pages/download/antlr4-cpp-runtime-4.12.0-source.zip
 unzip ~/antlr4-cpp-runtime-4.12.0-source.zip -d ~/antlr4-cpp-runtime-4.12.0-source
-cd ~/antlr4-cpp-runtime-4.12.0-source || exit 1
+cd ~/antlr4-cpp-runtime-4.12.0-source
 cmake -B build -S . -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Debug -DANTLR_BUILD_CPP_TESTS=OFF
 cmake --build build --parallel
 cmake --install build
@@ -53,9 +53,6 @@ chsh -s /bin/zsh root
 
 # 为普通用户安装oh-my-zsh
 
-# 改变普通用户的默认shell
-chsh -s /bin/zsh $USER_NAME
-
 # 切换到普通用户
 su - $USER_NAME
 PROXY_URL="https://proxy.201704.xyz/"
@@ -65,4 +62,8 @@ cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
 git clone ${PROXY_URL}https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 git clone ${PROXY_URL}https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 sed -i 's/^plugins=(/plugins=(zsh-autosuggestions zsh-syntax-highlighting z /' ~/.zshrc
+# 退出当前用户
+exit
 
+# 改变普通用户的默认shell
+chsh -s /bin/zsh $USER_NAME 
