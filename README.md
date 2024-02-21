@@ -138,33 +138,37 @@ pacman -U https://mirrors.ustc.edu.cn/msys2/mingw/mingw64/mingw-w64-x86_64-antlr
 
 ## 工具安装
 
-Windows 下的 msys2 环境请执行 msys2.sh 来安装配置环境，前提是事先安装 msys2 软件。
+### vscode 安装
 
-在 Windows 上可通过 wsl 安装 ubuntu 虚拟机并配置环境，详细见 wsl.md 文件。
+请从官网下载 vscode 并安装
 
-可通过 VMware/VirtualBox/Qemu 等虚拟机软件安装 Ubuntu 系统，然后以 root 用户进入系统后请执行 ubuntu.sh 配置开发环境。这种方式建议用 vscode+ssh 方式连接。
+配置文件可参考 tools/vscode/settings.json
 
-可通过 Docker Desktop Installer 安装 Docker 运行环境，然后在 Docker 中配置运行，详细见 docker.md 文件。
+插件请参考 tools/vscode/extensions.txt
 
-### flex&bison
+### msys2 安装与软件安装
 
-#### Windows(MinGW)
+首先从网址
+'<http://mirrors.ustc.edu.cn/msys2/distrib/msys2-x86_64-latest.exe>'
+下载最新的 msys2 的安装包。
 
-pacman -S flex bison
+其次，进入安装路径下，执行 clang64.exe 程序后执行 tools 路径下的 msys2.sh 进行相关软件的安装。
 
-#### Linux(ubuntu)
+### Windows 上 WSL 安装 Ubuntu 与软件安装
 
-sudo apt install flex bison
+通过 wsl 安装 ubuntu 虚拟机并配置环境，详细见 tools/wsl.md 文件。
 
-### graphviz
+用 vscode + wsl 方式连接开发。
 
-#### graphviz-clang64
+### VMware/VirtualBox/Qemu 安装 Ubuntu 与软件安装
 
-pacman -S pkg-config mingw-w64-clang-x86_64-graphviz
+可通过 VMware/VirtualBox/Qemu 等虚拟机软件安装 Ubuntu 系统，然后以 root 用户进入系统后请执行 tools/ubuntu.sh 配置开发环境。
 
-#### graphviz-ubuntu
+用 vscode + ssh 方式连接开发。
 
-sudo apt install pkg-config graphviz libgraphviz-dev
+### Docker Desktop 安装 Ubuntu 与软件安装
+
+可通过 Docker Desktop Installer 安装 Docker 运行环境，Docker 配置运行详细见 tools/docker.md 文件。
 
 ## 计算器强化
 
