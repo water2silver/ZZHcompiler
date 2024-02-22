@@ -2,12 +2,15 @@ function sum(e, f)
 {
     return e + f;
 }
-a=5;
-b=a+7;
+
+a = 5;
+b = a + 7 + a;
 // 显示b的值
 b
-a=3-a;
-b=b-10;
+
+a = b - (3 - a) ;
+b = b - 10;
+
 /*
 * 显示a+b的值
 */

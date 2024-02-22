@@ -207,7 +207,7 @@ tests 目录下存放了一些简单的测试用例。其中 test1.c 是 test1.t
 # 通过计算器翻译 test1.txt 成 ARM32 汇编
 ./cmake-build-debug/calculator -S -o tests/test1.s tests/test1.txt
 # 把 test1-1.c 通过 arm 版的交叉编译器 gcc 翻译成汇编
-arm-linux-gnueabihf-gcc -S -g --include tests/std.h -o tests/test1-1.s tests/test1-1.c
+arm-linux-gnueabihf-gcc -S -include tests/std.h -o tests/test1-1.s tests/test1-1.c
 ```
 
 如果不指定--include tests/std.h，编译会提示函数 putint 没有声明的警告信息。
