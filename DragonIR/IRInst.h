@@ -48,8 +48,7 @@ enum class IRInstOperator {
 };
 
 /// @brief IR指令的基类
-class IRInst
-{
+class IRInst {
 
 public:
     /// @brief 构造函数
@@ -76,12 +75,20 @@ public:
     Value * getDst();
 
     /// @brief 取得源操作数1
-    /// @return
+    /// @return 源操作数1
     Value * getSrc1();
 
+    /// @brief 取得源操作数1的寄存器号
+    /// @return 寄存器号，可能为-1，表示在内存或立即数
+    int getSrc1RegId();
+
     /// @brief 取得源操作数2
-    /// @return
+    /// @return 源操作数2
     Value * getSrc2();
+
+    /// @brief 取得源操作数2的寄存器号
+    /// @return 寄存器号，可能为-1，表示在内存或立即数
+    int getSrc2RegId();
 
     /// @brief 转换成字符串
     virtual void toString(std::string & str);
@@ -130,8 +137,7 @@ protected:
 };
 
 /// @brief Label指令
-class LabelIRInst : public IRInst
-{
+class LabelIRInst : public IRInst {
 
 public:
     /// @brief 构造函数
@@ -160,8 +166,7 @@ protected:
 };
 
 /// @brief 二元运算指令
-class BinaryIRInst : public IRInst
-{
+class BinaryIRInst : public IRInst {
 
 public:
     /// @brief 构造函数
@@ -179,8 +184,7 @@ public:
 };
 
 /// @brief 函数调用指令
-class FuncCallIRInst : public IRInst
-{
+class FuncCallIRInst : public IRInst {
 
 public:
     /// @brief 函数名
@@ -209,8 +213,7 @@ public:
 };
 
 /// @brief 赋值指令或者说复制指令
-class AssignIRInst : public IRInst
-{
+class AssignIRInst : public IRInst {
 
 public:
     /// @brief 构造函数
@@ -225,8 +228,7 @@ public:
     void toString(std::string & str) override;
 };
 
-class EntryIRInst : public IRInst
-{
+class EntryIRInst : public IRInst {
 
 public:
     /// @brief return语句指令
@@ -240,8 +242,7 @@ public:
 };
 
 /// @brief return语句指令
-class ExitIRInst : public IRInst
-{
+class ExitIRInst : public IRInst {
 
 public:
     /// @brief return语句指令
@@ -255,8 +256,7 @@ public:
     void toString(std::string & str) override;
 };
 
-class GotoIRInst : public IRInst
-{
+class GotoIRInst : public IRInst {
 
 public:
     /// @brief return语句指令

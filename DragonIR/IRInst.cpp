@@ -54,11 +54,25 @@ Value * IRInst::getSrc1()
     return srcValues[0];
 }
 
+/// @brief 取得源操作数1的寄存器号
+/// @return 寄存器号，可能为-1，表示在内存或立即数
+int IRInst::getSrc1RegId()
+{
+    return srcValues[0]->regId;
+}
+
 /// @brief 取得源操作数2
 /// @return
 Value * IRInst::getSrc2()
 {
     return srcValues[1];
+}
+
+/// @brief 取得源操作数2的寄存器号
+/// @return 寄存器号，可能为-1，表示在内存或立即数
+int IRInst::getSrc2RegId()
+{
+    return srcValues[1]->regId;
 }
 
 /// @brief 转换成字符串
