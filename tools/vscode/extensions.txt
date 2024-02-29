@@ -99,7 +99,6 @@ wesbos.theme-cobalt2
 wholroyd.jinja
 xabikos.javascriptsnippets
 xaver.clang-format
-xlthu.pangu-markdown
 yzane.markdown-pdf
 yzhang.markdown-all-in-one
 zhuangtongfa.material-theme
