@@ -161,6 +161,8 @@ pacman -U https://mirrors.ustc.edu.cn/msys2/mingw/mingw64/mingw-w64-x86_64-antlr
 
 可通过 VMware/VirtualBox/Qemu 等虚拟机软件安装 Ubuntu 系统，然后以 root 用户进入系统后请执行 tools/ubuntu.sh 配置开发环境。
 
+请注意ubuntu.sh中的USER_NAME为安装ubuntu时一般用户名，请根据实际情况修改。
+
 用 vscode + ssh 方式连接开发。
 
 ### Docker Desktop 安装 Ubuntu 与软件安装

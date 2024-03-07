@@ -33,6 +33,9 @@
     }
   },
   "experimental": false,
+  "features": {
+    "buildkit": false
+  },
   "registry-mirrors": [
     "https://registry.docker-cn.com",
     "https://docker.mirrors.ustc.edu.cn",
@@ -55,11 +58,19 @@ docker build -t ubuntu2204-dev .
 
 ## 创建容器并运行Ubuntu容器
 
-在命令行界面进入本项目的tools目录下，然后执行如下的命令：
-
 ```shell
 docker run -id --name ubuntu-compile --hostname ubuntu-compile ubuntu2204-dev
 ```
+
+## VSCode联动
+
+若在打开本项目时推荐的插件已安装则不需要再次安装Dev Containers插件后，否则请安装。
+
+在通过vscode连接容器时，请务必要事先打开Docker Desktop并运行容器ubuntu2204-dev。
+
+可以连接到容器上进行软件开发。
+
+## 容器的其它命令，需要时查询
 
 ## 进入Ubuntu容器查看
 
@@ -67,19 +78,19 @@ docker run -id --name ubuntu-compile --hostname ubuntu-compile ubuntu2204-dev
 docker exec -it ubuntu-compile /bin/zsh
 ```
 
-## 停止Ubuntu容器
+### 停止Ubuntu容器
 
 ```shell
 docker stop ubuntu-compile
 ```
 
-## 启动Ubuntu容器
+### 启动Ubuntu容器
 
 ```shell
 docker start ubuntu-compile
 ```
 
-## 重启Ubuntu容器
+### 重启Ubuntu容器
 
 也就是先停止后启动容器
 
@@ -87,11 +98,7 @@ docker start ubuntu-compile
 docker restart ubuntu-compile
 ```
 
-## VSCode联动
-
-通过安装Dev Containers插件后，可以连接到容器上进行软件开发。
-
-## 删除镜像
+### 删除镜像
 
 ```shell
 docker rmi ubuntu2204-dev
