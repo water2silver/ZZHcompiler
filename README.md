@@ -142,15 +142,14 @@ pacman -U https://mirrors.ustc.edu.cn/msys2/mingw/mingw64/mingw-w64-x86_64-antlr
 
 请从官网下载 vscode 并安装，下载网址：<https://code.visualstudio.com/Download>
 
-配置文件可参考 tools/vscode/settings.json
-
-插件请参考 tools/vscode/extensions.txt
+在打开本项目所在的文件夹后vscode会根据.vscode/extensions.json文件进行推荐插件安装，请选择Yes进行安装
+有关vscode的配置会采用.vscode/settings.json进行vscode的配置，这称为workspace的配置，优先vscode的用户配置。
 
 ### msys2 安装与软件安装
 
 首先从中科大的镜像源中下载安装 msys2，下载网址：<http://mirrors.ustc.edu.cn/msys2/distrib/msys2-x86_64-latest.exe>
 
-其次，进入安装路径下，执行 clang64.exe 程序，执行 tools/msys2.sh 进行相关软件的安装。
+其次，进入安装路径（假定C:\LinuxEnv\msys64）下，双击执行 clang64.exe 程序会弹出终端窗口，可通过cd命令进入本项目所在的路径（假定D:\GitDatabase\calculator），如cd "D:\GitDatabase\calculator"或者cd /d/GitDatabase/calculator后执行sh tools/msys2.sh 进行相关软件的安装。
 
 ### Windows 上 WSL 安装 Ubuntu 与软件安装
 
@@ -167,6 +166,8 @@ pacman -U https://mirrors.ustc.edu.cn/msys2/mingw/mingw64/mingw-w64-x86_64-antlr
 ### Docker Desktop 安装 Ubuntu 与软件安装
 
 可通过 Docker Desktop Installer 安装 Docker 运行环境，Docker 配置运行详细见 tools/docker.md 文件。
+
+用vscode + container方式连接开发。
 
 ## doxygen 生成文档
 
