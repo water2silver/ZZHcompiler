@@ -30,9 +30,8 @@ RUN wget -O /usr/local/bin/antlr-4.12.0-complete.jar https://proxy.201704.xyz/ht
 	unzip ~/antlr4-cpp-runtime-4.12.0-source.zip -d ~/antlr4-cpp-runtime-4.12.0-source && \
 	cd ~/antlr4-cpp-runtime-4.12.0-source && \
 	cmake -B build -S . -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Debug -DANTLR_BUILD_CPP_TESTS=OFF && \
-	cmake --build build --parallel && \
-	cmake --install build && \
-	rm -rf ~/antlr4-cpp-runtime-4.12.0-source
+	cmake --build build && \
+	cmake --install build
 
 # 删除 apt/lists，可以减少最终镜像大小
 RUN rm -rf /var/lib/apt/lists/*
