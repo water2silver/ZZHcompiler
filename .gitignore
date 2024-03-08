@@ -58,3 +58,6 @@ asm.s
 
 # Visual Studio
 .vs/
+
+# VSCodeCounters
+.VSCodeCounter/

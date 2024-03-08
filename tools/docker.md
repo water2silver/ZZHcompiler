@@ -59,7 +59,7 @@ docker build -t ubuntu2204-dev .
 ## 创建容器并运行Ubuntu容器
 
 ```shell
-docker run -id --name ubuntu-compile --hostname ubuntu-compile ubuntu2204-dev
+docker run -id --restart unless-stopped --name ubuntu-compile --hostname ubuntu-compile ubuntu2204-dev
 ```
 
 ## VSCode联动
