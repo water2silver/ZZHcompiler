@@ -151,11 +151,15 @@ pacman -U https://mirrors.ustc.edu.cn/msys2/mingw/mingw64/mingw-w64-x86_64-antlr
 
 其次，进入安装路径（假定C:\LinuxEnv\msys64）下，双击执行 clang64.exe 程序会弹出终端窗口，可通过cd命令进入本项目所在的路径（假定D:\GitDatabase\calculator），如cd "D:\GitDatabase\calculator"或者cd /d/GitDatabase/calculator后执行sh tools/msys2.sh 进行相关软件的安装。
 
+请下载安装donet-sdk 6.0，网址：<https://dotnet.microsoft.com/zh-cn/download/dotnet/6.0>
+
+确保修改.vscode/settings.json中的cmake.languageSupport.dotnetPath值为C:/Program Files/dotnet/dotnet.exe
+
 ### Windows 上 WSL 安装 Ubuntu 与软件安装
 
 通过 wsl 安装 ubuntu 虚拟机并配置环境，详细见 tools/wsl.md 文件。
 
-用 vscode + wsl 方式连接开发。
+用 vscode + wsl 方式连接开发。确保修改.vscode/settings.json中的cmake.languageSupport.dotnetPath值为/usr/bin/dotnet
 
 ### VMware/VirtualBox/Qemu 安装 Ubuntu 与软件安装
 
@@ -163,13 +167,13 @@ pacman -U https://mirrors.ustc.edu.cn/msys2/mingw/mingw64/mingw-w64-x86_64-antlr
 
 请注意ubuntu.sh中的USER_NAME为安装ubuntu时一般用户名，请根据实际情况修改。
 
-用 vscode + ssh 方式连接开发。
+用 vscode + ssh 方式连接开发。确保修改.vscode/settings.json中的cmake.languageSupport.dotnetPath值为/usr/bin/dotnet
 
 ### Docker Desktop 安装 Ubuntu 与软件安装
 
 可通过 Docker Desktop Installer 安装 Docker 运行环境，Docker 配置运行详细见 tools/docker.md 文件。
 
-用vscode + container方式连接开发。
+用vscode + container方式连接开发。确保修改.vscode/settings.json中的cmake.languageSupport.dotnetPath值为/usr/bin/dotnet
 
 ## doxygen 生成文档
 

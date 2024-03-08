@@ -224,7 +224,7 @@
 		"visitors": true
 	},
 	"?cmake.languageSupport.dotnetPath": "请根据操作系统的种类进行修改,Linux：/usr/bin/dotnet,Mac：/usr/local/opt/dotnet@6/bin/dotnet,Windows：C:/Program Files/dotnet/dotnet.exe",
-	"cmake.languageSupport.dotnetPath": "C:/Program Files/dotnet/dotnet.exe",
+	"cmake.languageSupport.dotnetPath": "/usr/bin/dotnet",
 	"files.associations": {
 		"vector": "cpp",
 		"array": "cpp",

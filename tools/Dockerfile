@@ -15,7 +15,7 @@ RUN apt-get update && \
 	apt-get install -y software-properties-common apt-utils clang llvm libtool cmake ninja-build graphviz graphviz-dev dos2unix && \
 	apt-get install -y flex bison && \
 	apt-get install -y gdb lldb && \
-	apt-get install -y openjdk-17-jdk && \
+	apt-get install -y openjdk-17-jdk dotnet-sdk-6.0 && \
 	apt-get install -y gcc-mips-linux-gnu g++-mips-linux-gnu && \
 	apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu && \
 	apt-get install -y gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf && \
