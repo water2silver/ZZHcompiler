@@ -16,7 +16,7 @@ apt-get update
 
 # 安装一系列的软件
 apt-get install -y zsh vim git wget curl python3 sudo
-apt-get install -y software-properties-common apt-utils clang llvm libtool cmake graphviz graphviz-dev dos2unix
+apt-get install -y software-properties-common apt-utils clang llvm libtool cmake ninja-build graphviz graphviz-dev dos2unix
 apt-get install -y flex bison
 apt-get install -y gdb lldb gdbserver gdb-multiarch
 apt-get install -y openjdk-17-jdk
@@ -34,7 +34,7 @@ chmod +x /usr/local/bin/antlr-4.12.0-complete.jar
 wget -O ~/antlr4-cpp-runtime-4.12.0-source.zip ${PROXY_URL}https://github.com/antlr/website-antlr4/blob/gh-pages/download/antlr4-cpp-runtime-4.12.0-source.zip
 unzip ~/antlr4-cpp-runtime-4.12.0-source.zip -d ~/antlr4-cpp-runtime-4.12.0-source
 cd ~/antlr4-cpp-runtime-4.12.0-source || exit 1
-cmake -B build -S . -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Debug -DANTLR_BUILD_CPP_TESTS=OFF
+cmake -B build -S . -G Ninja -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Debug -DANTLR_BUILD_CPP_TESTS=OFF
 cmake --build build --parallel
 cmake --install build
 

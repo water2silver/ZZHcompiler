@@ -20,7 +20,7 @@
 
 ![DockerDesktop-Setting-Engine-Before](pictures/DockerDesktop-Setting-Engine-Before.png)
 
-增加registry-mirrors键值，然后点击"Apply & restart"。
+增加registry-mirrors键值，如有buildkit则修改buildkit的值为false，然后点击"Apply & restart"。
 
 具体的信息如下所示：
 

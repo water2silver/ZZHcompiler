@@ -12,7 +12,7 @@ RUN sed -E -i -e 's/(archive|ports).ubuntu.com/mirrors.ustc.edu.cn/g' -e '/secur
 # 安装软件
 RUN apt-get update && \
 	apt-get install -y zsh vim git wget curl python3 unzip sudo && \
-	apt-get install -y software-properties-common apt-utils clang llvm libtool cmake graphviz graphviz-dev dos2unix && \
+	apt-get install -y software-properties-common apt-utils clang llvm libtool cmake ninja-build graphviz graphviz-dev dos2unix && \
 	apt-get install -y flex bison && \
 	apt-get install -y gdb lldb && \
 	apt-get install -y openjdk-17-jdk && \
@@ -29,8 +29,8 @@ RUN wget -O /usr/local/bin/antlr-4.12.0-complete.jar https://proxy.201704.xyz/ht
 	wget -O ~/antlr4-cpp-runtime-4.12.0-source.zip https://proxy.201704.xyz/https://github.com/antlr/website-antlr4/blob/gh-pages/download/antlr4-cpp-runtime-4.12.0-source.zip && \
 	unzip ~/antlr4-cpp-runtime-4.12.0-source.zip -d ~/antlr4-cpp-runtime-4.12.0-source && \
 	cd ~/antlr4-cpp-runtime-4.12.0-source && \
-	cmake -B build -S . -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Debug -DANTLR_BUILD_CPP_TESTS=OFF && \
-	cmake --build build && \
+	cmake -B build -S . -G Ninja -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Debug -DANTLR_BUILD_CPP_TESTS=OFF && \
+	cmake --build build --parallel && \
 	cmake --install build
 
 # 删除 apt/lists，可以减少最终镜像大小
