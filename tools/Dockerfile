@@ -31,7 +31,8 @@ RUN wget -O /usr/local/bin/antlr-4.12.0-complete.jar https://proxy.201704.xyz/ht
 	cd ~/antlr4-cpp-runtime-4.12.0-source && \
 	cmake -B build -S . -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Debug -DANTLR_BUILD_CPP_TESTS=OFF && \
 	cmake --build build --parallel && \
-	cmake --install build
+	cmake --install build && \
+	rm -rf ~/antlr4-cpp-runtime-4.12.0-source
 
 # 删除 apt/lists，可以减少最终镜像大小
 RUN rm -rf /var/lib/apt/lists/*
@@ -61,7 +62,7 @@ RUN git clone https://proxy.201704.xyz/https://github.com/robbyrussell/oh-my-zsh
 	sed -i 's/^plugins=(/plugins=(zsh-autosuggestions zsh-syntax-highlighting z /' ~/.zshrc
 
 # 克隆代码
-RUN git clone http://10.69.45.39:30080/publicprojects/calculator.git /home/code
+# RUN git clone http://10.69.45.39:30080/publicprojects/calculator.git /home/code/calculator
 
 WORKDIR /home/code
 
