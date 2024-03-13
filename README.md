@@ -1,6 +1,6 @@
 # 计算器
 
-## 主要功能
+## 计算机实现的主要功能
 
 命令格式：
 calculator -S [-A | -D] [-a | -I] [-o output] source
@@ -100,7 +100,9 @@ thirdparty 目录下放置了一些第三方的工具，如 antlr4.12.0
 
 .\cmake-build-debug\calculator.exe -R -D test.txt
 
-## 前端工具
+## 工具
+
+计算器实验的所有工具在实验一中已经安装，这里不需要再次安装。这里主要介绍一些功能。
 
 ### Flex 与 Bison
 
@@ -136,71 +138,38 @@ C++使用 antlr 时需要使用 antlr 的头文件和库，在 msys2 下可通�
 pacman -U https://mirrors.ustc.edu.cn/msys2/mingw/mingw64/mingw-w64-x86_64-antlr4-runtime-cpp-4.12.0-1-any.pkg.tar.zst
 ```
 
-## 工具安装
+### Graphviz
 
-### vscode 安装
+借助该工具提供的C语言API实现抽象语法树的绘制。
 
-请从官网下载 vscode 并安装，下载网址：<https://code.visualstudio.com/Download>
+### doxygen
 
-在打开本项目所在的文件夹后vscode会根据.vscode/extensions.json文件进行推荐插件安装，请选择Yes进行安装
-有关vscode的配置会采用.vscode/settings.json进行vscode的配置，这称为workspace的配置，优先vscode的用户配置。
+借助该工具分析代码中的注释，产生详细分析的文档。这要求注释要满足一定的格式。具体可参考实验文档。
 
-### msys2 安装与软件安装
+### texlive
 
-首先从中科大的镜像源中下载安装 msys2，下载网址：<http://mirrors.ustc.edu.cn/msys2/distrib/msys2-x86_64-latest.exe>
+把doxygen生成的文档转换成pdf格式
 
-其次，进入安装路径（假定C:\LinuxEnv\msys64）下，双击执行 clang64.exe 程序会弹出终端窗口，可通过cd命令进入本项目所在的路径（假定D:\GitDatabase\calculator），如cd "D:\GitDatabase\calculator"或者cd /d/GitDatabase/calculator后执行sh tools/msys2.sh 进行相关软件的安装。
+## 根据注释生成文档
 
-请下载安装donet-sdk 6.0，网址：<https://dotnet.microsoft.com/zh-cn/download/dotnet/6.0>
+请按照计算器实验的文档要求编写注释，可通过doxygen工具生成网页版的文档，借助latex可生成pdf格式的文档。
 
-确保修改.vscode/settings.json中的cmake.languageSupport.dotnetPath值为C:/Program Files/dotnet/dotnet.exe
-
-### Windows 上 WSL 安装 Ubuntu 与软件安装
-
-通过 wsl 安装 ubuntu 虚拟机并配置环境，详细见 tools/wsl.md 文件。
-
-用 vscode + wsl 方式连接开发。确保修改.vscode/settings.json中的cmake.languageSupport.dotnetPath值为/usr/bin/dotnet
-
-### VMware/VirtualBox/Qemu 安装 Ubuntu 与软件安装
-
-可通过 VMware/VirtualBox/Qemu 等虚拟机软件安装 Ubuntu 系统，然后以 root 用户进入系统后请执行 tools/ubuntu.sh 配置开发环境。
-
-请注意ubuntu.sh中的USER_NAME为安装ubuntu时一般用户名，请根据实际情况修改。
-
-用 vscode + ssh 方式连接开发。确保修改.vscode/settings.json中的cmake.languageSupport.dotnetPath值为/usr/bin/dotnet
-
-### Docker Desktop 安装 Ubuntu 与软件安装
-
-可通过 Docker Desktop Installer 安装 Docker 运行环境，Docker 配置运行详细见 tools/docker.md 文件。
-
-用vscode + container方式连接开发。确保修改.vscode/settings.json中的cmake.languageSupport.dotnetPath值为/usr/bin/dotnet
-
-## doxygen 生成文档
-
-前提要安装软件 doxygen 和 graphviz 程序
-
-svg 时需要安装 mingw-w64-clang-x86_64-pdf2svg
-
-请修改配置文件 Doxygen.config，然后执行如下的命令：
+### 生成网页版文档
 
 ```shell
 doxygen Doxygen.config
 ```
 
-### 生成 pdf
+需要时可自行修改配置文件 Doxygen.config。
 
-前提要安装 texlive，mac 系统安装 MacTex。
-
-如果包含有中文字符，则必须设置 Doxygen.config 中的 OUTPUT_LANGUAGE 为 chinese
-
-执行如下的脚本指令：
+### 生成 pdf格式的文档
 
 ```shell
 cd latex
 make
 ```
 
-## 后端编译与运行
+## 计算器运行
 
 tests 目录下存放了一些简单的测试用例。其中 test1.c 是 test1.txt 的 C 语言版本实现，用于运行的对比。
 
