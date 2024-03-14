@@ -168,10 +168,9 @@ std::any CalculatorCSTVisitor::visitStatement(CalculatorParser::StatementContext
         return visitExpressionStatement(exprCtx);
     } else if (Instanceof(exprShowCtx, CalculatorParser::ExpressionShowStatementContext *, ctx)) {
         return visitExpressionShowStatement(exprShowCtx);
-    } else if (Instanceof(returnCtx, CalculatorParser::ReturnStatementContext *, ctx)) {
-        return visitReturnStatement(returnCtx);
     } else {
-        assert(false);
+        Instanceof(returnCtx, CalculatorParser::ReturnStatementContext *, ctx);
+        return visitReturnStatement(returnCtx);
     }
 }
 

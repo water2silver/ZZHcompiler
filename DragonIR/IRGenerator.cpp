@@ -247,7 +247,7 @@ bool IRGenerator::ir_function_call(ast_node * node)
         // 只有一个节点，实际参数列表
         auto paramsNode = node->sons[0];
 
-        const size_t argsCount = paramsNode->sons.size();
+        int argsCount = (int) paramsNode->sons.size();
 
         // 设置最大函数调用参数个数
         if (argsCount > symtab->currentFunc->getMaxFuncCallArgCnt()) {

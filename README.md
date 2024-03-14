@@ -124,7 +124,9 @@ bison -o calculator_yacc.cpp --header=calculator_yacc.h -d calculator.y
 
 ### Antlr 4.12.0
 
-要事先需要安装 java15 以上版本的 JDK
+要确认java15 以上版本的 JDK，否则编译不会通过。默认已经安装了JDK 17的版本。
+
+由于cmake的bug可能会导致适配不到15以上的版本，请删除旧版的JDK。
 
 编写 g4 文件然后通过 antlr 生成 C++代码，用 Visitor 模式。
 
@@ -148,7 +150,7 @@ pacman -U https://mirrors.ustc.edu.cn/msys2/mingw/mingw64/mingw-w64-x86_64-antlr
 
 ### texlive
 
-把doxygen生成的文档转换成pdf格式
+把doxygen生成的文档转换成pdf格式。
 
 ## 根据注释生成文档
 

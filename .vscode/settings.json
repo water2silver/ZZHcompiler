@@ -104,7 +104,7 @@
 	"explorer.confirmDelete": false,
 	"terminal.integrated.profiles.windows": {
 		"clang64": {
-			"path": "C:/ToolsApp/msys64/msys2_shell.cmd",
+			"path": "C:/LinuxEnv/msys64/msys2_shell.cmd",
 			"args": ["-defterm", "-clang64", "-no-start", "-here", "-shell", "zsh"]
 		},
 		"PowerShell": {
