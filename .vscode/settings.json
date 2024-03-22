@@ -102,6 +102,7 @@
 		"editor.tabSize": 4
 	},
 	"explorer.confirmDelete": false,
+	"?terminal.integrated.profiles.windows": "TODO: 请根据真实的路径修改clang64的路径",
 	"terminal.integrated.profiles.windows": {
 		"clang64": {
 			"path": "C:/LinuxEnv/msys64/msys2_shell.cmd",
@@ -224,5 +225,6 @@
 		"visitors": true
 	},
 	"?cmake.languageSupport.dotnetPath": "请根据操作系统的种类进行修改,Linux：/usr/bin/dotnet,Mac：/usr/local/opt/dotnet@6/bin/dotnet,Windows：C:/Program Files/dotnet/dotnet.exe",
-	"cmake.languageSupport.dotnetPath": "/usr/bin/dotnet"
+	"cmake.languageSupport.dotnetPath": "/usr/bin/dotnet",
+	"workbench.editor.enablePreview": false
 }
