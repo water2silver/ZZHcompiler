@@ -77,6 +77,12 @@ enum class ast_operator_type : int {
     AST_OP_COMPILE_UNIT,
 
     // TODO 抽象语法树其它内部节点运算符追加
+	/// @brief 乘法运算符
+	AST_OP_TIMES,
+
+	/// @brief 除法运算符
+	AST_OP_DIV,
+
 
     /// @brief 最大标识符，表示非法运算符
     AST_OP_MAX,

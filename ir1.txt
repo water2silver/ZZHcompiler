@@ -1,0 +1,15 @@
+i32 main()
+{
+	entry
+	a = i32 0
+	b = i32 7
+	call void @putint(i32 b)
+	%t0 = add i32 3, i32 a
+	a = i32 %t0
+	%t1 = add i32 b, i32 10
+	b = i32 %t1
+	%t2 = add i32 a, i32 b
+	call void @putint(i32 %t2)
+L0:
+	exit i32 0
+}

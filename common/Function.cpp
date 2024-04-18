@@ -91,6 +91,19 @@ InterCode & Function::getInterCode()
 {
     return code;
 }
+void Function::setParams(std::vector<Value *> &values)
+{
+	for (int i = 0; i < values.size();i++)
+	{
+		VarValue * tmp = new VarValue(values[i]->getName(), values[i]->type.type);
+		tmp->intVal = values[i]->intVal;
+		tmp->realVal = values[i]->realVal;
+		// params[i] = FuncFormalParam(values[i]->getName(), values[i]->type.type, tmp);
+		params[i].val = tmp;
+		params[i].type = values[i]->type;
+	}
+    return;
+}
 
 /// @brief 判断该函数是否是内置函数
 /// @return true: 内置函数，false：用户自定义

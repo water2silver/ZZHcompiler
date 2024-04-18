@@ -97,6 +97,9 @@ white_line  [\r\n]
 "-"			{return T_SUB;}
 "+"			{return T_ADD;}
 
+"*"			{return T_TIMES;}
+"/"			{return T_DIV;}
+
 "="         {return '=';}
 ";"         {return ';';}
 

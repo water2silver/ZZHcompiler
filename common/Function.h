@@ -65,6 +65,8 @@ public:
     /// @param _param
     Function(std::string _name, BasicType _type, FuncFormalParam _param, bool _builtin = false);
 
+    void setParams(std::vector<Value *> &values);
+	
     /// @brief 取得函数名字
     /// @return 函数名字
     std::string & getName();

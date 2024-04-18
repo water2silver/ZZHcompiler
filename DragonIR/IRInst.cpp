@@ -143,7 +143,16 @@ void BinaryIRInst::toString(std::string & str)
             // 减法指令，二元运算
             str = result->getName() + " = sub " + src1->toString() + ", " + src2->toString();
             break;
-
+		case IRInstOperator::IRINST_OP_TIMES_I:
+			
+			// 乘法
+			str = result->getName() + " = times " + src1->toString() + ", " + src2->toString();
+            break;
+		case IRInstOperator::IRINST_OP_DIV_I:
+			
+			// 乘法
+			str = result->getName() + " = div " + src1->toString() + ", " + src2->toString();
+            break;
         default:
             // 未知指令
             IRInst::toString(str);

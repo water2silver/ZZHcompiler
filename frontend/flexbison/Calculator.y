@@ -32,7 +32,7 @@ void yyerror(char * msg);
 // 对于单个字符的算符或者分隔符，在词法分析时可直返返回对应的字符即可
 %token <integer_num> T_DIGIT
 %token <var_id> T_ID
-%token T_FUNC T_RETURN T_ADD T_SUB
+%token T_FUNC T_RETURN T_ADD T_SUB T_TIMES T_DIV
 
 %type <node> CompileUnit
 
@@ -201,7 +201,13 @@ UnaryExp : PrimaryExp {
         // 用户自定义的含有实参的参数调用
         $$ = create_func_call($1.lineno, $1.id, $3);
     }
-
+	| UnaryExp T_TIMES PrimaryExp{
+		$$ = new_ast_node(ast_operator_type::AST_OP_TIMES,$1,$3,nullptr);
+	}
+	| UnaryExp T_DIV PrimaryExp{
+		$$ = new_ast_node(ast_operator_type::AST_OP_DIV,$1,$3,nullptr);
+	}
+	;
 PrimaryExp :  '(' Expr ')' {
         /* PrimaryExp = Expr */
         $$ = $2;

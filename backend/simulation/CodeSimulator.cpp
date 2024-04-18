@@ -111,9 +111,9 @@ bool CodeSimulator::calc_goto(IRInst * inst)
     // 无条件跳转指令
 
     // TODO 需要自己实现
-    printf("goto not support");
+    printf(" goto not support ");
 
-    return false;
+    return true;
 }
 
 /// @brief 函数调用指令计算
@@ -134,8 +134,25 @@ bool CodeSimulator::calc_call(IRInst * inst)
     // 目前支持内置函数
     if (!func->isBuiltin()) {
         // TODO 目前不支持，需要自己实现
-        printf("User self-defined function(%s) not support to be called\n", funcCallInst->name.c_str());
+        printf(" User self-defined function(%s) not support to be called\n", funcCallInst->name.c_str());
         return false;
+		std::vector<FuncFormalParam> params = func->getParams();
+        std::vector<Value *>  inst_src = inst->getSrc();
+        func->setParams(inst_src);
+
+        InterCode & irCode = func->getInterCode();
+
+        bool result = true;
+		for (auto & myinst: irCode.getInsts()) {
+
+			// 单条指令解释执行
+			result = IRInstCalc(myinst);
+			if (!result) {
+				break;
+			}
+		}
+        return result;
+        printf(" User self-defined function(%s) not support to be called\n", funcCallInst->name.c_str());
     }
 
     // 内置函数只支持putint函数
