@@ -39,6 +39,16 @@ IRGenerator::IRGenerator(ast_node * _root, SymbolTable * _symtab) : root(_root),
     ast2ir_handlers[ast_operator_type::AST_OP_TIMES] = &IRGenerator::ir_times;
     ast2ir_handlers[ast_operator_type::AST_OP_DIV] = &IRGenerator::ir_div;
 
+	/* 表达式运算，关系运算*/
+    ast2ir_handlers[ast_operator_type::AST_OP_LESS_THAN] = &IRGenerator::ir_less_than;
+    ast2ir_handlers[ast_operator_type::AST_OP_GREATER_THAN] = &IRGenerator::ir_greater_than;
+    ast2ir_handlers[ast_operator_type::AST_OP_LESS_EQUAL] = &IRGenerator::ir_less_equal;
+    ast2ir_handlers[ast_operator_type::AST_OP_GREATER_EQUAL] = &IRGenerator::ir_greater_equal;
+    ast2ir_handlers[ast_operator_type::AST_OP_EQUAL] = &IRGenerator::ir_equal;
+    ast2ir_handlers[ast_operator_type::AST_OP_NOT_EQUAL] = &IRGenerator::ir_not_equal;
+    ast2ir_handlers[ast_operator_type::AST_OP_LOGICAL_AND] = &IRGenerator::ir_logical_and;
+    ast2ir_handlers[ast_operator_type::AST_OP_LOGICAL_OR] = &IRGenerator::ir_logical_or;
+
     /* 语句 */
     ast2ir_handlers[ast_operator_type::AST_OP_EXPR] = &IRGenerator::ir_expr_noshow;
     ast2ir_handlers[ast_operator_type::AST_OP_EXPR_SHOW] = &IRGenerator::ir_expr_show;
@@ -508,6 +518,348 @@ bool IRGenerator::ir_div(ast_node * node)
     node->blockInsts.addInst(left->blockInsts);
     node->blockInsts.addInst(right->blockInsts);
     node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_DIV_I, resultValue, left->val, right->val));
+    node->val = resultValue;
+
+    return true;
+}
+
+/// @brief 整数取模AST节点翻译成线性中间IR
+/// @param node AST节点
+/// @return 翻译是否成功，true：成功，false：失败
+bool IRGenerator::ir_mod(ast_node * node)
+{
+    ast_node * src1_node = node->sons[0];
+    ast_node * src2_node = node->sons[1];
+
+    // 除法节点，左结合，先计算左节点，后计算右节点
+
+    // 除法的左边操作数
+    ast_node * left = ir_visit_ast_node(src1_node);
+    if (!left) {
+        // 某个变量没有定值
+        return false;
+    }
+
+    // 加法的右边操作数
+    ast_node * right = ir_visit_ast_node(src2_node);
+    if (!right) {
+        // 某个变量没有定值
+        return false;
+    }
+
+    // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
+    // TODO real number add
+
+    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+
+    // 创建临时变量保存IR的值，以及线性IR指令
+    node->blockInsts.addInst(left->blockInsts);
+    node->blockInsts.addInst(right->blockInsts);
+    node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_MOD_I, resultValue, left->val, right->val));
+    node->val = resultValue;
+
+    return true;
+}
+
+/// @brief 整数 < 运算AST节点翻译成线性中间IR
+/// @param node AST节点
+/// @return 翻译是否成功，true：成功，false：失败
+bool IRGenerator::ir_less_than(ast_node * node)
+{
+	ast_node * src1_node = node->sons[0];
+    ast_node * src2_node = node->sons[1];
+
+    // 除法节点，左结合，先计算左节点，后计算右节点
+
+    // 除法的左边操作数
+    ast_node * left = ir_visit_ast_node(src1_node);
+    if (!left) {
+        // 某个变量没有定值
+        return false;
+    }
+
+    // 加法的右边操作数
+    ast_node * right = ir_visit_ast_node(src2_node);
+    if (!right) {
+        // 某个变量没有定值
+        return false;
+    }
+
+    // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
+    // TODO real number add
+
+    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+
+    // 创建临时变量保存IR的值，以及线性IR指令
+    node->blockInsts.addInst(left->blockInsts);
+    node->blockInsts.addInst(right->blockInsts);
+    node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_LESS_THAN_I, resultValue, left->val, right->val));
+    node->val = resultValue;
+
+    return true;
+}
+
+/// @brief 整数 > 运算AST节点翻译成线性中间IR
+/// @param node AST节点
+/// @return 翻译是否成功，true：成功，false：失败
+bool IRGenerator::ir_greater_than(ast_node * node)
+{
+	ast_node * src1_node = node->sons[0];
+    ast_node * src2_node = node->sons[1];
+
+    // 除法节点，左结合，先计算左节点，后计算右节点
+
+    // 除法的左边操作数
+    ast_node * left = ir_visit_ast_node(src1_node);
+    if (!left) {
+        // 某个变量没有定值
+        return false;
+    }
+
+    // 加法的右边操作数
+    ast_node * right = ir_visit_ast_node(src2_node);
+    if (!right) {
+        // 某个变量没有定值
+        return false;
+    }
+
+    // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
+    // TODO real number add
+
+    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+
+    // 创建临时变量保存IR的值，以及线性IR指令
+    node->blockInsts.addInst(left->blockInsts);
+    node->blockInsts.addInst(right->blockInsts);
+    node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_GREATER_THAN_I, resultValue, left->val, right->val));
+    node->val = resultValue;
+
+    return true;
+}
+
+/// @brief 整数 <= 运算AST节点翻译成线性中间IR
+/// @param node AST节点
+/// @return 翻译是否成功，true：成功，false：失败
+bool IRGenerator::ir_less_equal(ast_node * node)
+{
+	ast_node * src1_node = node->sons[0];
+    ast_node * src2_node = node->sons[1];
+
+    // 除法节点，左结合，先计算左节点，后计算右节点
+
+    // 除法的左边操作数
+    ast_node * left = ir_visit_ast_node(src1_node);
+    if (!left) {
+        // 某个变量没有定值
+        return false;
+    }
+
+    // 加法的右边操作数
+    ast_node * right = ir_visit_ast_node(src2_node);
+    if (!right) {
+        // 某个变量没有定值
+        return false;
+    }
+
+    // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
+    // TODO real number add
+
+    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+
+    // 创建临时变量保存IR的值，以及线性IR指令
+    node->blockInsts.addInst(left->blockInsts);
+    node->blockInsts.addInst(right->blockInsts);
+    node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_LESS_EQUAL_I, resultValue, left->val, right->val));
+    node->val = resultValue;
+
+    return true;
+}
+
+/// @brief 整数 >= 运算AST节点翻译成线性中间IR
+/// @param node AST节点
+/// @return 翻译是否成功，true：成功，false：失败
+bool IRGenerator::ir_greater_equal(ast_node * node)
+{
+	ast_node * src1_node = node->sons[0];
+    ast_node * src2_node = node->sons[1];
+
+    // 除法节点，左结合，先计算左节点，后计算右节点
+
+    // 除法的左边操作数
+    ast_node * left = ir_visit_ast_node(src1_node);
+    if (!left) {
+        // 某个变量没有定值
+        return false;
+    }
+
+    // 加法的右边操作数
+    ast_node * right = ir_visit_ast_node(src2_node);
+    if (!right) {
+        // 某个变量没有定值
+        return false;
+    }
+
+    // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
+    // TODO real number add
+
+    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+
+    // 创建临时变量保存IR的值，以及线性IR指令
+    node->blockInsts.addInst(left->blockInsts);
+    node->blockInsts.addInst(right->blockInsts);
+    node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_GREATER_EQUAL_I, resultValue, left->val, right->val));
+    node->val = resultValue;
+
+    return true;
+}
+
+/// @brief 整数 == 运算AST节点翻译成线性中间IR
+/// @param node AST节点
+/// @return 翻译是否成功，true：成功，false：失败
+bool IRGenerator::ir_equal(ast_node * node)
+{
+	ast_node * src1_node = node->sons[0];
+    ast_node * src2_node = node->sons[1];
+
+    // 除法节点，左结合，先计算左节点，后计算右节点
+
+    // 除法的左边操作数
+    ast_node * left = ir_visit_ast_node(src1_node);
+    if (!left) {
+        // 某个变量没有定值
+        return false;
+    }
+
+    // 加法的右边操作数
+    ast_node * right = ir_visit_ast_node(src2_node);
+    if (!right) {
+        // 某个变量没有定值
+        return false;
+    }
+
+    // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
+    // TODO real number add
+
+    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+
+    // 创建临时变量保存IR的值，以及线性IR指令
+    node->blockInsts.addInst(left->blockInsts);
+    node->blockInsts.addInst(right->blockInsts);
+    node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_EQUAL_I, resultValue, left->val, right->val));
+    node->val = resultValue;
+
+    return true;
+}
+
+/// @brief 整数 != 运算AST节点翻译成线性中间IR
+/// @param node AST节点
+/// @return 翻译是否成功，true：成功，false：失败
+bool IRGenerator::ir_not_equal(ast_node * node)
+{
+	ast_node * src1_node = node->sons[0];
+    ast_node * src2_node = node->sons[1];
+
+    // 除法节点，左结合，先计算左节点，后计算右节点
+
+    // 除法的左边操作数
+    ast_node * left = ir_visit_ast_node(src1_node);
+    if (!left) {
+        // 某个变量没有定值
+        return false;
+    }
+
+    // 加法的右边操作数
+    ast_node * right = ir_visit_ast_node(src2_node);
+    if (!right) {
+        // 某个变量没有定值
+        return false;
+    }
+
+    // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
+    // TODO real number add
+
+    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+
+    // 创建临时变量保存IR的值，以及线性IR指令
+    node->blockInsts.addInst(left->blockInsts);
+    node->blockInsts.addInst(right->blockInsts);
+    node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_NOT_EQUAL_I, resultValue, left->val, right->val));
+    node->val = resultValue;
+
+    return true;
+}
+
+/// @brief 整数 && 运算AST节点翻译成线性中间IR
+/// @param node AST节点
+/// @return 翻译是否成功，true：成功，false：失败
+bool IRGenerator::ir_logical_and(ast_node * node)
+{
+	ast_node * src1_node = node->sons[0];
+    ast_node * src2_node = node->sons[1];
+
+    // 除法节点，左结合，先计算左节点，后计算右节点
+
+    // 除法的左边操作数
+    ast_node * left = ir_visit_ast_node(src1_node);
+    if (!left) {
+        // 某个变量没有定值
+        return false;
+    }
+
+    // 加法的右边操作数
+    ast_node * right = ir_visit_ast_node(src2_node);
+    if (!right) {
+        // 某个变量没有定值
+        return false;
+    }
+
+    // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
+    // TODO real number add
+
+    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+
+    // 创建临时变量保存IR的值，以及线性IR指令
+    node->blockInsts.addInst(left->blockInsts);
+    node->blockInsts.addInst(right->blockInsts);
+    node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_LOGICAL_AND_I, resultValue, left->val, right->val));
+    node->val = resultValue;
+
+    return true;
+}
+
+/// @brief 整数 || 运算AST节点翻译成线性中间IR
+/// @param node AST节点
+/// @return 翻译是否成功，true：成功，false：失败
+bool IRGenerator::ir_logical_or(ast_node * node)
+{
+	ast_node * src1_node = node->sons[0];
+    ast_node * src2_node = node->sons[1];
+
+    // 除法节点，左结合，先计算左节点，后计算右节点
+
+    // 除法的左边操作数
+    ast_node * left = ir_visit_ast_node(src1_node);
+    if (!left) {
+        // 某个变量没有定值
+        return false;
+    }
+
+    // 加法的右边操作数
+    ast_node * right = ir_visit_ast_node(src2_node);
+    if (!right) {
+        // 某个变量没有定值
+        return false;
+    }
+
+    // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
+    // TODO real number add
+
+    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+
+    // 创建临时变量保存IR的值，以及线性IR指令
+    node->blockInsts.addInst(left->blockInsts);
+    node->blockInsts.addInst(right->blockInsts);
+    node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_LOGICAL_OR_I, resultValue, left->val, right->val));
     node->val = resultValue;
 
     return true;

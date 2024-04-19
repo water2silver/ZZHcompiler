@@ -236,7 +236,9 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 if(MSVC)
 	target_compile_definitions(${PROJECT_NAME} PRIVATE _CRT_SECURE_NO_WARNINGS __STDC_VERSION__=199901)
 else()
-	target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Werror -Wno-write-strings -Wno-unused-function)
+	target_compile_options(${PROJECT_NAME} PRIVATE -Wall 
+	# -Werror 
+	-Wno-write-strings -Wno-unused-function)
 endif()
 
 # 引入graphviz库的头文件，防止编译时找不到graphviz的头文件

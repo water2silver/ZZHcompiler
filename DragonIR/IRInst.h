@@ -48,6 +48,34 @@ enum class IRInstOperator {
 	/// @brief 整数的除法指令，二元运算
 	IRINST_OP_DIV_I,
 
+	/// @brief 整数的取模
+	IRINST_OP_MOD_I,
+
+	/// @brief < 整数指令，二元运算
+	IRINST_OP_LESS_THAN_I,
+
+	/// @brief > 整数指令，二元运算
+	IRINST_OP_GREATER_THAN_I,
+
+	/// @brief <=整数指令，二元运算
+	IRINST_OP_LESS_EQUAL_I,
+
+	/// @brief >=整数指令，二元运算
+	IRINST_OP_GREATER_EQUAL_I,
+
+	/// @brief ==整数指令，二元运算
+	IRINST_OP_EQUAL_I,
+
+	/// @brief !=整数指令，二元运算
+	IRINST_OP_NOT_EQUAL_I,
+
+	/// @brief &&整数指令，二元运算
+	IRINST_OP_LOGICAL_AND_I,
+
+	/// @brief || 整数指令，二元运算
+	IRINST_OP_LOGICAL_OR_I,
+
+
     /// @brief 最大指令码，也是无效指令
     IRINST_OP_MAX
 };

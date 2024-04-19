@@ -83,6 +83,33 @@ enum class ast_operator_type : int {
 	/// @brief 除法运算符
 	AST_OP_DIV,
 
+	/// @brief 取模运算
+	AST_OP_MOD,
+
+	/// @brief < 
+	AST_OP_LESS_THAN,
+
+	/// @brief >
+	AST_OP_GREATER_THAN,
+
+	/// @brief <=
+	AST_OP_LESS_EQUAL,
+
+	/// @brief >=
+	AST_OP_GREATER_EQUAL,
+
+	/// @brief ==
+	AST_OP_EQUAL,
+
+	/// @brief !=
+	AST_OP_NOT_EQUAL,
+
+	/// @brief &&
+	AST_OP_LOGICAL_AND,
+
+	/// @brief ||
+	AST_OP_LOGICAL_OR,
+
 
     /// @brief 最大标识符，表示非法运算符
     AST_OP_MAX,

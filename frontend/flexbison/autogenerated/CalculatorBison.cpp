@@ -120,33 +120,57 @@ enum yysymbol_kind_t
   YYSYMBOL_T_ID = 4,                       /* T_ID  */
   YYSYMBOL_T_FUNC = 5,                     /* T_FUNC  */
   YYSYMBOL_T_RETURN = 6,                   /* T_RETURN  */
-  YYSYMBOL_T_ADD = 7,                      /* T_ADD  */
-  YYSYMBOL_T_SUB = 8,                      /* T_SUB  */
-  YYSYMBOL_T_TIMES = 9,                    /* T_TIMES  */
-  YYSYMBOL_T_DIV = 10,                     /* T_DIV  */
-  YYSYMBOL_11_ = 11,                       /* '('  */
-  YYSYMBOL_12_ = 12,                       /* ')'  */
-  YYSYMBOL_13_ = 13,                       /* ','  */
-  YYSYMBOL_14_ = 14,                       /* '{'  */
-  YYSYMBOL_15_ = 15,                       /* '}'  */
-  YYSYMBOL_16_ = 16,                       /* '='  */
-  YYSYMBOL_17_ = 17,                       /* ';'  */
-  YYSYMBOL_YYACCEPT = 18,                  /* $accept  */
-  YYSYMBOL_CompileUnit = 19,               /* CompileUnit  */
-  YYSYMBOL_FuncDef = 20,                   /* FuncDef  */
-  YYSYMBOL_FuncFormalParams = 21,          /* FuncFormalParams  */
-  YYSYMBOL_FuncFormalParam = 22,           /* FuncFormalParam  */
-  YYSYMBOL_FuncBasicParam = 23,            /* FuncBasicParam  */
-  YYSYMBOL_Block = 24,                     /* Block  */
-  YYSYMBOL_BlockItemList = 25,             /* BlockItemList  */
-  YYSYMBOL_BlockItem = 26,                 /* BlockItem  */
-  YYSYMBOL_Statement = 27,                 /* Statement  */
-  YYSYMBOL_Expr = 28,                      /* Expr  */
-  YYSYMBOL_AddExp = 29,                    /* AddExp  */
-  YYSYMBOL_UnaryExp = 30,                  /* UnaryExp  */
-  YYSYMBOL_PrimaryExp = 31,                /* PrimaryExp  */
-  YYSYMBOL_LVal = 32,                      /* LVal  */
-  YYSYMBOL_RealParamList = 33              /* RealParamList  */
+  YYSYMBOL_T_MAIN = 7,                     /* T_MAIN  */
+  YYSYMBOL_T_IF = 8,                       /* T_IF  */
+  YYSYMBOL_T_ELSE = 9,                     /* T_ELSE  */
+  YYSYMBOL_T_WHILE = 10,                   /* T_WHILE  */
+  YYSYMBOL_T_CONST = 11,                   /* T_CONST  */
+  YYSYMBOL_T_VOID = 12,                    /* T_VOID  */
+  YYSYMBOL_T_CONTINUE = 13,                /* T_CONTINUE  */
+  YYSYMBOL_T_BREAK = 14,                   /* T_BREAK  */
+  YYSYMBOL_T_INT = 15,                     /* T_INT  */
+  YYSYMBOL_T_ADD = 16,                     /* T_ADD  */
+  YYSYMBOL_T_SUB = 17,                     /* T_SUB  */
+  YYSYMBOL_T_TIMES = 18,                   /* T_TIMES  */
+  YYSYMBOL_T_DIV = 19,                     /* T_DIV  */
+  YYSYMBOL_T_MOD = 20,                     /* T_MOD  */
+  YYSYMBOL_T_EQUAL = 21,                   /* T_EQUAL  */
+  YYSYMBOL_T_NOT_EQUAL = 22,               /* T_NOT_EQUAL  */
+  YYSYMBOL_T_LESS_THAN = 23,               /* T_LESS_THAN  */
+  YYSYMBOL_T_GREATER_THEN = 24,            /* T_GREATER_THEN  */
+  YYSYMBOL_T_LESS_EQUAL = 25,              /* T_LESS_EQUAL  */
+  YYSYMBOL_T_GREATER_EQUAL = 26,           /* T_GREATER_EQUAL  */
+  YYSYMBOL_T_LOGICAL_AND = 27,             /* T_LOGICAL_AND  */
+  YYSYMBOL_T_LOGICAL_OR = 28,              /* T_LOGICAL_OR  */
+  YYSYMBOL_T_NOT = 29,                     /* T_NOT  */
+  YYSYMBOL_30_ = 30,                       /* '('  */
+  YYSYMBOL_31_ = 31,                       /* ')'  */
+  YYSYMBOL_32_ = 32,                       /* ','  */
+  YYSYMBOL_33_ = 33,                       /* '{'  */
+  YYSYMBOL_34_ = 34,                       /* '}'  */
+  YYSYMBOL_35_ = 35,                       /* '='  */
+  YYSYMBOL_36_ = 36,                       /* ';'  */
+  YYSYMBOL_YYACCEPT = 37,                  /* $accept  */
+  YYSYMBOL_CompileUnit = 38,               /* CompileUnit  */
+  YYSYMBOL_FuncDef = 39,                   /* FuncDef  */
+  YYSYMBOL_FuncFormalParams = 40,          /* FuncFormalParams  */
+  YYSYMBOL_FuncFormalParam = 41,           /* FuncFormalParam  */
+  YYSYMBOL_FuncBasicParam = 42,            /* FuncBasicParam  */
+  YYSYMBOL_Block = 43,                     /* Block  */
+  YYSYMBOL_BlockItemList = 44,             /* BlockItemList  */
+  YYSYMBOL_BlockItem = 45,                 /* BlockItem  */
+  YYSYMBOL_Statement = 46,                 /* Statement  */
+  YYSYMBOL_Expr = 47,                      /* Expr  */
+  YYSYMBOL_RelExp = 48,                    /* RelExp  */
+  YYSYMBOL_EqExp = 49,                     /* EqExp  */
+  YYSYMBOL_LAndExp = 50,                   /* LAndExp  */
+  YYSYMBOL_LOrExp = 51,                    /* LOrExp  */
+  YYSYMBOL_AddExp = 52,                    /* AddExp  */
+  YYSYMBOL_MulExp = 53,                    /* MulExp  */
+  YYSYMBOL_UnaryExp = 54,                  /* UnaryExp  */
+  YYSYMBOL_PrimaryExp = 55,                /* PrimaryExp  */
+  YYSYMBOL_LVal = 56,                      /* LVal  */
+  YYSYMBOL_RealParamList = 57              /* RealParamList  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -472,21 +496,21 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  20
+#define YYFINAL  25
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   66
+#define YYLAST   86
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  18
+#define YYNTOKENS  37
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  16
+#define YYNNTS  21
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  35
+#define YYNRULES  49
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  61
+#define YYNSTATES  83
 
 /* YYMAXUTOK -- Last valid token kind.  */
-#define YYMAXUTOK   265
+#define YYMAXUTOK   284
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -504,15 +528,15 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      11,    12,     2,     2,    13,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,    17,
-       2,    16,     2,     2,     2,     2,     2,     2,     2,     2,
+      30,    31,     2,     2,    32,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,    36,
+       2,    35,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,    14,     2,    15,     2,     2,     2,     2,
+       2,     2,     2,    33,     2,    34,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -526,17 +550,20 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9,    10
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29
 };
 
 #if YYDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_uint8 yyrline[] =
+static const yytype_int16 yyrline[] =
 {
-       0,    59,    59,    63,    67,    70,    76,    79,    85,    88,
-      94,   100,   106,   110,   117,   122,   131,   137,   149,   156,
-     163,   169,   175,   181,   187,   193,   196,   200,   204,   207,
-     211,   215,   221,   227,   235,   238
+       0,    72,    72,    76,    80,    83,    89,    92,    98,   101,
+     107,   113,   119,   123,   130,   135,   144,   150,   162,   169,
+     176,   183,   188,   192,   197,   201,   205,   211,   215,   220,
+     225,   229,   234,   238,   249,   255,   261,   269,   273,   277,
+     281,   288,   291,   295,   304,   308,   314,   321,   329,   332
 };
 #endif
 
@@ -553,11 +580,15 @@ static const char *yysymbol_name (yysymbol_kind_t yysymbol) YY_ATTRIBUTE_UNUSED;
 static const char *const yytname[] =
 {
   "\"end of file\"", "error", "\"invalid token\"", "T_DIGIT", "T_ID",
-  "T_FUNC", "T_RETURN", "T_ADD", "T_SUB", "T_TIMES", "T_DIV", "'('", "')'",
-  "','", "'{'", "'}'", "'='", "';'", "$accept", "CompileUnit", "FuncDef",
-  "FuncFormalParams", "FuncFormalParam", "FuncBasicParam", "Block",
-  "BlockItemList", "BlockItem", "Statement", "Expr", "AddExp", "UnaryExp",
-  "PrimaryExp", "LVal", "RealParamList", YY_NULLPTR
+  "T_FUNC", "T_RETURN", "T_MAIN", "T_IF", "T_ELSE", "T_WHILE", "T_CONST",
+  "T_VOID", "T_CONTINUE", "T_BREAK", "T_INT", "T_ADD", "T_SUB", "T_TIMES",
+  "T_DIV", "T_MOD", "T_EQUAL", "T_NOT_EQUAL", "T_LESS_THAN",
+  "T_GREATER_THEN", "T_LESS_EQUAL", "T_GREATER_EQUAL", "T_LOGICAL_AND",
+  "T_LOGICAL_OR", "T_NOT", "'('", "')'", "','", "'{'", "'}'", "'='", "';'",
+  "$accept", "CompileUnit", "FuncDef", "FuncFormalParams",
+  "FuncFormalParam", "FuncBasicParam", "Block", "BlockItemList",
+  "BlockItem", "Statement", "Expr", "RelExp", "EqExp", "LAndExp", "LOrExp",
+  "AddExp", "MulExp", "UnaryExp", "PrimaryExp", "LVal", "RealParamList", YY_NULLPTR
 };
 
 static const char *
@@ -567,7 +598,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-12)
+#define YYPACT_NINF (-25)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -581,13 +612,15 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      38,   -12,     7,    -1,    42,    42,    24,   -12,   -12,   -11,
-      12,    41,   -12,   -12,    28,    42,    -2,    14,    19,    26,
-     -12,   -12,   -12,   -12,    42,    42,    44,    44,   -12,   -12,
-      21,    37,     9,   -12,   -12,    41,    41,   -12,   -12,   -12,
-     -12,    42,   -12,   -12,    47,    45,   -12,   -12,   -12,     1,
-     -12,    47,    48,   -12,    11,   -12,   -12,   -12,   -12,   -12,
-     -12
+      18,   -25,   -24,     5,    22,    22,    14,   -25,   -25,     1,
+      31,    28,     8,    25,    11,    23,   -25,   -25,   -25,     9,
+      22,     2,    21,    24,    27,   -25,   -25,   -25,   -25,    22,
+      22,    22,    22,    22,    22,    22,    22,    22,    22,    22,
+      22,    22,   -25,   -25,    34,    33,     0,   -25,   -25,    11,
+      11,    11,    11,    31,    31,    28,     8,    23,    23,   -25,
+     -25,   -25,   -25,    22,   -25,   -25,    41,    36,   -25,   -25,
+     -25,    -1,   -25,    41,    71,   -25,     4,   -25,   -25,   -25,
+     -25,   -25,   -25
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -595,27 +628,31 @@ static const yytype_int8 yypact[] =
    means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,    31,    33,     0,     0,     0,     0,     2,     3,    19,
-      21,    24,    25,    32,     0,     0,     0,    33,     0,     0,
-       1,     4,     5,    18,     0,     0,     0,     0,    26,    34,
-       0,     0,     0,    20,    30,    22,    23,    33,    28,    29,
-      27,     0,    17,    11,     0,     0,     8,    10,    35,     0,
-       6,     0,     0,    12,     0,    14,    16,     7,     9,    13,
-      15
+       0,    45,    47,     0,     0,     0,     0,     2,     3,    19,
+      27,    30,    32,    21,    22,    36,    40,    41,    46,     0,
+       0,     0,    47,     0,     0,     1,     4,     5,    18,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,    42,    48,     0,     0,     0,    20,    44,    23,
+      24,    25,    26,    28,    29,    31,    33,    34,    35,    37,
+      38,    39,    43,     0,    17,    11,     0,     0,     8,    10,
+      49,     0,     6,     0,     0,    12,     0,    14,    16,     7,
+       9,    13,    15
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -12,   -12,    50,   -12,    13,   -12,    15,   -12,    10,     2,
-      -4,   -12,    35,    36,   -12,   -12
+     -25,   -25,    70,   -25,     3,   -25,     7,   -25,    10,    30,
+      -4,    37,    43,    45,   -25,    32,    35,     6,   -25,   -25,
+     -25
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-       0,     6,     7,    45,    46,    47,    50,    54,    55,    56,
-       9,    10,    11,    12,    13,    30
+       0,     6,     7,    67,    68,    69,    72,    76,    77,    78,
+       9,    10,    11,    12,    13,    14,    15,    16,    17,    18,
+      44
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -623,46 +660,53 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      18,    19,     8,    16,     1,     2,    23,     4,    22,    32,
-      29,    31,     5,    43,     1,     2,    53,     4,    14,    24,
-      25,    44,     5,    15,    20,    14,    59,     1,     2,     3,
-       4,     1,    17,    40,    41,     5,    33,    48,    34,     5,
-      28,     1,     2,     3,     4,     1,    17,     1,    37,     5,
-      26,    27,    43,     5,    42,     5,    21,    51,    52,    35,
-      36,    49,    38,    39,    60,    58,    57
+      23,    24,     1,     2,    65,     4,    19,     1,     2,    21,
+       4,    20,     1,    22,    25,    43,    45,     1,     2,     3,
+       4,     1,     2,     3,     4,     1,    22,    37,    38,     5,
+       8,    66,    46,    75,     5,    35,    27,    28,    81,     5,
+      42,    39,    40,    41,     5,    59,    60,    61,     5,    33,
+      34,    19,     5,    36,    29,    30,    31,    32,    48,    70,
+      47,    49,    50,    51,    52,    62,    63,    73,    74,    64,
+      53,    54,    57,    58,    71,    65,    26,    80,    55,     0,
+      79,    56,     0,     0,     0,     0,    82
 };
 
 static const yytype_int8 yycheck[] =
 {
-       4,     5,     0,     4,     3,     4,    17,     6,     6,    11,
-      14,    15,    11,     4,     3,     4,    15,     6,    11,     7,
-       8,    12,    11,    16,     0,    11,    15,     3,     4,     5,
-       6,     3,     4,    12,    13,    11,    17,    41,    12,    11,
-      12,     3,     4,     5,     6,     3,     4,     3,     4,    11,
-       9,    10,     4,    11,    17,    11,     6,    12,    13,    24,
-      25,    14,    26,    27,    54,    52,    51
+       4,     5,     3,     4,     4,     6,    30,     3,     4,     4,
+       6,    35,     3,     4,     0,    19,    20,     3,     4,     5,
+       6,     3,     4,     5,     6,     3,     4,    16,    17,    30,
+       0,    31,    30,    34,    30,    27,     6,    36,    34,    30,
+      31,    18,    19,    20,    30,    39,    40,    41,    30,    21,
+      22,    30,    30,    28,    23,    24,    25,    26,    31,    63,
+      36,    29,    30,    31,    32,    31,    32,    31,    32,    36,
+      33,    34,    37,    38,    33,     4,     6,    74,    35,    -1,
+      73,    36,    -1,    -1,    -1,    -1,    76
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     3,     4,     5,     6,    11,    19,    20,    27,    28,
-      29,    30,    31,    32,    11,    16,     4,     4,    28,    28,
-       0,    20,    27,    17,     7,     8,     9,    10,    12,    28,
-      33,    28,    11,    17,    12,    30,    30,     4,    31,    31,
-      12,    13,    17,     4,    12,    21,    22,    23,    28,    14,
-      24,    12,    13,    15,    25,    26,    27,    24,    22,    15,
-      26
+       0,     3,     4,     5,     6,    30,    38,    39,    46,    47,
+      48,    49,    50,    51,    52,    53,    54,    55,    56,    30,
+      35,     4,     4,    47,    47,     0,    39,    46,    36,    23,
+      24,    25,    26,    21,    22,    27,    28,    16,    17,    18,
+      19,    20,    31,    47,    57,    47,    30,    36,    31,    52,
+      52,    52,    52,    48,    48,    49,    50,    53,    53,    54,
+      54,    54,    31,    32,    36,     4,    31,    40,    41,    42,
+      47,    33,    43,    31,    32,    34,    44,    45,    46,    43,
+      41,    34,    45
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    18,    19,    19,    19,    19,    20,    20,    21,    21,
-      22,    23,    24,    24,    25,    25,    26,    27,    27,    27,
-      27,    28,    29,    29,    29,    30,    30,    30,    30,    30,
-      31,    31,    31,    32,    33,    33
+       0,    37,    38,    38,    38,    38,    39,    39,    40,    40,
+      41,    42,    43,    43,    44,    44,    45,    46,    46,    46,
+      46,    47,    48,    48,    48,    48,    48,    49,    49,    49,
+      50,    50,    51,    51,    52,    52,    52,    53,    53,    53,
+      53,    54,    54,    54,    55,    55,    55,    56,    57,    57
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
@@ -670,8 +714,9 @@ static const yytype_int8 yyr2[] =
 {
        0,     2,     1,     1,     2,     2,     5,     6,     1,     3,
        1,     1,     2,     3,     1,     2,     1,     4,     2,     1,
-       3,     1,     3,     3,     1,     1,     3,     4,     3,     3,
-       3,     1,     1,     1,     1,     3
+       3,     1,     1,     3,     3,     3,     3,     1,     3,     3,
+       1,     3,     1,     3,     3,     3,     1,     3,     3,     3,
+       1,     1,     3,     4,     3,     1,     1,     1,     1,     3
 };
 
 
@@ -1135,136 +1180,136 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* CompileUnit: FuncDef  */
-#line 59 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 72 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                       {
         (yyval.node) = create_contain_node(ast_operator_type::AST_OP_COMPILE_UNIT, (yyvsp[0].node));
         ast_root = (yyval.node);
     }
-#line 1144 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1189 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
   case 3: /* CompileUnit: Statement  */
-#line 63 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 76 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                 {
         (yyval.node) = create_contain_node(ast_operator_type::AST_OP_COMPILE_UNIT, (yyvsp[0].node));
         ast_root = (yyval.node);
     }
-#line 1153 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1198 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
   case 4: /* CompileUnit: CompileUnit FuncDef  */
-#line 67 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 80 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                           {
         (yyval.node) = insert_ast_node((yyvsp[-1].node), (yyvsp[0].node));
     }
-#line 1161 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1206 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
   case 5: /* CompileUnit: CompileUnit Statement  */
-#line 70 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 83 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                             {
         (yyval.node) = insert_ast_node((yyvsp[-1].node), (yyvsp[0].node));
     }
-#line 1169 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1214 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
   case 6: /* FuncDef: T_FUNC T_ID '(' ')' Block  */
-#line 76 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 89 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                                      {
         (yyval.node) = create_func_def((yyvsp[-3].var_id).lineno, (yyvsp[-3].var_id).id, (yyvsp[0].node), nullptr);
     }
-#line 1177 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1222 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
   case 7: /* FuncDef: T_FUNC T_ID '(' FuncFormalParams ')' Block  */
-#line 79 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 92 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                                                  {
         (yyval.node) = create_func_def((yyvsp[-4].var_id).lineno, (yyvsp[-4].var_id).id, (yyvsp[0].node), (yyvsp[-2].node));
     }
-#line 1185 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1230 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
   case 8: /* FuncFormalParams: FuncFormalParam  */
-#line 85 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 98 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                                     {
         (yyval.node) = create_contain_node(ast_operator_type::AST_OP_FUNC_FORMAL_PARAMS, (yyvsp[0].node));
     }
-#line 1193 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1238 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
   case 9: /* FuncFormalParams: FuncFormalParams ',' FuncFormalParam  */
-#line 88 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 101 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                                            {
         (yyval.node) = insert_ast_node((yyvsp[-2].node), (yyvsp[0].node));
     }
-#line 1201 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1246 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
   case 10: /* FuncFormalParam: FuncBasicParam  */
-#line 94 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 107 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                                   {
         (yyval.node) = (yyvsp[0].node);
     }
-#line 1209 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1254 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
   case 11: /* FuncBasicParam: T_ID  */
-#line 100 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 113 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                       {
         (yyval.node) = create_func_formal_param((yyvsp[0].var_id).lineno, (yyvsp[0].var_id).id);
     }
-#line 1217 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1262 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
   case 12: /* Block: '{' '}'  */
-#line 106 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 119 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                 {
         // 语句块没有语句
         (yyval.node) = nullptr;
     }
-#line 1226 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1271 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
   case 13: /* Block: '{' BlockItemList '}'  */
-#line 110 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 123 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                             {
         // 语句块含有语句
         (yyval.node) = (yyvsp[-1].node);
     }
-#line 1235 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1280 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
   case 14: /* BlockItemList: BlockItem  */
-#line 117 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 130 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                           {
         // 第一个左侧的孩子节点归约成Block父节点，后续语句可不断作为孩子追加到block中
         // 创建一个AST_OP_BLOCK类型的中间节点，孩子为Statement($1)
         (yyval.node) = new_ast_node(ast_operator_type::AST_OP_BLOCK, (yyvsp[0].node), nullptr);
     }
-#line 1245 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1290 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
   case 15: /* BlockItemList: BlockItemList BlockItem  */
-#line 122 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 135 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                                {
         // 采用左递归的文法产生式，可以使得Block节点在上个产生式创建，后续递归追加孩子节点
         // 请注意，不要采用右递归，左递归翻遍孩子的追加
         // BlockItem($2)作为Block($1)的孩子 
         (yyval.node) = insert_ast_node((yyvsp[-1].node), (yyvsp[0].node));
     }
-#line 1256 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1301 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
   case 16: /* BlockItem: Statement  */
-#line 131 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 144 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                        {
         (yyval.node) = (yyvsp[0].node);
     }
-#line 1264 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1309 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
   case 17: /* Statement: T_ID '=' Expr ';'  */
-#line 137 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 150 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                               {
         // 归约到Statement时要执行的语义动作程序
         // 赋值语句，不显示值
@@ -1277,11 +1322,11 @@ yyreduce:
         // 创建一个AST_OP_ASSIGN类型的中间节点，孩子为Id和Expr($3)
         (yyval.node) = new_ast_node(ast_operator_type::AST_OP_ASSIGN, id_node, (yyvsp[-1].node), nullptr);
     }
-#line 1281 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1326 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
   case 18: /* Statement: Expr ';'  */
-#line 149 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 162 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                {
         // Expr归约到Statement时要执行的语义动作程序
         // 表达式语句，不显示表达式的值
@@ -1289,11 +1334,11 @@ yyreduce:
         // 创建一个AST_OP_EXPR类型的中间节点，孩子为Expr($1)
         (yyval.node) = new_ast_node(ast_operator_type::AST_OP_EXPR, (yyvsp[-1].node), nullptr);
     }
-#line 1293 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1338 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
   case 19: /* Statement: Expr  */
-#line 156 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 169 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
            {
         // Expr归约到Statement时要执行的语义动作程序
         // 表达式语句，需要显示表达式的值
@@ -1301,130 +1346,244 @@ yyreduce:
         // 创建一个AST_OP_EXPR_SHOW类型的中间节点，孩子为Expr($1)
         (yyval.node) = new_ast_node(ast_operator_type::AST_OP_EXPR_SHOW, (yyvsp[0].node), nullptr);
     }
-#line 1305 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1350 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
   case 20: /* Statement: T_RETURN Expr ';'  */
-#line 163 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 176 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                         {
         // 返回语句
         (yyval.node) = new_ast_node(ast_operator_type::AST_OP_RETURN_STATEMENT, (yyvsp[-1].node), nullptr);
     }
-#line 1314 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1359 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
-  case 21: /* Expr: AddExp  */
-#line 169 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+  case 21: /* Expr: LOrExp  */
+#line 183 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
               { 
         (yyval.node) = (yyvsp[0].node); 
     }
-#line 1322 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1367 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
-  case 22: /* AddExp: AddExp T_ADD UnaryExp  */
-#line 175 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
-                               {
+  case 22: /* RelExp: AddExp  */
+#line 189 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+        {
+		(yyval.node) = (yyvsp[0].node);
+	}
+#line 1375 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+    break;
+
+  case 23: /* RelExp: RelExp T_LESS_THAN AddExp  */
+#line 193 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+        {
+		//
+		(yyval.node) = new_ast_node(ast_operator_type::AST_OP_LESS_THAN, (yyvsp[-2].node), (yyvsp[0].node), nullptr);
+	}
+#line 1384 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+    break;
+
+  case 24: /* RelExp: RelExp T_GREATER_THEN AddExp  */
+#line 198 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+        {
+		(yyval.node) = new_ast_node(ast_operator_type::AST_OP_GREATER_THAN, (yyvsp[-2].node), (yyvsp[0].node), nullptr);
+	}
+#line 1392 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+    break;
+
+  case 25: /* RelExp: RelExp T_LESS_EQUAL AddExp  */
+#line 202 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+        {
+		(yyval.node) = new_ast_node(ast_operator_type::AST_OP_LESS_EQUAL, (yyvsp[-2].node), (yyvsp[0].node), nullptr);
+	}
+#line 1400 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+    break;
+
+  case 26: /* RelExp: RelExp T_GREATER_EQUAL AddExp  */
+#line 206 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+        {
+		(yyval.node) = new_ast_node(ast_operator_type::AST_OP_GREATER_EQUAL, (yyvsp[-2].node), (yyvsp[0].node), nullptr);
+	}
+#line 1408 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+    break;
+
+  case 27: /* EqExp: RelExp  */
+#line 212 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+        {
+		(yyval.node) = (yyvsp[0].node);
+	}
+#line 1416 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+    break;
+
+  case 28: /* EqExp: EqExp T_EQUAL RelExp  */
+#line 216 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+        {
+		(yyval.node) = new_ast_node(ast_operator_type::AST_OP_EQUAL, (yyvsp[-2].node), (yyvsp[0].node), nullptr);
+		
+	}
+#line 1425 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+    break;
+
+  case 29: /* EqExp: EqExp T_NOT_EQUAL RelExp  */
+#line 221 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+        {
+		(yyval.node) = new_ast_node(ast_operator_type::AST_OP_NOT_EQUAL, (yyvsp[-2].node), (yyvsp[0].node), nullptr);
+	}
+#line 1433 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+    break;
+
+  case 30: /* LAndExp: EqExp  */
+#line 226 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+        {
+		(yyval.node) = (yyvsp[0].node);
+	}
+#line 1441 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+    break;
+
+  case 31: /* LAndExp: LAndExp T_LOGICAL_AND EqExp  */
+#line 230 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+        {
+		(yyval.node) = new_ast_node(ast_operator_type::AST_OP_LOGICAL_AND, (yyvsp[-2].node), (yyvsp[0].node), nullptr);
+	}
+#line 1449 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+    break;
+
+  case 32: /* LOrExp: LAndExp  */
+#line 235 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+        {
+		(yyval.node) = (yyvsp[0].node);
+	}
+#line 1457 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+    break;
+
+  case 33: /* LOrExp: LOrExp T_LOGICAL_OR LAndExp  */
+#line 239 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+        {
+		(yyval.node) = new_ast_node(ast_operator_type::AST_OP_LOGICAL_OR, (yyvsp[-2].node), (yyvsp[0].node), nullptr);
+	}
+#line 1465 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+    break;
+
+  case 34: /* AddExp: AddExp T_ADD MulExp  */
+#line 249 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+                             {
         /* Expr = Expr + Term */
 
         // 创建一个AST_OP_ADD类型的中间节点，孩子为Expr($1)和Term($3)
         (yyval.node) = new_ast_node(ast_operator_type::AST_OP_ADD, (yyvsp[-2].node), (yyvsp[0].node), nullptr);
     }
-#line 1333 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1476 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
-  case 23: /* AddExp: AddExp T_SUB UnaryExp  */
-#line 181 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
-                            {
+  case 35: /* AddExp: AddExp T_SUB MulExp  */
+#line 255 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+                          {
         /* Expr = Expr + Term */
 
         // 创建一个AST_OP_ADD类型的中间节点，孩子为Expr($1)和Term($3)
         (yyval.node) = new_ast_node(ast_operator_type::AST_OP_SUB, (yyvsp[-2].node), (yyvsp[0].node), nullptr);
     }
-#line 1344 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1487 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
-  case 24: /* AddExp: UnaryExp  */
-#line 187 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+  case 36: /* AddExp: MulExp  */
+#line 261 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                {
-        /* Expr = Term */
-        (yyval.node) = (yyvsp[0].node);
-    }
-#line 1353 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+		(yyval.node) = (yyvsp[0].node);
+	}
+#line 1495 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
-  case 25: /* UnaryExp: PrimaryExp  */
-#line 193 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+  case 37: /* MulExp: MulExp T_TIMES UnaryExp  */
+#line 270 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+        {
+		(yyval.node) = new_ast_node(ast_operator_type::AST_OP_TIMES,(yyvsp[-2].node),(yyvsp[0].node),nullptr);
+	}
+#line 1503 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+    break;
+
+  case 38: /* MulExp: MulExp T_DIV UnaryExp  */
+#line 274 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+        {
+		(yyval.node) = new_ast_node(ast_operator_type::AST_OP_DIV,(yyvsp[-2].node),(yyvsp[0].node),nullptr);
+	}
+#line 1511 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+    break;
+
+  case 39: /* MulExp: MulExp T_MOD UnaryExp  */
+#line 278 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+        {
+		(yyval.node) = new_ast_node(ast_operator_type::AST_OP_MOD,(yyvsp[-2].node),(yyvsp[0].node),nullptr);
+	}
+#line 1519 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+    break;
+
+  case 40: /* MulExp: UnaryExp  */
+#line 282 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+        {
+		/* Expr = Term */
+        (yyval.node) = (yyvsp[0].node);
+	}
+#line 1528 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+    break;
+
+  case 41: /* UnaryExp: PrimaryExp  */
+#line 288 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                       {
         (yyval.node) = (yyvsp[0].node);
     }
-#line 1361 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1536 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
-  case 26: /* UnaryExp: T_ID '(' ')'  */
-#line 196 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+  case 42: /* UnaryExp: T_ID '(' ')'  */
+#line 291 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                    {
         // 用户自定义的不含实参的函数调用
         (yyval.node) = create_func_call((yyvsp[-2].var_id).lineno, (yyvsp[-2].var_id).id, nullptr);
     }
-#line 1370 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1545 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
-  case 27: /* UnaryExp: T_ID '(' RealParamList ')'  */
-#line 200 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+  case 43: /* UnaryExp: T_ID '(' RealParamList ')'  */
+#line 295 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                                  {
         // 用户自定义的含有实参的参数调用
         (yyval.node) = create_func_call((yyvsp[-3].var_id).lineno, (yyvsp[-3].var_id).id, (yyvsp[-1].node));
     }
-#line 1379 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1554 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
-  case 28: /* UnaryExp: UnaryExp T_TIMES PrimaryExp  */
-#line 204 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
-                                     {
-		(yyval.node) = new_ast_node(ast_operator_type::AST_OP_TIMES,(yyvsp[-2].node),(yyvsp[0].node),nullptr);
-	}
-#line 1387 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
-    break;
-
-  case 29: /* UnaryExp: UnaryExp T_DIV PrimaryExp  */
-#line 207 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
-                                   {
-		(yyval.node) = new_ast_node(ast_operator_type::AST_OP_DIV,(yyvsp[-2].node),(yyvsp[0].node),nullptr);
-	}
-#line 1395 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
-    break;
-
-  case 30: /* PrimaryExp: '(' Expr ')'  */
-#line 211 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+  case 44: /* PrimaryExp: '(' Expr ')'  */
+#line 304 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                            {
         /* PrimaryExp = Expr */
         (yyval.node) = (yyvsp[-1].node);
     }
-#line 1404 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1563 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
-  case 31: /* PrimaryExp: T_DIGIT  */
-#line 215 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+  case 45: /* PrimaryExp: T_DIGIT  */
+#line 308 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
               {
         // 无符号整数识别
 
         // 终结符作为抽象语法树的叶子节点进行创建
         (yyval.node) = new_ast_leaf_node(digit_int_attr{(yyvsp[0].integer_num).val, (yyvsp[0].integer_num).lineno});
     }
-#line 1415 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1574 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
-  case 32: /* PrimaryExp: LVal  */
-#line 221 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+  case 46: /* PrimaryExp: LVal  */
+#line 314 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
             {
         // 左值
         (yyval.node) = (yyvsp[0].node);
     }
-#line 1424 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1583 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
-  case 33: /* LVal: T_ID  */
-#line 227 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+  case 47: /* LVal: T_ID  */
+#line 321 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
             {
         // 终结符作为抽象语法树的叶子节点进行创建
         (yyval.node) = new_ast_leaf_node(var_id_attr{(yyvsp[0].var_id).id, (yyvsp[0].var_id).lineno});
@@ -1432,27 +1591,27 @@ yyreduce:
 		// 对于字符型字面量的字符串空间需要释放，因词法用到了strdup进行了字符串复制
 		free((yyvsp[0].var_id).id);
     }
-#line 1436 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1595 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
-  case 34: /* RealParamList: Expr  */
-#line 235 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+  case 48: /* RealParamList: Expr  */
+#line 329 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                      {
         (yyval.node) = create_contain_node(ast_operator_type::AST_OP_FUNC_REAL_PARAMS, (yyvsp[0].node));
     }
-#line 1444 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1603 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
-  case 35: /* RealParamList: RealParamList ',' Expr  */
-#line 238 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+  case 49: /* RealParamList: RealParamList ',' Expr  */
+#line 332 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                              {
         (yyval.node) = insert_ast_node((yyvsp[-2].node), (yyvsp[0].node));
     }
-#line 1452 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1611 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
     break;
 
 
-#line 1456 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
+#line 1615 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorBison.cpp"
 
       default: break;
     }
@@ -1645,7 +1804,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 242 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 336 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
 
 
 // 语法识别错误要调用函数的定义

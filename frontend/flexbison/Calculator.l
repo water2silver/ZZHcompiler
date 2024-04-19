@@ -84,7 +84,42 @@ white_line  [\r\n]
                 // return关键字
                 return T_RETURN;
             }
-
+"int"		{
+				// int
+				return T_INT;
+}
+"main"		{
+				// main
+				return T_MAIN;
+}
+"if"		{
+				// if
+				return T_IF;
+}
+"else"		{
+				//else
+				return T_ELSE;
+}
+"while"		{
+				//while
+				return T_WHILE;
+}
+"const"		{
+				//const
+				return T_CONST;
+}
+"void"		{
+				//const
+				return T_VOID;
+}
+"continue"	{
+				//continue
+				return T_CONTINUE;
+}
+"break"		{
+				//continue
+				return T_CONTINUE;
+}
 {l}+({d}|{l})* {
                 yylval.var_id.id = strdup(yytext);
                 yylval.var_id.lineno = yylineno;
@@ -99,6 +134,7 @@ white_line  [\r\n]
 
 "*"			{return T_TIMES;}
 "/"			{return T_DIV;}
+"%" 		{return T_MOD;}
 
 "="         {return '=';}
 ";"         {return ';';}
@@ -107,6 +143,16 @@ white_line  [\r\n]
 "}"         {return '}'; }
 
 ","         {return ','; }
+
+"=="		{return T_EQUAL;}
+"!="		{return T_NOT_EQUAL;}
+"<"			{return T_LESS_THAN;}
+">"			{return T_GREATER_THEN;}
+"<="		{return T_LESS_EQUAL;}
+">="		{return T_GREATER_EQUAL;}
+"!"			{return T_NOT;}
+"&&"		{return T_LOGICAL_AND;}
+"||"		{return T_LOGICAL_OR;}
 
 {white}+	 ;
 

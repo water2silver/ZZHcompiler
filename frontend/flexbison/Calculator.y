@@ -32,7 +32,17 @@ void yyerror(char * msg);
 // 对于单个字符的算符或者分隔符，在词法分析时可直返返回对应的字符即可
 %token <integer_num> T_DIGIT
 %token <var_id> T_ID
-%token T_FUNC T_RETURN T_ADD T_SUB T_TIMES T_DIV
+
+//保留关键字
+%token T_FUNC T_RETURN T_MAIN T_IF T_ELSE T_WHILE T_CONST 
+%token T_VOID T_CONTINUE T_BREAK 
+// 类型
+%token T_INT
+//计算
+%token T_ADD T_SUB T_TIMES T_DIV T_MOD T_EQUAL T_NOT_EQUAL
+%token T_LESS_THAN T_GREATER_THEN T_LESS_EQUAL T_GREATER_EQUAL
+%token T_LOGICAL_AND T_LOGICAL_OR
+%token T_NOT
 
 %type <node> CompileUnit
 
@@ -53,6 +63,9 @@ void yyerror(char * msg);
 %type <node> PrimaryExp
 %type <node> RealParamList
 
+// 新增
+//运算优先级 MulExp AddExp RelExp EqExp LAndExp LOrExp 
+%type <node> MulExp RelExp EqExp LAndExp LOrExp ConstExp 
 %%
 
 /* 编译单元可包含若干个函数，main函数作为程序的入口，必须存在 */
@@ -166,29 +179,107 @@ Statement : T_ID '=' Expr ';' {
     }
     ;
 
-Expr : AddExp { 
+//////////////试试 原本是 AddExp
+Expr : LOrExp { 
         $$ = $1; 
     }
     ;
+//关系表达式
+RelExp : AddExp
+	{
+		$$ = $1;
+	}
+	| RelExp T_LESS_THAN AddExp
+	{
+		//
+		$$ = new_ast_node(ast_operator_type::AST_OP_LESS_THAN, $1, $3, nullptr);
+	}
+	| RelExp T_GREATER_THEN AddExp
+	{
+		$$ = new_ast_node(ast_operator_type::AST_OP_GREATER_THAN, $1, $3, nullptr);
+	} 
+	| RelExp T_LESS_EQUAL AddExp
+	{
+		$$ = new_ast_node(ast_operator_type::AST_OP_LESS_EQUAL, $1, $3, nullptr);
+	}
+	|RelExp T_GREATER_EQUAL AddExp
+	{
+		$$ = new_ast_node(ast_operator_type::AST_OP_GREATER_EQUAL, $1, $3, nullptr);
+	}
+	;
+//相等性表达式
+EqExp : RelExp
+	{
+		$$ = $1;
+	}
+	| EqExp T_EQUAL RelExp
+	{
+		$$ = new_ast_node(ast_operator_type::AST_OP_EQUAL, $1, $3, nullptr);
+		
+	}
+	| EqExp T_NOT_EQUAL RelExp
+	{
+		$$ = new_ast_node(ast_operator_type::AST_OP_NOT_EQUAL, $1, $3, nullptr);
+	}
+	;
+LAndExp: EqExp
+	{
+		$$ = $1;
+	}
+	| LAndExp T_LOGICAL_AND EqExp
+	{
+		$$ = new_ast_node(ast_operator_type::AST_OP_LOGICAL_AND, $1, $3, nullptr);
+	}
+	;
+LOrExp:LAndExp
+	{
+		$$ = $1;
+	}
+	| LOrExp T_LOGICAL_OR LAndExp
+	{
+		$$ = new_ast_node(ast_operator_type::AST_OP_LOGICAL_OR, $1, $3, nullptr);
+	}
+	;
+ConstExp : AddExp
+{
+	$$ = $1
+}
 
 /* 加法表达式 */
-AddExp : AddExp T_ADD UnaryExp {
+AddExp : AddExp T_ADD MulExp {
         /* Expr = Expr + Term */
 
         // 创建一个AST_OP_ADD类型的中间节点，孩子为Expr($1)和Term($3)
         $$ = new_ast_node(ast_operator_type::AST_OP_ADD, $1, $3, nullptr);
     }
-    | AddExp T_SUB UnaryExp {
+    | AddExp T_SUB MulExp {
         /* Expr = Expr + Term */
 
         // 创建一个AST_OP_ADD类型的中间节点，孩子为Expr($1)和Term($3)
         $$ = new_ast_node(ast_operator_type::AST_OP_SUB, $1, $3, nullptr);
     }
-    | UnaryExp {
-        /* Expr = Term */
-        $$ = $1;
-    }
+	|MulExp{
+		$$ = $1;
+	}
     ;
+MulExp : MulExp T_TIMES UnaryExp
+	{
+		$$ = new_ast_node(ast_operator_type::AST_OP_TIMES,$1,$3,nullptr);
+	}
+	| MulExp T_DIV UnaryExp
+	{
+		$$ = new_ast_node(ast_operator_type::AST_OP_DIV,$1,$3,nullptr);
+	}
+	| MulExp T_MOD UnaryExp
+	{
+		$$ = new_ast_node(ast_operator_type::AST_OP_MOD,$1,$3,nullptr);
+	}
+	| UnaryExp
+	{
+		/* Expr = Term */
+        $$ = $1;
+	}
+	;
 
 UnaryExp : PrimaryExp {
         $$ = $1;
@@ -201,12 +292,10 @@ UnaryExp : PrimaryExp {
         // 用户自定义的含有实参的参数调用
         $$ = create_func_call($1.lineno, $1.id, $3);
     }
-	| UnaryExp T_TIMES PrimaryExp{
-		$$ = new_ast_node(ast_operator_type::AST_OP_TIMES,$1,$3,nullptr);
-	}
-	| UnaryExp T_DIV PrimaryExp{
-		$$ = new_ast_node(ast_operator_type::AST_OP_DIV,$1,$3,nullptr);
-	}
+	/* | UnaryOp UnaryExp
+	{
+
+	} */
 	;
 PrimaryExp :  '(' Expr ')' {
         /* PrimaryExp = Expr */
@@ -224,6 +313,7 @@ PrimaryExp :  '(' Expr ')' {
     }
     ;
 
+// 尚未支持数组
 LVal : T_ID {
         // 终结符作为抽象语法树的叶子节点进行创建
         $$ = new_ast_leaf_node(var_id_attr{$1.id, $1.lineno});
