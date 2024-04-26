@@ -67,7 +67,7 @@ void yyerror(char * msg);
 //运算优先级 MulExp AddExp RelExp EqExp LAndExp LOrExp 
 %type <node> MulExp RelExp EqExp LAndExp LOrExp ConstExp ConstInitVal 
 %type <node> ConstDef ConstDefs VarDef VarDefs InitVal Decl Cond VarDecl ConstDecl
-%type <node> ArrayLists InitValList
+%type <node> ArrayLists InitValList FuncBasicParamArrays LValueList
 %%
 
 /* 编译单元可包含若干个函数，main函数作为程序的入口，必须存在 */
@@ -141,7 +141,35 @@ FuncFormalParam : FuncBasicParam  {
 FuncBasicParam : T_INT T_ID {
         $$ = create_func_formal_param($2.lineno, $2.id);
     }
+	| T_INT T_ID FuncBasicParamArrays
+	{
+		ast_node * id_node = new_ast_leaf_node(var_id_attr{$2.id, $2.lineno});
+		ast_node * return_node = create_contain_node(ast_operator_type::AST_OP_FUNC_ARRAY, id_node);
+		update_array_ast_node_info($3);
+		$$ = insert_ast_node(return_node, $3);
+	}
     ;
+FuncBasicParamArrays:'[' ']'
+	{	
+		ast_node *num_node = new_ast_leaf_node(digit_int_attr{0,0});
+		ast_node *array_node = new_ast_node(ast_operator_type::AST_OP_ARRAY, nullptr);
+		$$ = new_ast_node(ast_operator_type::AST_OP_ARRAY,num_node,array_node,nullptr);
+
+	}
+	|'[' T_DIGIT ']'
+	{
+		ast_node *num_node = new_ast_leaf_node(digit_int_attr{$2.val,$2.lineno});
+		ast_node *array_node = new_ast_node(ast_operator_type::AST_OP_ARRAY, nullptr);
+		$$ = new_ast_node(ast_operator_type::AST_OP_ARRAY,num_node,array_node,nullptr);
+
+	}
+	| FuncBasicParamArrays '[' T_DIGIT ']'
+	{
+		ast_node * num_node = new_ast_leaf_node(digit_int_attr{$3.val, $3.lineno});
+		ast_node * array_node = new_ast_node(ast_operator_type::AST_OP_ARRAY,nullptr);
+        $$ = array_insert_ast_node($1,num_node,array_node);
+	}
+	;
 
 // 语句块
 Block : '{' '}' {
@@ -180,17 +208,18 @@ BlockItem : Statement  {
     ;
 
 /* 语句 */
-Statement : T_ID '=' Expr ';' {
+/* Statement : T_ID '=' Expr ';' { */
+Statement : LVal '=' Expr ';' {
         // 归约到Statement时要执行的语义动作程序
         // 赋值语句，不显示值
 
 		// 变量节点
-		ast_node * id_node = new_ast_leaf_node(var_id_attr{$1.id, $1.lineno});
+		//ast_node * id_node = new_ast_leaf_node(var_id_attr{$1.id, $1.lineno});
 
-		free($1.id);
+		//free($1.id);
 
         // 创建一个AST_OP_ASSIGN类型的中间节点，孩子为Id和Expr($3)
-        $$ = new_ast_node(ast_operator_type::AST_OP_ASSIGN, id_node, $3, nullptr);
+        $$ = new_ast_node(ast_operator_type::AST_OP_ASSIGN, $1, $3, nullptr);
     }
     | Expr ';' {
         // Expr归约到Statement时要执行的语义动作程序
@@ -333,6 +362,10 @@ InitVal :Expr
 	|'{' InitValList '}'
 	{
 		$$ = $2;
+	}
+	| '{' '}'
+	{
+		$$ = new_ast_node(ast_operator_type::AST_OP_ARRAY_EMPTY, nullptr);
 	}
 	;
 InitValList:InitVal
@@ -577,6 +610,27 @@ LVal : T_ID {
 		// 对于字符型字面量的字符串空间需要释放，因词法用到了strdup进行了字符串复制
 		free($1.id);
     }
+	|T_ID LValueList
+	{
+		ast_node *id_node = new_ast_leaf_node(var_id_attr{$1.id, $1.lineno});
+        ast_node *return_node = create_contain_node(ast_operator_type::AST_OP_ARRAY_VISIT, id_node);
+		$$ = insert_ast_node(return_node, $2);
+	}
+	;
+LValueList:'[' T_DIGIT ']'
+	{
+		// ast_node *id_node = new_ast_leaf_node(var_id_attr{$2.id, $2.lineno});
+		ast_node * info_node = new_info_node(ast_operator_type::AST_OP_INFO_ARRAY_VISIT,$2.val);
+		$$ = info_node;
+
+	}
+	|LValueList '[' T_DIGIT ']'
+	{
+		ast_node * info_node = new_info_node(ast_operator_type::AST_OP_INFO_ARRAY_VISIT,$3.val);
+		$$ = tail_insert_node($1, info_node);
+	}
+	;
+
 /* 实参列表 */
 RealParamList : Expr {
         $$ = create_contain_node(ast_operator_type::AST_OP_FUNC_REAL_PARAMS, $1);

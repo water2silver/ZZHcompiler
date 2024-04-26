@@ -143,7 +143,7 @@ enum class ast_operator_type : int {
 	/// @brief 表示while
 	AST_OP_WHILE,
 
-	/// @brief 表示 数组
+	/// @brief 表示数组,用于抽象语法树中，数组子节点的定义。
 	AST_OP_ARRAY,
 
 	/// @brief 表示数组定义
@@ -151,6 +151,18 @@ enum class ast_operator_type : int {
 
 	/// @brief 表示初始化参数的结构
 	AST_OP_INIT_VAL_LIST,
+
+	/// @brief 表示函数参数列表中的array
+	AST_OP_FUNC_ARRAY,
+
+	/// @brief 表示数组初始化为空
+	AST_OP_ARRAY_EMPTY,
+
+	/// @brief 表示要访问数组的节点
+	AST_OP_ARRAY_VISIT,
+
+	/// @brief 这个节点表示数据、信息节点，可能要根据节点的上下文确定节点的具体含义。
+	AST_OP_INFO_ARRAY_VISIT,
 
     /// @brief 最大标识符，表示非法运算符
     AST_OP_MAX,
@@ -236,6 +248,15 @@ void update_array_ast_node_info(ast_node * array_node);
 /// @param parent 父节点
 /// @param node 节点
 ast_node * array_insert_ast_node(ast_node * parent, ast_node * node1, ast_node * node2);
+
+/// @brief 创建一个只有数值意义的节点——信息节点
+/// @param num是具体的数值
+ast_node * new_info_node(ast_operator_type type, uint32_t num);
+
+/// @brief 在一号节点的最后一个子节点后插入第二个节点
+/// @param node1 节点1
+/// @param node2 节点2
+ast_node * tail_insert_node(ast_node * node1, ast_node * node2);
 
 /// @brief 创建无符号整数的叶子节点
 /// @param val 词法值

@@ -135,6 +135,9 @@ string getNodeName(ast_node * astnode)
 				case BasicType::TYPE_CONTINUE:
                     nodeName = "continue";
                     break;
+				case BasicType::TYPE_VOID:
+                    nodeName = "void type";
+                    break;
                 default:
                     nodeName = "default type";
                     break;
@@ -174,6 +177,19 @@ string getNodeName(ast_node * astnode)
         case ast_operator_type::AST_OP_INIT_VAL_LIST:
             nodeName = "InitValList";
             break;
+		case ast_operator_type::AST_OP_FUNC_ARRAY:
+            nodeName = "FuncParamArray";
+            break;
+		case ast_operator_type::AST_OP_ARRAY_EMPTY:
+            nodeName = "ArrayEmpty";
+            break;
+		case ast_operator_type::AST_OP_ARRAY_VISIT:
+            nodeName = "ArrayVisit";
+            break;
+        case ast_operator_type::AST_OP_INFO_ARRAY_VISIT:
+            nodeName = "[" + std::to_string(astnode->integer_val) + "]";
+            break;
+		// case ast_operator_type::AST_OP_VOID
         default:
             nodeName = "unknown";
             break;

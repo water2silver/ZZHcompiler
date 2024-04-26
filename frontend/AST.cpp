@@ -137,7 +137,7 @@ ast_node * insert_ast_node(ast_node * parent, ast_node * node)
 /// @param node 节点
 ast_node * array_insert_ast_node(ast_node * parent, ast_node * node1,ast_node *node2)
 {
-	if(parent->sons.size()<=1)
+	if(parent->sons.empty())
 	{
         printf("parent don't have enough sons");
         return NULL;
@@ -171,6 +171,29 @@ void update_array_ast_node_info(ast_node * array_node)
     std::string tmp = "[" + std::to_string(array_node->sons[0]->integer_val) + "]";
     array_node->name.insert(3, tmp);
 	
+}
+/// @brief 创建一个只有数值意义的节点——信息节点
+/// @param num是具体的数值
+ast_node * new_info_node(ast_operator_type type,uint32_t num)
+{
+	ast_node * info_node = new ast_node((ast_operator_type) type, -1);
+    info_node->integer_val = num;
+    return info_node;
+}
+
+/// @brief 在一号节点的最后一个子节点后插入第二个节点
+/// @param node1 节点1
+/// @param node2 节点2
+ast_node * tail_insert_node(ast_node *node1,ast_node *node2)
+{
+    ast_node * current = node1;
+	while(!current->sons.empty())
+	{
+        current = current->sons[0];
+    }
+    current->sons.push_back(node2);
+    node2->parent = current;
+    return node1;
 }
 
 /// @brief 创建无符号整数的叶子节点
