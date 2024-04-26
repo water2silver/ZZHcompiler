@@ -110,6 +110,70 @@ string getNodeName(ast_node * astnode)
 		case ast_operator_type::AST_OP_LOGICAL_OR:
             nodeName = "||";
 			break;
+		//一元运算符
+		case ast_operator_type::AST_OP_POSITIVE:
+            nodeName = "+";
+            break;
+		case ast_operator_type::AST_OP_NEGATIVE:
+            nodeName = "-";
+            break;
+		case ast_operator_type::AST_OP_NOT:
+            nodeName = "!";
+            break;
+		//类型节点
+		case ast_operator_type::AST_OP_LEAF_TYPE:
+			switch (astnode->type.type){
+				case BasicType::TYPE_INT:
+            		nodeName = "int type";
+                    break;
+				case BasicType::TYPE_FLOAT:
+                    nodeName = "float type";
+                    break;
+				case BasicType::TYPE_BREAK:
+                    nodeName = "break";
+                    break;
+				case BasicType::TYPE_CONTINUE:
+                    nodeName = "continue";
+                    break;
+                default:
+                    nodeName = "default type";
+                    break;
+            }
+            break;
+		//变量定义部分
+		case ast_operator_type::AST_OP_CONST_DEF:
+            nodeName = "ConstDef";
+            break;
+		case ast_operator_type::AST_OP_CONST_DECL:
+            nodeName = "ConstDecl";
+            break;
+		case ast_operator_type::AST_OP_VAR_DEF:
+            nodeName = "VarDef";
+            break;
+		case ast_operator_type::AST_OP_VAR_DECL:
+            nodeName = "VarDecl";
+            break;
+		case ast_operator_type::AST_OP_DECL:
+            nodeName = "Decl";
+            break;
+		case ast_operator_type::AST_OP_IF:
+            nodeName = "if";
+            break;
+		case ast_operator_type::AST_OP_WHILE:
+            nodeName = "while";
+            break;
+		case ast_operator_type::AST_OP_COND:
+            nodeName = "cond";
+            break;
+		case ast_operator_type::AST_OP_ARRAY:
+            nodeName = astnode->name;
+            break;
+		case ast_operator_type::AST_OP_ARRAY_DEF:
+            nodeName = "array_def";
+			break;
+        case ast_operator_type::AST_OP_INIT_VAL_LIST:
+            nodeName = "InitValList";
+            break;
         default:
             nodeName = "unknown";
             break;

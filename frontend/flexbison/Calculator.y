@@ -1,7 +1,7 @@
 %{
 #include <cstdio>
 #include <cstring>
-
+#include "../../common/ValueType.h"
 // 词法分析头文件
 #include "FlexLexer.h"
 
@@ -19,7 +19,7 @@ void yyerror(char * msg);
 // 联合体声明，用于后续终结符和非终结符号属性指定使用
 %union {
     class ast_node * node;
-    
+    enum class BasicType;
     struct digit_int_attr integer_num;
     struct digit_real_attr float_num;
     struct var_id_attr var_id;
@@ -65,7 +65,9 @@ void yyerror(char * msg);
 
 // 新增
 //运算优先级 MulExp AddExp RelExp EqExp LAndExp LOrExp 
-%type <node> MulExp RelExp EqExp LAndExp LOrExp ConstExp 
+%type <node> MulExp RelExp EqExp LAndExp LOrExp ConstExp ConstInitVal 
+%type <node> ConstDef ConstDefs VarDef VarDefs InitVal Decl Cond VarDecl ConstDecl
+%type <node> ArrayLists InitValList
 %%
 
 /* 编译单元可包含若干个函数，main函数作为程序的入口，必须存在 */
@@ -83,6 +85,16 @@ CompileUnit : FuncDef {
     | CompileUnit Statement {
         $$ = insert_ast_node($1, $2);
     }
+	| Decl
+	{
+        $$ = create_contain_node(ast_operator_type::AST_OP_COMPILE_UNIT, $1);
+		// $$ = create_contain_node(ast_operator_type::AST_OP_DECL, $1);
+        ast_root = $$;
+	}
+	| CompileUnit Decl
+	{
+		$$ = insert_ast_node($1, $2);
+	}
     ;
 
 // 函数定义
@@ -92,6 +104,22 @@ FuncDef : T_FUNC T_ID '(' ')' Block  {
     | T_FUNC T_ID '(' FuncFormalParams ')' Block {
         $$ = create_func_def($2.lineno, $2.id, $6, $4);
     }
+	| T_VOID T_ID '(' ')' Block
+	{
+        $$ = create_func_def(BasicType::TYPE_VOID,$2.lineno, $2.id, $5, nullptr);
+	}
+	|T_VOID T_ID '('FuncFormalParams ')' Block
+	{
+        $$ = create_func_def(BasicType::TYPE_VOID,$2.lineno, $2.id, $6, $4);
+	}
+	| T_INT T_ID '(' ')' Block
+	{
+        $$ = create_func_def(BasicType::TYPE_INT,$2.lineno, $2.id, $5, nullptr);
+	}
+	|T_INT T_ID '('FuncFormalParams ')' Block
+	{
+        $$ = create_func_def(BasicType::TYPE_INT,$2.lineno, $2.id, $6, $4);
+	}
     ;
 
 // 函数参数
@@ -110,8 +138,8 @@ FuncFormalParam : FuncBasicParam  {
     ;
 
 // 基本类型函数参数，默认整型
-FuncBasicParam : T_ID {
-        $$ = create_func_formal_param($1.lineno, $1.id);
+FuncBasicParam : T_INT T_ID {
+        $$ = create_func_formal_param($2.lineno, $2.id);
     }
     ;
 
@@ -142,8 +170,13 @@ BlockItemList : BlockItem {
 
 // 目前语句块内项目只能是语句
 BlockItem : Statement  {
+	
         $$ = $1;
     }
+	| Decl
+	{
+		$$ = $1;
+	}
     ;
 
 /* 语句 */
@@ -177,8 +210,38 @@ Statement : T_ID '=' Expr ';' {
         // 返回语句
         $$ = new_ast_node(ast_operator_type::AST_OP_RETURN_STATEMENT, $2, nullptr);
     }
+	| T_IF '(' Cond ')' Statement T_ELSE Statement
+	{
+		$$ = new_ast_node(ast_operator_type::AST_OP_IF,$3,$5,$7,nullptr);
+	}
+	| T_IF '(' Cond ')' Statement
+	{
+		$$ = new_ast_node(ast_operator_type::AST_OP_IF,$3,$5,nullptr);
+	}
+	| T_WHILE '(' Cond ')' Statement
+	{
+		$$ = new_ast_node(ast_operator_type::AST_OP_WHILE,$3,$5,nullptr);
+	}
+	| T_BREAK';'
+	{
+		$$ = new_ast_leaf_node(BasicType::TYPE_BREAK,0);
+	}
+	| T_CONTINUE';'
+	{
+		$$ = new_ast_leaf_node(BasicType::TYPE_CONTINUE,0);
+	}
+	| Block
+	{
+		$$ = $1;
+	}
     ;
 
+Cond: LOrExp
+	{
+		// 
+		$$ = new_ast_node(ast_operator_type::AST_OP_COND, $1,nullptr);
+	}
+	;
 //////////////试试 原本是 AddExp
 Expr : LOrExp { 
         $$ = $1; 
@@ -240,11 +303,178 @@ LOrExp:LAndExp
 		$$ = new_ast_node(ast_operator_type::AST_OP_LOGICAL_OR, $1, $3, nullptr);
 	}
 	;
-ConstExp : AddExp
-{
-	$$ = $1
-}
+//声明
+Decl:ConstDecl
+	{
+		// $$ = new_ast_node(ast_operator_type::AST_OP_DECL, $1, nullptr);
+		$$ = $1;
+	}
+	|VarDecl
+	{
+		// $$ = new_ast_node(ast_operator_type::AST_OP_DECL, $1, nullptr);
+		$$ = $1;
+	}
+	;
 
+
+
+// 常量表达式
+ConstExp : AddExp
+	{
+		$$ = $1;
+	}
+//变量初值
+//TODO 数组
+InitVal :Expr
+	{
+		$$ = $1;
+		
+	}
+	|'{' InitValList '}'
+	{
+		$$ = $2;
+	}
+	;
+InitValList:InitVal
+	{
+		// $$ = $1;
+        $$ = create_contain_node(ast_operator_type::AST_OP_INIT_VAL_LIST, $1);
+	}
+	| InitValList ',' InitVal
+	{
+        $$ = insert_ast_node($1, $3);
+	}
+	;
+
+ConstDecl:T_CONST T_INT ConstDefs ';'
+	{
+		//TYPE_INT = 2
+		ast_node * id_node = new_ast_leaf_node(BasicType::TYPE_INT,0);
+
+        $$ = new_ast_node(ast_operator_type::AST_OP_CONST_DECL, id_node, $3, nullptr);
+
+	}
+	/* |ConstDecl ',' ConstDef ';'
+	{
+		$$ = insert_ast_node($1, $3);
+	} */
+	;
+ConstDefs:ConstDef
+	{
+		//$$ = $1;
+        $$ = create_contain_node(ast_operator_type::AST_OP_CONST_DEF, $1);
+
+	}
+	|ConstDefs ',' ConstDef 
+	{
+        $$ = insert_ast_node($1, $3);
+	}
+	;
+// 常量初值 
+// TODO 暂时不支持组数
+ConstInitVal : ConstExp
+	{
+		$$ = $1;
+	}
+	;
+// 常数定义
+//TODO 数组还没做
+ConstDef : T_ID '=' ConstInitVal
+	{
+        // 赋值语句，不显示值
+		// 变量节点
+		ast_node * id_node = new_ast_leaf_node(var_id_attr{$1.id, $1.lineno});
+
+		free($1.id);
+
+        // 创建一个AST_OP_ConstDef类型的中间节点，孩子为Id和ConstInitVal($3)
+        $$ = new_ast_node(ast_operator_type::AST_OP_ASSIGN, id_node, $3, nullptr);
+
+	}
+	|T_ID ArrayLists
+	{
+		// ?
+		ast_node * id_node = new_ast_leaf_node(var_id_attr{$1.id, $1.lineno});
+		update_array_ast_node_info($2);
+		$$ = new_ast_node(ast_operator_type::AST_OP_ARRAY_DEF, id_node,$2, nullptr);
+	}
+	|T_ID ArrayLists '=' InitVal
+	{
+		ast_node * id_node = new_ast_leaf_node(var_id_attr{$1.id, $1.lineno});
+		update_array_ast_node_info($2);
+		$$ = new_ast_node(ast_operator_type::AST_OP_ARRAY_DEF, id_node,$2,$4, nullptr);
+	}
+	;
+//变量定义
+//TODO 数组
+VarDef : T_ID
+	{
+		ast_node * id_node = new_ast_leaf_node(var_id_attr{$1.id, $1.lineno});
+		
+		// $$ = new_ast_node(ast_operator_type::AST_OP_VAR_DEF, $1, nullptr);
+		$$ = id_node;
+	}
+	| T_ID '=' InitVal
+	{
+		// 赋值语句，不显示值
+		// 变量节点
+		ast_node * id_node = new_ast_leaf_node(var_id_attr{$1.id, $1.lineno});
+
+		free($1.id);
+
+        // 创建一个AST_OP_ConstDef类型的中间节点，孩子为Id和ConstInitVal($3)
+        $$ = new_ast_node(ast_operator_type::AST_OP_ASSIGN, id_node, $3, nullptr);
+	}
+	| T_ID ArrayLists
+	{
+		// ?
+		ast_node * id_node = new_ast_leaf_node(var_id_attr{$1.id, $1.lineno});
+		update_array_ast_node_info($2);
+		$$ = new_ast_node(ast_operator_type::AST_OP_ARRAY_DEF, id_node,$2, nullptr);
+	}
+	|T_ID ArrayLists '=' InitVal
+	{
+		ast_node * id_node = new_ast_leaf_node(var_id_attr{$1.id, $1.lineno});
+		update_array_ast_node_info($2);
+		$$ = new_ast_node(ast_operator_type::AST_OP_ARRAY_DEF, id_node,$2,$4, nullptr);
+	}
+
+	;
+ArrayLists: '[' T_DIGIT ']'
+	{
+		
+        ast_node * num_node = new_ast_leaf_node(digit_int_attr{$2.val, $2.lineno});
+		ast_node * array_node = new_ast_node(ast_operator_type::AST_OP_ARRAY,nullptr);
+		$$ = new_ast_node(ast_operator_type::AST_OP_ARRAY,num_node,array_node,nullptr);
+	}
+	| ArrayLists '[' T_DIGIT ']'
+	{
+        ast_node * num_node = new_ast_leaf_node(digit_int_attr{$3.val, $3.lineno});
+		ast_node * array_node = new_ast_node(ast_operator_type::AST_OP_ARRAY,nullptr);
+
+        $$ = array_insert_ast_node($1,num_node,array_node);
+
+	}
+	;
+// 变量声明
+VarDecl: T_INT VarDefs ';'
+	{
+		//TYPE_INT = 2
+		ast_node * id_node = new_ast_leaf_node(BasicType::TYPE_INT,0);
+
+        $$ = new_ast_node(ast_operator_type::AST_OP_VAR_DECL, id_node, $2, nullptr);
+	}
+	;
+VarDefs:VarDef
+	{
+		// $$ = $1;
+		$$ = create_contain_node(ast_operator_type::AST_OP_VAR_DEF, $1);
+	}
+	| VarDefs ',' VarDef
+	{	
+        $$ = insert_ast_node($1, $3);
+	}
+	;
 /* 加法表达式 */
 AddExp : AddExp T_ADD MulExp {
         /* Expr = Expr + Term */
@@ -280,7 +510,22 @@ MulExp : MulExp T_TIMES UnaryExp
         $$ = $1;
 	}
 	;
+/* UnaryOp:
+	'+'
+	{
 
+	}
+	|
+	'-'
+	{
+
+	}
+	|
+	'!'
+	{
+
+	}	
+	; */
 UnaryExp : PrimaryExp {
         $$ = $1;
     }
@@ -291,11 +536,22 @@ UnaryExp : PrimaryExp {
     | T_ID '(' RealParamList ')' {
         // 用户自定义的含有实参的参数调用
         $$ = create_func_call($1.lineno, $1.id, $3);
-    }
-	/* | UnaryOp UnaryExp
+    }//一元运算符
+	| T_ADD UnaryExp
 	{
-
-	} */
+		$$ = new_ast_node(ast_operator_type::AST_OP_POSITIVE,$2,nullptr);
+	}	
+	| T_SUB UnaryExp
+	{
+		$$ = new_ast_node(ast_operator_type::AST_OP_NEGATIVE,$2,nullptr);
+		
+	}
+	| T_NOT UnaryExp
+	{
+        //$$ = new_ast_node(ast_operator_type::AST_OP_EXPR_SHOW, $1, nullptr);
+		// 
+		$$ = new_ast_node(ast_operator_type::AST_OP_NOT,$2,nullptr);
+	}
 	;
 PrimaryExp :  '(' Expr ')' {
         /* PrimaryExp = Expr */

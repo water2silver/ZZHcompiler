@@ -92,7 +92,7 @@ union YYSTYPE
 #line 20 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
 
     class ast_node * node;
-    
+    enum class BasicType;
     struct digit_int_attr integer_num;
     struct digit_real_attr float_num;
     struct var_id_attr var_id;

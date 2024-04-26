@@ -132,6 +132,47 @@ ast_node * insert_ast_node(ast_node * parent, ast_node * node)
     return parent;
 }
 
+/// @brief 给数组用的特殊插入节点方式
+/// @param parent 父节点
+/// @param node 节点
+ast_node * array_insert_ast_node(ast_node * parent, ast_node * node1,ast_node *node2)
+{
+	if(parent->sons.size()<=1)
+	{
+        printf("parent don't have enough sons");
+        return NULL;
+    }
+    ast_node * res_node = parent;
+	while(!res_node->sons.empty())
+	{
+        res_node = res_node->sons[res_node->sons.size()-1];
+    }
+    node1->parent = res_node;
+    res_node->sons.push_back(node1);
+
+    node2->parent = res_node;
+    res_node->sons.push_back(node2);
+
+    return parent;
+}
+
+/// @brief 数组的声明抽象语法树已经建立完成，更新name信息形成类似,int[2][3][4]这样的信息。
+/// @param 数组的起始节点
+void update_array_ast_node_info(ast_node * array_node)
+{
+	
+	if(array_node->sons.empty())
+	{
+	    array_node->name.append("int");
+        return;
+    }
+    update_array_ast_node_info(array_node->sons[1]);
+    array_node->name = array_node->sons[1]->name;
+    std::string tmp = "[" + std::to_string(array_node->sons[0]->integer_val) + "]";
+    array_node->name.insert(3, tmp);
+	
+}
+
 /// @brief 创建无符号整数的叶子节点
 /// @param attr 无符号整数字面量
 ast_node * new_ast_leaf_node(digit_int_attr attr)
@@ -216,6 +257,44 @@ ast_node * create_func_def(uint32_t line_no, const char * func_name, ast_node * 
     if (!block) {
         block = new ast_node(ast_operator_type::AST_OP_BLOCK);
     }
+
+    node->sons.push_back(params);
+    params->parent = node;
+
+    node->sons.push_back(block);
+    block->parent = node;
+
+    return node;
+}
+
+/// @brief 创建函数定义类型的内部AST节点
+/// @param return_type 返回类型
+/// @param line_no 行号
+/// @param func_name 函数名
+/// @param block 函数体语句块
+/// @param params 函数形参，可以没有参数
+/// @return 创建的节点
+ast_node * create_func_def(BasicType return_type,uint32_t line_no, const char * func_name, ast_node * block, ast_node * params)
+{
+
+    ast_node * return_type_node = new_ast_leaf_node(return_type,0);
+
+    ast_node * node = new ast_node(ast_operator_type::AST_OP_FUNC_DEF, line_no);
+    node->type.type = BasicType::TYPE_VOID;
+    node->name = func_name;
+
+    // 如果没有参数，则创建参数节点
+    if (!params) {
+        params = new ast_node(ast_operator_type::AST_OP_FUNC_FORMAL_PARAMS);
+    }
+
+    // 如果没有函数体，则创建函数体，也就是语句块
+    if (!block) {
+        block = new ast_node(ast_operator_type::AST_OP_BLOCK);
+    }
+
+	//返回类型节点
+	node->sons.push_back(return_type_node);
 
     node->sons.push_back(params);
     params->parent = node;

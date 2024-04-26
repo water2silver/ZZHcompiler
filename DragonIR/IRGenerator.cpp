@@ -49,6 +49,14 @@ IRGenerator::IRGenerator(ast_node * _root, SymbolTable * _symtab) : root(_root),
     ast2ir_handlers[ast_operator_type::AST_OP_LOGICAL_AND] = &IRGenerator::ir_logical_and;
     ast2ir_handlers[ast_operator_type::AST_OP_LOGICAL_OR] = &IRGenerator::ir_logical_or;
 
+	/* 一元运算符*/
+    ast2ir_handlers[ast_operator_type::AST_OP_POSITIVE] = &IRGenerator::ir_positive;
+    ast2ir_handlers[ast_operator_type::AST_OP_NEGATIVE] = &IRGenerator::ir_negative;
+    ast2ir_handlers[ast_operator_type::AST_OP_NOT] = &IRGenerator::ir_not;
+
+	/* 常量，变量定义*/
+	
+
     /* 语句 */
     ast2ir_handlers[ast_operator_type::AST_OP_EXPR] = &IRGenerator::ir_expr_noshow;
     ast2ir_handlers[ast_operator_type::AST_OP_EXPR_SHOW] = &IRGenerator::ir_expr_show;
@@ -864,6 +872,91 @@ bool IRGenerator::ir_logical_or(ast_node * node)
 
     return true;
 }
+
+/// @brief 正数节点
+/// @param node AST节点
+/// @return 翻译是否成功，true：成功，false：失败
+bool IRGenerator::ir_positive(ast_node * node)
+{
+	// TODO real number print
+
+    ast_node * src1_node = node->sons[0];
+
+    ast_node * result = ir_visit_ast_node(src1_node);
+    if (!result) {
+        // 解析错误
+        return false;
+    }
+
+    node->blockInsts.addInst(result->blockInsts);
+
+    if (result->val != nullptr) {
+
+        //TODO 一元操作符的线性IR生成
+		
+    }
+    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    node->val = resultValue;
+
+    return true;
+}
+
+/// @brief 负数节点
+/// @param node AST节点
+/// @return 翻译是否成功，true：成功，false：失败
+bool IRGenerator::ir_negative(ast_node * node)
+{
+	// TODO real number print
+
+    ast_node * src1_node = node->sons[0];
+
+    ast_node * result = ir_visit_ast_node(src1_node);
+    if (!result) {
+        // 解析错误
+        return false;
+    }
+
+    node->blockInsts.addInst(result->blockInsts);
+
+    if (result->val != nullptr) {
+
+        //TODO 一元操作符的线性IR生成
+		
+    }
+    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    node->val = resultValue;
+
+    return true;
+}
+
+/// @brief "!" 取反节点
+/// @param node AST节点
+/// @return 翻译是否成功，true：成功，false：失败
+bool IRGenerator::ir_not(ast_node * node)
+{
+	// TODO real number print
+
+    ast_node * src1_node = node->sons[0];
+
+    ast_node * result = ir_visit_ast_node(src1_node);
+    if (!result) {
+        // 解析错误
+        return false;
+    }
+
+    node->blockInsts.addInst(result->blockInsts);
+
+    if (result->val != nullptr) {
+
+        //TODO 一元操作符的线性IR生成
+		
+    }
+    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    node->val = resultValue;
+
+    return true;
+}
+
 
 /// @brief 赋值AST节点翻译成线性中间IR
 /// @param node AST节点

@@ -125,6 +125,8 @@ white_line  [\r\n]
                 yylval.var_id.lineno = yylineno;
                 return T_ID;
             }
+"["			{return '[';}
+"]"			{return ']';}
 
 "("			{return '(';}
 ")"			{return ')';}

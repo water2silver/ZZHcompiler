@@ -110,6 +110,47 @@ enum class ast_operator_type : int {
 	/// @brief ||
 	AST_OP_LOGICAL_OR,
 
+	/// @brief 表示正数的+
+	AST_OP_POSITIVE,
+
+	/// @brief 表示负数的-
+	AST_OP_NEGATIVE,
+
+	/// @brief 表示 "!" 的取反。
+	AST_OP_NOT,
+
+	/// @brief 表示ConstDef
+	AST_OP_CONST_DEF,
+
+	/// @brief 表示VarDef
+	AST_OP_VAR_DEF,
+
+	/// @brief 表示ConstDecl
+	AST_OP_CONST_DECL,
+
+	/// @brief 表示VarDecl
+	AST_OP_VAR_DECL,
+
+	/// @brief 表示Decl
+	AST_OP_DECL,
+
+	/// @brief 表示 Cond
+	AST_OP_COND,
+
+	/// @brief 表示 if
+	AST_OP_IF,
+
+	/// @brief 表示while
+	AST_OP_WHILE,
+
+	/// @brief 表示 数组
+	AST_OP_ARRAY,
+
+	/// @brief 表示数组定义
+	AST_OP_ARRAY_DEF,
+
+	/// @brief 表示初始化参数的结构
+	AST_OP_INIT_VAL_LIST,
 
     /// @brief 最大标识符，表示非法运算符
     AST_OP_MAX,
@@ -187,6 +228,15 @@ ast_node * new_ast_node(ast_operator_type type, ...);
 /// @param node 节点
 ast_node * insert_ast_node(ast_node * parent, ast_node * node);
 
+/// @brief 数组的声明抽象语法树已经建立完成，更新name信息形成类似,int[2][3][4]这样的信息。
+/// @param 数组的起始节点
+void update_array_ast_node_info(ast_node * array_node);
+
+/// @brief 给数组用的特殊插入节点方式
+/// @param parent 父节点
+/// @param node 节点
+ast_node * array_insert_ast_node(ast_node * parent, ast_node * node1, ast_node * node2);
+
 /// @brief 创建无符号整数的叶子节点
 /// @param val 词法值
 /// @param line_no 行号
@@ -221,6 +271,15 @@ extern ast_node * ast_root;
 /// @param params 函数形参，可以没有参数
 /// @return 创建的节点
 ast_node * create_func_def(uint32_t line_no, const char * func_name, ast_node * block, ast_node * params = nullptr);
+
+/// @brief 创建函数定义类型的内部AST节点
+/// @param return_type 返回类型
+/// @param line_no 行号
+/// @param func_name 函数名
+/// @param block 函数体语句块
+/// @param params 函数形参，可以没有参数
+/// @return 创建的节点
+ast_node * create_func_def(BasicType return_type,uint32_t line_no, const char * func_name, ast_node * block, ast_node * params = nullptr);
 
 /// @brief 创建函数形式参数的节点
 /// @param line_no 行号

@@ -30,3 +30,8 @@ typedef struct var_id_attr {
     char * id;      // 标识符名称
     int32_t lineno; // 行号
 } var_id_attr;
+
+//需要吗？
+typedef struct type_id_attr{
+
+} type_id_attr;
