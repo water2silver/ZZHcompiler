@@ -235,6 +235,10 @@ Statement : LVal '=' Expr ';' {
         // 创建一个AST_OP_EXPR_SHOW类型的中间节点，孩子为Expr($1)
         $$ = new_ast_node(ast_operator_type::AST_OP_EXPR_SHOW, $1, nullptr);
     }
+	|T_RETURN ';'
+	{
+        $$ = new_ast_node(ast_operator_type::AST_OP_RETURN_STATEMENT, nullptr);
+	}
     | T_RETURN Expr ';' {
         // 返回语句
         $$ = new_ast_node(ast_operator_type::AST_OP_RETURN_STATEMENT, $2, nullptr);
@@ -617,18 +621,21 @@ LVal : T_ID {
 		$$ = insert_ast_node(return_node, $2);
 	}
 	;
-LValueList:'[' T_DIGIT ']'
+LValueList:'[' Expr ']'
 	{
 		// ast_node *id_node = new_ast_leaf_node(var_id_attr{$2.id, $2.lineno});
-		ast_node * info_node = new_info_node(ast_operator_type::AST_OP_INFO_ARRAY_VISIT,$2.val);
-		$$ = info_node;
+		// ast_node * info_node = new_info_node(ast_operator_type::AST_OP_INFO_ARRAY_VISIT,$2.val);
+		// ast_node * info_node = new_ast_node(ast_operator_type::AST_OP_INFO_ARRAY_VISIT,$2,nullptr);
+		$$ = create_contain_node(ast_operator_type::AST_OP_INFO_ARRAY_VISIT, $2);
 
 	}
-	|LValueList '[' T_DIGIT ']'
+	|LValueList '[' Expr ']'
 	{
-		ast_node * info_node = new_info_node(ast_operator_type::AST_OP_INFO_ARRAY_VISIT,$3.val);
-		$$ = tail_insert_node($1, info_node);
+		// ast_node * info_node = new_info_node(ast_operator_type::AST_OP_INFO_ARRAY_VISIT,$3.val);
+		// ast_node * info_node = new_ast_node(ast_operator_type::AST_OP_INFO_ARRAY_VISIT,$3,nullptr);
+		$$ = insert_ast_node($1, $3);
 	}
+	
 	;
 
 /* 实参列表 */

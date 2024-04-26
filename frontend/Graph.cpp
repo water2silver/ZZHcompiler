@@ -187,7 +187,8 @@ string getNodeName(ast_node * astnode)
             nodeName = "ArrayVisit";
             break;
         case ast_operator_type::AST_OP_INFO_ARRAY_VISIT:
-            nodeName = "[" + std::to_string(astnode->integer_val) + "]";
+            // nodeName = "[" + std::to_string(astnode->integer_val) + "]";
+            nodeName = "[]";
             break;
 		// case ast_operator_type::AST_OP_VOID
         default:
