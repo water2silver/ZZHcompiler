@@ -156,18 +156,18 @@ FuncBasicParamArrays:'[' ']'
 		$$ = new_ast_node(ast_operator_type::AST_OP_ARRAY,num_node,array_node,nullptr);
 
 	}
-	|'[' T_DIGIT ']'
+	|'[' Expr ']'
 	{
-		ast_node *num_node = new_ast_leaf_node(digit_int_attr{$2.val,$2.lineno});
+		// ast_node *num_node = new_ast_leaf_node(digit_int_attr{$2.val,$2.lineno});
 		ast_node *array_node = new_ast_node(ast_operator_type::AST_OP_ARRAY, nullptr);
-		$$ = new_ast_node(ast_operator_type::AST_OP_ARRAY,num_node,array_node,nullptr);
+		$$ = new_ast_node(ast_operator_type::AST_OP_ARRAY,$2,array_node,nullptr);
 
 	}
-	| FuncBasicParamArrays '[' T_DIGIT ']'
+	| FuncBasicParamArrays '[' Expr ']'
 	{
-		ast_node * num_node = new_ast_leaf_node(digit_int_attr{$3.val, $3.lineno});
+		// ast_node * num_node = new_ast_leaf_node(digit_int_attr{$3.val, $3.lineno});
 		ast_node * array_node = new_ast_node(ast_operator_type::AST_OP_ARRAY,nullptr);
-        $$ = array_insert_ast_node($1,num_node,array_node);
+        $$ = array_insert_ast_node($1,$3,array_node);
 	}
 	;
 
@@ -227,14 +227,18 @@ Statement : LVal '=' Expr ';' {
 
         // 创建一个AST_OP_EXPR类型的中间节点，孩子为Expr($1)
         $$ = new_ast_node(ast_operator_type::AST_OP_EXPR, $1, nullptr);
-    }
+    }//方便debug的内容，可以不删除
     | Expr {
         // Expr归约到Statement时要执行的语义动作程序
         // 表达式语句，需要显示表达式的值
 
         // 创建一个AST_OP_EXPR_SHOW类型的中间节点，孩子为Expr($1)
         $$ = new_ast_node(ast_operator_type::AST_OP_EXPR_SHOW, $1, nullptr);
-    }
+    } 
+	| ';'
+	{
+		$$ = nullptr;
+	}
 	|T_RETURN ';'
 	{
         $$ = new_ast_node(ast_operator_type::AST_OP_RETURN_STATEMENT, nullptr);
@@ -276,6 +280,7 @@ Cond: LOrExp
 	}
 	;
 //////////////试试 原本是 AddExp
+//TODO 以后可能要改回AddExp ?
 Expr : LOrExp { 
         $$ = $1; 
     }
@@ -372,6 +377,7 @@ InitVal :Expr
 		$$ = new_ast_node(ast_operator_type::AST_OP_ARRAY_EMPTY, nullptr);
 	}
 	;
+//目前constExp和Exp是相同的，所以不妨公用
 InitValList:InitVal
 	{
 		// $$ = $1;
@@ -413,6 +419,14 @@ ConstInitVal : ConstExp
 	{
 		$$ = $1;
 	}
+	|'{' InitValList '}'
+	{
+		$$ = $2;
+	}
+	| '{' '}'
+	{
+		$$ = new_ast_node(ast_operator_type::AST_OP_ARRAY_EMPTY, nullptr);
+	}
 	;
 // 常数定义
 //TODO 数组还没做
@@ -428,14 +442,14 @@ ConstDef : T_ID '=' ConstInitVal
         $$ = new_ast_node(ast_operator_type::AST_OP_ASSIGN, id_node, $3, nullptr);
 
 	}
-	|T_ID ArrayLists
+	/* |T_ID ArrayLists
 	{
 		// ?
 		ast_node * id_node = new_ast_leaf_node(var_id_attr{$1.id, $1.lineno});
 		update_array_ast_node_info($2);
 		$$ = new_ast_node(ast_operator_type::AST_OP_ARRAY_DEF, id_node,$2, nullptr);
-	}
-	|T_ID ArrayLists '=' InitVal
+	} */
+	|T_ID ArrayLists '=' ConstInitVal
 	{
 		ast_node * id_node = new_ast_leaf_node(var_id_attr{$1.id, $1.lineno});
 		update_array_ast_node_info($2);
@@ -477,19 +491,19 @@ VarDef : T_ID
 	}
 
 	;
-ArrayLists: '[' T_DIGIT ']'
+ArrayLists: '[' ConstExp ']'
 	{
 		
-        ast_node * num_node = new_ast_leaf_node(digit_int_attr{$2.val, $2.lineno});
+        // ast_node * num_node = new_ast_leaf_node(digit_int_attr{$2.val, $2.lineno});
 		ast_node * array_node = new_ast_node(ast_operator_type::AST_OP_ARRAY,nullptr);
-		$$ = new_ast_node(ast_operator_type::AST_OP_ARRAY,num_node,array_node,nullptr);
+		$$ = new_ast_node(ast_operator_type::AST_OP_ARRAY,$2,array_node,nullptr);
 	}
-	| ArrayLists '[' T_DIGIT ']'
+	| ArrayLists '[' ConstExp ']'
 	{
-        ast_node * num_node = new_ast_leaf_node(digit_int_attr{$3.val, $3.lineno});
+        // ast_node * num_node = new_ast_leaf_node(digit_int_attr{$3.val, $3.lineno});
 		ast_node * array_node = new_ast_node(ast_operator_type::AST_OP_ARRAY,nullptr);
 
-        $$ = array_insert_ast_node($1,num_node,array_node);
+        $$ = array_insert_ast_node($1,$3,array_node);
 
 	}
 	;
