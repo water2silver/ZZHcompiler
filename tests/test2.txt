@@ -1,17 +1,18 @@
-function sum(e, f)
+int sum(int e,int f)
 {
     return e + f;
 }
 
-a = 5;
-b = a + 7 + a;
-// 显示b的值
-b
+int main()
+{
+	a = 5;
+	b = a + 7 + a;
+	// 显示b的值
+	b
 
-a = b - (3 - a) ;//19
-b = b - 10;//7
+	a = b - (3 - a) ;//19
+	b = b - 10;//7
+	sum(a,b)
+}
 
-/*
-* 显示a+b的值
-*/
-sum(a,b)
+

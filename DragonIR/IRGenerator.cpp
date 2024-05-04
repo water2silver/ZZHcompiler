@@ -30,6 +30,9 @@ IRGenerator::IRGenerator(ast_node * _root, SymbolTable * _symtab) : root(_root),
     ast2ir_handlers[ast_operator_type::AST_OP_LEAF_LITERAL_UINT] = &IRGenerator::ir_leaf_node_uint;
     ast2ir_handlers[ast_operator_type::AST_OP_LEAF_LITERAL_FLOAT] = &IRGenerator::ir_leaf_node_float;
     ast2ir_handlers[ast_operator_type::AST_OP_LEAF_VAR_ID] = &IRGenerator::ir_leaf_node_var_id;
+    //new
+	ast2ir_handlers[ast_operator_type::AST_OP_LEAF_TYPE] = &IRGenerator::ir_leaf_type;
+
 
     /* 表达式运算， 加减 */
     ast2ir_handlers[ast_operator_type::AST_OP_SUB] = &IRGenerator::ir_sub;
@@ -83,8 +86,8 @@ IRGenerator::IRGenerator(ast_node * _root, SymbolTable * _symtab) : root(_root),
 bool IRGenerator::ir_compile_unit(ast_node * node)
 {
     // 新建main函数并默认设置当前函数为main函数
-    symtab->mainFunc = symtab->newFunction("main", BasicType::TYPE_INT);
-    symtab->currentFunc = symtab->mainFunc;
+    // symtab->mainFunc = symtab->newFunction("init", BasicType::TYPE_INT);
+    // symtab->currentFunc = symtab->mainFunc;
 
     for (auto son: node->sons) {
 
@@ -98,14 +101,14 @@ bool IRGenerator::ir_compile_unit(ast_node * node)
     }
 
     // 获取函数的IR代码列表，用于后面追加指令用，注意这里用的是引用传值
-    InterCode & irCode = symtab->currentFunc->getInterCode();
+    // InterCode & irCode = symtab->currentFunc->getInterCode();
 
     // 创建并加入Entry入口指令
-    irCode.addInst(new EntryIRInst());
+    // irCode.addInst(new EntryIRInst());
 
     // 创建出口指令并不加入出口指令，等函数内的指令处理完毕后加入出口指令
-    IRInst * exitLabelInst = new LabelIRInst();
-    symtab->currentFunc->setExitLabel(exitLabelInst);
+    // IRInst * exitLabelInst = new LabelIRInst();
+    // symtab->currentFunc->setExitLabel(exitLabelInst);
 
     // 新建一个Value，用于保存函数的返回值，如果没有返回值可不用申请，
     // 目前不需要
@@ -115,19 +118,19 @@ bool IRGenerator::ir_compile_unit(ast_node * node)
 #endif
 
     // 除了函数定义的指令外都加入到main函数的指令当中
-    irCode.addInst(node->blockInsts);
+    // irCode.addInst(node->blockInsts);
 
     // 添加函数出口Label指令，主要用于return语句跳转到这里进行函数的退出
-    irCode.addInst(exitLabelInst);
+    // irCode.addInst(exitLabelInst);
 
     // 尾部追加一个return 0指令，使得main函数的格式正确
-    irCode.addInst(new ExitIRInst(new ConstValue(0)));
+    // irCode.addInst(new ExitIRInst(new ConstValue(0)));
 
     // main函数移动到列表的尾部，以便后续简便处理
-    symtab->moveFunctionEnd(symtab->mainFunc);
+    // symtab->moveFunctionEnd(symtab->mainFunc);
 
     // 设置成空，使得后续访问该变量出错。
-    symtab->currentFunc = nullptr;
+    // symtab->currentFunc = nullptr;
 
     return true;
 }
@@ -138,14 +141,14 @@ bool IRGenerator::ir_compile_unit(ast_node * node)
 bool IRGenerator::ir_function_define(ast_node * node)
 {
     // 创建一个函数，用于当前函数处理
-    if (symtab->currentFunc != symtab->mainFunc) {
-        // 函数中嵌套定义函数，这是不允许的，错误退出
-        // TODO 自行追加语义错误处理
-        return false;
-    }
+    // if (symtab->currentFunc != symtab->mainFunc) {
+    //     // 函数中嵌套定义函数，这是不允许的，错误退出
+    //     // TODO 自行追加语义错误处理
+    //     return false;
+    // }
 
     // 创建一个新的函数定义，函数的返回类型设置为VOID，待定，必须等return时才能确定，目前可以是VOID或者INT类型
-    symtab->currentFunc = new Function(node->name, BasicType::TYPE_VOID);
+    symtab->currentFunc = new Function(node->name, node->type.type);
     bool result = symtab->insertFunction(symtab->currentFunc);
     if (!result) {
         // 清理资源
@@ -156,7 +159,7 @@ bool IRGenerator::ir_function_define(ast_node * node)
 
         // 函数已经定义过了，不能重复定义，语义错误：出错返回。
         // TODO 自行追加语义错误处理
-
+        printf("函数重复定义");
         return false;
     }
 
@@ -257,6 +260,7 @@ bool IRGenerator::ir_function_call(ast_node * node)
     auto pFunction = symtab->findFunction(node->name);
     if (nullptr == pFunction) {
         // TODO 这里输出错误信息
+        printf("[IRGenerator::ir_function_call] 调用了未定义的函数");
         return false;
     }
 
@@ -887,15 +891,14 @@ bool IRGenerator::ir_positive(ast_node * node)
         // 解析错误
         return false;
     }
-
+    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
     node->blockInsts.addInst(result->blockInsts);
 
     if (result->val != nullptr) {
 
         //TODO 一元操作符的线性IR生成
-		
+        node->blockInsts.addInst(new UnaryIRInst(IRInstOperator::IRINST_OP_POSITIVE_I, resultValue, result->val));
     }
-    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
     node->val = resultValue;
 
     return true;
@@ -916,20 +919,20 @@ bool IRGenerator::ir_negative(ast_node * node)
         return false;
     }
 
+	Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
     node->blockInsts.addInst(result->blockInsts);
 
     if (result->val != nullptr) {
 
         //TODO 一元操作符的线性IR生成
-		
+        node->blockInsts.addInst(new UnaryIRInst(IRInstOperator::IRINST_OP_NEGATIVE_I, resultValue, result->val));
     }
-    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
     node->val = resultValue;
 
     return true;
 }
 
-/// @brief "!" 取反节点
+/// @brief "!" 取反节点,但是理论上不应该被调用
 /// @param node AST节点
 /// @return 翻译是否成功，true：成功，false：失败
 bool IRGenerator::ir_not(ast_node * node)
@@ -944,14 +947,14 @@ bool IRGenerator::ir_not(ast_node * node)
         return false;
     }
 
+	Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
     node->blockInsts.addInst(result->blockInsts);
 
     if (result->val != nullptr) {
 
         //TODO 一元操作符的线性IR生成
-		
+        node->blockInsts.addInst(new UnaryIRInst(IRInstOperator::IRINST_OP_LOGICAL_NOT_I, resultValue, result->val));
     }
-    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
     node->val = resultValue;
 
     return true;
@@ -1097,6 +1100,15 @@ bool IRGenerator::ir_leaf_node_float(ast_node * node)
 
     node->val = val;
 
+    return true;
+}
+/// @brief 表示类型的节点
+/// @param node AST节点
+/// @return 翻译是否成功，true：成功，false：失败
+bool IRGenerator::ir_leaf_type(ast_node *node)
+{
+	//TODO
+	//暂时不做任何处理-zzh
     return true;
 }
 

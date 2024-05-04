@@ -179,6 +179,14 @@ protected:
     /// @return 翻译是否成功，true：成功，false：失败
     bool ir_leaf_node_float(ast_node * node);
 
+	/// @brief 表示类型的节点
+	/// @param node AST节点
+	/// @return 翻译是否成功，true：成功，false：失败
+    bool ir_leaf_type(ast_node * node);
+
+
+
+
     /// @brief 未知节点类型的节点处理
     /// @param node AST节点
     /// @return 翻译是否成功，true：成功，false：失败

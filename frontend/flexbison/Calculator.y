@@ -34,7 +34,7 @@ void yyerror(char * msg);
 %token <var_id> T_ID
 
 //保留关键字
-%token T_FUNC T_RETURN T_MAIN T_IF T_ELSE T_WHILE T_CONST 
+%token T_FUNC T_RETURN T_IF T_ELSE T_WHILE T_CONST 
 %token T_VOID T_CONTINUE T_BREAK 
 // 类型
 %token T_INT

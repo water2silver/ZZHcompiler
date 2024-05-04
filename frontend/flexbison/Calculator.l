@@ -88,10 +88,6 @@ white_line  [\r\n]
 				// int
 				return T_INT;
 }
-"main"		{
-				// main
-				return T_MAIN;
-}
 "if"		{
 				// if
 				return T_IF;

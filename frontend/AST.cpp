@@ -303,7 +303,7 @@ ast_node * create_func_def(BasicType return_type,uint32_t line_no, const char * 
     ast_node * return_type_node = new_ast_leaf_node(return_type,0);
 
     ast_node * node = new ast_node(ast_operator_type::AST_OP_FUNC_DEF, line_no);
-    node->type.type = BasicType::TYPE_VOID;
+    node->type.type = return_type;
     node->name = func_name;
 
     // 如果没有参数，则创建参数节点
@@ -318,6 +318,7 @@ ast_node * create_func_def(BasicType return_type,uint32_t line_no, const char * 
 
 	//返回类型节点
 	node->sons.push_back(return_type_node);
+    return_type_node->parent = node;
 
     node->sons.push_back(params);
     params->parent = node;

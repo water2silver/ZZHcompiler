@@ -153,6 +153,35 @@ void BinaryIRInst::toString(std::string & str)
 			// 乘法
 			str = result->getName() + " = div " + src1->toString() + ", " + src2->toString();
             break;
+		case IRInstOperator::IRINST_OP_MOD_I:
+
+			//取模
+			str = result->getName() + " = mod " + src1->toString() + ", " + src2->toString();
+            break;
+		case IRInstOperator::IRINST_OP_GREATER_EQUAL_I:
+			//>=
+			str = result->getName() + " = cmp ge " + src1->toString() + ", " + src2->toString();
+            break;
+		case IRInstOperator::IRINST_OP_GREATER_THAN_I:
+			//>
+			str = result->getName() + " = cmp gt " + src1->toString() + ", " + src2->toString();
+            break;
+		case IRInstOperator::IRINST_OP_LESS_EQUAL_I:
+			//<=
+			str = result->getName() + " = cmp le " + src1->toString() + ", " + src2->toString();
+            break;
+		case IRInstOperator::IRINST_OP_LESS_THAN_I:
+			//<
+			str = result->getName() + " = cmp lt " + src1->toString() + ", " + src2->toString();
+            break;
+		case IRInstOperator::IRINST_OP_EQUAL_I:
+			// "=="
+			str = result->getName() + " = cmp eq " + src1->toString() + ", " + src2->toString();
+            break;
+		case IRInstOperator::IRINST_OP_NOT_EQUAL_I:
+			// "!="
+			str = result->getName() + " = cmp ne " + src1->toString() + ", " + src2->toString();
+            break;
         default:
             // 未知指令
             IRInst::toString(str);
@@ -297,4 +326,43 @@ GotoIRInst::~GotoIRInst()
 void GotoIRInst::toString(std::string & str)
 {
     str = "goto " + trueInst->getLabelName();
+}
+
+/// @brief 构造函数
+/// @param _op 操作符
+/// @param _result 结果操作数
+/// @param _srcVal1 源操作数1
+UnaryIRInst::UnaryIRInst(IRInstOperator _op, Value * _result, Value * _srcVal1):IRInst(_op,_result)
+{
+    srcValues.push_back(_srcVal1);
+}
+/// @brief 析构函数
+UnaryIRInst::~UnaryIRInst()
+{}
+
+/// @brief 转换成字符串
+/// @param str 转换后的字符串
+void UnaryIRInst::toString(std::string & str)
+{
+
+    Value *src1 = srcValues[0],*result = dstValue;
+
+    switch (op) {
+        case IRInstOperator::IRINST_OP_POSITIVE_I:
+			//正常情况下，应该没有取正运算。			
+			str = result->getName() + " = pos " + src1->toString();
+            break;
+		case IRInstOperator::IRINST_OP_NEGATIVE_I:
+			str = result->getName() + " = neg " + src1->toString();
+            break;
+		case IRInstOperator::IRINST_OP_LOGICAL_NOT_I:
+			// 老师讲有 "!" 出现的时候，真假出口反转。
+            str = "";
+            break;
+
+        default:
+            // 未知指令
+            IRInst::toString(str);
+            break;
+    }
 }

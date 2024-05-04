@@ -301,6 +301,7 @@ Value * Function::newVarValue(std::string name, BasicType type)
         insertValue(retVal);
     } else {
         // 已存在的Value，返回失败
+        printf("[Function::newVarValue] 重复参数名称");
         retVal = nullptr;
     }
 

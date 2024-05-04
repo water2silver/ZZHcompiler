@@ -75,6 +75,14 @@ enum class IRInstOperator {
 	/// @brief || 整数指令，二元运算
 	IRINST_OP_LOGICAL_OR_I,
 
+	/// @brief + 取正运算
+	IRINST_OP_POSITIVE_I,
+
+	/// @brief - 取负运算
+	IRINST_OP_NEGATIVE_I,
+
+	/// @brief 逻辑运算，取非
+	IRINST_OP_LOGICAL_NOT_I,
 
     /// @brief 最大指令码，也是无效指令
     IRINST_OP_MAX
@@ -298,6 +306,17 @@ public:
 
     /// @brief 析构函数
     virtual ~GotoIRInst() override;
+
+    /// @brief 转换成字符串
+    void toString(std::string & str) override;
+};
+
+class UnaryIRInst : public IRInst {
+public:
+    UnaryIRInst(IRInstOperator _op, Value * _result, Value * _srcVal1);
+
+	/// @brief 析构函数
+    virtual ~UnaryIRInst() override;
 
     /// @brief 转换成字符串
     void toString(std::string & str) override;
