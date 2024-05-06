@@ -5,7 +5,10 @@ int sum(int e,int f)
 
 int main()
 {
+	int a = 0,b;
 	a = 5;
+	b = (1+3)%2;
+
 	b = a + 7 + a;
 	// 显示b的值
 	b

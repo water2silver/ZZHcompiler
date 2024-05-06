@@ -184,8 +184,32 @@ protected:
 	/// @return 翻译是否成功，true：成功，false：失败
     bool ir_leaf_type(ast_node * node);
 
+	///decl与def的区别：decl下面有一个类型和def
 
+	/// @brief 变量定义节点翻译成中间线性IR
+	/// @param node AST节点
+	/// @return 翻译是否成功，true：成功，false：失败
+    bool ir_var_def(ast_node * node);
 
+	/// @brief 常量定义节点翻译成中间线性IR
+	/// @param node AST节点
+	/// @return 翻译是否成功，true：成功，false：失败
+    bool ir_const_def(ast_node * node);
+
+	/// @brief 常量定义节点翻译成中间线性IR
+	/// @param node AST节点
+	/// @return 翻译是否成功，true：成功，false：失败
+    bool ir_const_decl(ast_node * node);
+
+	/// @brief 变量定义节点翻译成中间线性IR
+	/// @param node AST节点
+	/// @return 翻译是否成功，true：成功，false：失败
+    bool ir_var_decl(ast_node * node);
+
+	/// @brief 定义节点翻译成中间线性IR，不区分是否为可变变量。
+	/// @param node AST节点
+	/// @return 翻译是否成功，true：成功，false：失败
+    bool ir_decl(ast_node * node);
 
     /// @brief 未知节点类型的节点处理
     /// @param node AST节点

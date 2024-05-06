@@ -84,6 +84,9 @@ enum class IRInstOperator {
 	/// @brief 逻辑运算，取非
 	IRINST_OP_LOGICAL_NOT_I,
 
+	/// @brief 变量定义
+	IRINST_OP_VAR_DEF,
+
     /// @brief 最大指令码，也是无效指令
     IRINST_OP_MAX
 };
@@ -317,6 +320,22 @@ public:
 
 	/// @brief 析构函数
     virtual ~UnaryIRInst() override;
+
+    /// @brief 转换成字符串
+    void toString(std::string & str) override;
+};
+
+class DeclIRInst : public IRInst {
+protected:
+
+	
+public:
+    DeclIRInst(IRInstOperator _op,Value * _result, Value * _srcVal1);
+    DeclIRInst(IRInstOperator _op,Value * _result);
+
+
+	/// @brief 析构函数
+    virtual ~DeclIRInst() override;
 
     /// @brief 转换成字符串
     void toString(std::string & str) override;

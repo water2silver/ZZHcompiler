@@ -152,6 +152,7 @@ void Function::toString(std::string & str)
     // 遍历所有的线性IR指令，文本输出
     for (auto & inst: code.getInsts()) {
 
+		//使用vector<string> 是不是会更好？
         std::string instStr;
         inst->toString(instStr);
 
@@ -301,7 +302,6 @@ Value * Function::newVarValue(std::string name, BasicType type)
         insertValue(retVal);
     } else {
         // 已存在的Value，返回失败
-        printf("[Function::newVarValue] 重复参数名称");
         retVal = nullptr;
     }
 

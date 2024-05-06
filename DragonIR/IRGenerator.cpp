@@ -41,6 +41,8 @@ IRGenerator::IRGenerator(ast_node * _root, SymbolTable * _symtab) : root(_root),
 	/* 表达式运算， 乘除 */
     ast2ir_handlers[ast_operator_type::AST_OP_TIMES] = &IRGenerator::ir_times;
     ast2ir_handlers[ast_operator_type::AST_OP_DIV] = &IRGenerator::ir_div;
+    ast2ir_handlers[ast_operator_type::AST_OP_MOD] = &IRGenerator::ir_mod;
+
 
 	/* 表达式运算，关系运算*/
     ast2ir_handlers[ast_operator_type::AST_OP_LESS_THAN] = &IRGenerator::ir_less_than;
@@ -58,7 +60,13 @@ IRGenerator::IRGenerator(ast_node * _root, SymbolTable * _symtab) : root(_root),
     ast2ir_handlers[ast_operator_type::AST_OP_NOT] = &IRGenerator::ir_not;
 
 	/* 常量，变量定义*/
-	
+    ast2ir_handlers[ast_operator_type::AST_OP_DECL] = &IRGenerator::ir_decl;
+	//TODO 暂支不区分var_decl 和 const_decl的IR形式
+    ast2ir_handlers[ast_operator_type::AST_OP_VAR_DECL] = &IRGenerator::ir_decl;
+    ast2ir_handlers[ast_operator_type::AST_OP_CONST_DECL] = &IRGenerator::ir_decl;
+
+
+    ast2ir_handlers[ast_operator_type::AST_OP_VAR_DEF] = &IRGenerator::ir_var_def;
 
     /* 语句 */
     ast2ir_handlers[ast_operator_type::AST_OP_EXPR] = &IRGenerator::ir_expr_noshow;
@@ -409,7 +417,7 @@ bool IRGenerator::ir_add(ast_node * node)
 
     // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
     // TODO real number add
-
+	// add 的结果存放到TempValue，但是函数的结果存放到VarValue
     Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
 
     // 创建临时变量保存IR的值，以及线性IR指令
@@ -875,6 +883,57 @@ bool IRGenerator::ir_logical_or(ast_node * node)
     node->val = resultValue;
 
     return true;
+}
+
+/// @brief 变量定义节点翻译成中间线性IR
+/// @param node AST节点
+/// @return 翻译是否成功，true：成功，false：失败
+bool IRGenerator::ir_var_def(ast_node * node)
+{
+    bool result = true;
+    for (ast_node * son: node->sons) {
+
+		//不初始化的情况
+		if(son->node_type==ast_operator_type::AST_OP_LEAF_VAR_ID)
+		{
+            ast_node * res = ir_visit_ast_node(son);
+			if(res==nullptr)
+			{
+                result = false;
+            }
+            node->blockInsts.addInst(new DeclIRInst(IRInstOperator::IRINST_OP_VAR_DEF, son->val));
+        } else // 初始化的情况
+        {
+            ast_node * res1 = ir_visit_ast_node(son->sons[0]);
+            ast_node * res2 = ir_visit_ast_node(son->sons[1]);
+            if(res2==nullptr || res1==nullptr)
+			{
+                result = false;
+            }
+			//
+            node->blockInsts.addInst(res1->blockInsts);
+            node->blockInsts.addInst(res2->blockInsts);
+            node->blockInsts.addInst(new DeclIRInst(IRInstOperator::IRINST_OP_VAR_DEF, res1->val, res2->val));
+        }
+    }
+    return result;
+}
+
+/// @brief 定义节点翻译成中间线性IR，不区分是否为可变变量。
+/// @param node AST节点
+/// @return 翻译是否成功，true：成功，false：失败
+bool IRGenerator::ir_decl(ast_node * node)
+{
+    bool result = true;
+	//son[0]为空节点
+    ast_node * res = ir_visit_ast_node(node->sons[1]);
+    if (res == nullptr)
+	{
+        result = false;
+        printf("Decl节点visit子节点失败");
+    }
+    node->blockInsts.addInst(res->blockInsts);
+    return result;
 }
 
 /// @brief 正数节点

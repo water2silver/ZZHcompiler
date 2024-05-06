@@ -366,3 +366,30 @@ void UnaryIRInst::toString(std::string & str)
             break;
     }
 }
+
+DeclIRInst::DeclIRInst(IRInstOperator _op,Value * _result, Value * _srcVal1)
+	:IRInst(_op,_result)
+{
+    srcValues.push_back(_srcVal1);
+}
+
+DeclIRInst::DeclIRInst(IRInstOperator _op,Value * _result)
+	:IRInst(_op,_result)
+{
+
+}
+
+DeclIRInst::~DeclIRInst()
+{}
+
+void DeclIRInst::toString(std::string & str)
+{
+	if(srcValues.empty())
+	{
+        str = std::string("declare ") + std::string("i32 %l") + dstValue->getName();
+    }else
+	{
+        str = std::string("declare ") + std::string("i32 %l") + dstValue->getName() + "\r";
+        str += std::string("%l")+dstValue->getName() + " = " + srcValues[0]->getName();
+    }
+}
