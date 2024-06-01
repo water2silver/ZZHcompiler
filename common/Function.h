@@ -227,6 +227,9 @@ private:
 
     /// @brief 函数内变量的向量表
     std::vector<Value *> varsVector;
+	
+	/// @brief 临时变量的列表
+    std::vector<Value *> tempVector;
 
     /// @brief 函数出口Label指令
     IRInst * exitLabel = nullptr;
@@ -254,4 +257,5 @@ private:
 
     /// @brief 被保护寄存器字符串
     std::string protectedRegStr;
+
 };

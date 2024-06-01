@@ -102,6 +102,9 @@ public:
     /// 遍历抽象树过程中的当前处理函数
     Function * currentFunc = nullptr;
 
+	/// @brief 把全局变量的定义单独存起来。  
+	InterCode globalVarDefInsts;
+
 private:
     /// @brief 变量名映射表，变量名-变量，只保存全局变量以及常量
     std::unordered_map<std::string, Value *> varsMap;

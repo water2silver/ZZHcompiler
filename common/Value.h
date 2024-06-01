@@ -50,6 +50,7 @@ protected:
         return "%m" + std::to_string(tempVarCount++);
     }
 
+	//修改为非 staic 变量
     static uint64_t tempVarCount; // 临时变量计数，默认从0开始
 
 protected:
@@ -68,6 +69,9 @@ protected:
 public:
     /// @brief 变量名或内部标识的名字
     std::string name;
+
+	/// @brief 标签名。这个名字的意义，从name->label_name的映射。
+    std::string label_name;
 
     /// @brief 类型
     ValueType type;
@@ -120,7 +124,24 @@ public:
     /// @return 字符串
     virtual std::string toString()
     {
-        return type.toString() + " " + getName();
+        // return type.toString() + " " + getName();
+		if(_var)
+		{
+			if(!label_name.empty())
+			{
+                return this->label_name;
+            }else
+			{
+                return this->name;
+            }
+        }else if(_temp)
+		{
+            return this->name;
+        }else
+		{
+			//常量和mem变量的情况。
+            return this->name;
+        }
     }
 
     /// @brief 获取函数栈内偏移
@@ -260,13 +281,17 @@ public:
     VarValue(std::string _name, BasicType _type) : Value(_name, _type)
     {
         _var = true;
+        label_name = createLocalVarName();
     }
 
     /// @brief 创建临时Value，用于保存中间IR指令的值
     /// \param val
     VarValue(BasicType type) : Value(type)
     {
-        name = createLocalVarName();
+		//一般情况下,只有return的值会是没有 真实名 的变量
+		label_name = createLocalVarName();
+        name = "";
+        // label_name = name;
         _var = true;
     }
 

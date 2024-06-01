@@ -146,7 +146,7 @@ void BinaryIRInst::toString(std::string & str)
 		case IRInstOperator::IRINST_OP_TIMES_I:
 			
 			// 乘法
-			str = result->getName() + " = times " + src1->toString() + ", " + src2->toString();
+			str = result->getName() + " = mul " + src1->toString() + ", " + src2->toString();
             break;
 		case IRInstOperator::IRINST_OP_DIV_I:
 			
@@ -160,27 +160,27 @@ void BinaryIRInst::toString(std::string & str)
             break;
 		case IRInstOperator::IRINST_OP_GREATER_EQUAL_I:
 			//>=
-			str = result->getName() + " = cmp ge " + src1->toString() + ", " + src2->toString();
+			str = result->getName() + " = icmp ge " + src1->toString() + ", " + src2->toString();
             break;
 		case IRInstOperator::IRINST_OP_GREATER_THAN_I:
 			//>
-			str = result->getName() + " = cmp gt " + src1->toString() + ", " + src2->toString();
+			str = result->getName() + " = icmp gt " + src1->toString() + ", " + src2->toString();
             break;
 		case IRInstOperator::IRINST_OP_LESS_EQUAL_I:
 			//<=
-			str = result->getName() + " = cmp le " + src1->toString() + ", " + src2->toString();
+			str = result->getName() + " = icmp le " + src1->toString() + ", " + src2->toString();
             break;
 		case IRInstOperator::IRINST_OP_LESS_THAN_I:
 			//<
-			str = result->getName() + " = cmp lt " + src1->toString() + ", " + src2->toString();
+			str = result->getName() + " = icmp lt " + src1->toString() + ", " + src2->toString();
             break;
 		case IRInstOperator::IRINST_OP_EQUAL_I:
 			// "=="
-			str = result->getName() + " = cmp eq " + src1->toString() + ", " + src2->toString();
+			str = result->getName() + " = icmp eq " + src1->toString() + ", " + src2->toString();
             break;
 		case IRInstOperator::IRINST_OP_NOT_EQUAL_I:
 			// "!="
-			str = result->getName() + " = cmp ne " + src1->toString() + ", " + src2->toString();
+			str = result->getName() + " = icmp ne " + src1->toString() + ", " + src2->toString();
             break;
         default:
             // 未知指令
@@ -267,8 +267,8 @@ AssignIRInst::~AssignIRInst()
 void AssignIRInst::toString(std::string & str)
 {
     Value *src1 = srcValues[0], *result = dstValue;
-
-    str = result->getName() + " = " + src1->toString();
+	//getName 与 toString
+    str = result->toString() + " = " + src1->toString();
 }
 
 /// @brief return语句指令
@@ -386,10 +386,100 @@ void DeclIRInst::toString(std::string & str)
 {
 	if(srcValues.empty())
 	{
-        str = std::string("declare ") + std::string("i32 %l") + dstValue->getName();
+        //str = std::string("declare ") + std::string("i32 %l") + dstValue->getName();
     }else
 	{
-        str = std::string("declare ") + std::string("i32 %l") + dstValue->getName() + "\r";
-        str += std::string("%l")+dstValue->getName() + " = " + srcValues[0]->getName();
+        // str = std::string("declare ") + std::string("i32 %l") + dstValue->getName() + "\r";
+        str += dstValue->label_name + " = " + srcValues[0]->getName();
     }
+}
+GlobalDeclIRInst::GlobalDeclIRInst(IRInstOperator _op,Value * _result, Value * _srcVal1)
+	:IRInst(_op,_result)
+{
+    srcValues.push_back(_srcVal1);
+}
+
+GlobalDeclIRInst::GlobalDeclIRInst(IRInstOperator _op,Value * _result)
+	:IRInst(_op,_result)
+{
+
+}
+
+GlobalDeclIRInst::~GlobalDeclIRInst()
+{}
+
+void GlobalDeclIRInst::toString(std::string & str)
+{
+	if(srcValues.empty())
+	{
+        str = std::string("declare ") + std::string("i32 @") + dstValue->getName()+" = 0\n";
+    }else
+	{
+        str = std::string("declare ") + std::string("i32 @") + dstValue->getName() + " = " + srcValues[0]->toString()+"\n";
+        // str += dstValue->getName() + " = " + srcValues[0]->getName();
+    }
+}
+
+IfIRInst::IfIRInst(IRInstOperator _op,Value * cond,LabelIRInst* label_true,LabelIRInst* label_false):IRInst(_op)
+{
+    trueInst = label_true;
+    falseInst = label_false;
+    srcValues.push_back(cond);
+}
+
+IfIRInst::~IfIRInst(){
+
+}
+
+void IfIRInst::toString(std::string & str)
+{
+	if(srcValues.empty())
+	{
+        printf("[IfIRInst] empty srcValues()");
+        return;
+    }
+    str +=std::string("bc ") + srcValues[0]->getName() + 
+		  ", label " + trueInst->getLabelName() + 
+		  ", label " + falseInst->getLabelName();
+
+}
+
+/// @brief return语句指令
+/// @param target 跳转目标
+BranchIRInst::BranchIRInst(IRInst * target) : IRInst(IRInstOperator::IRINST_OP_GOTO, nullptr)
+{
+    // 真假目标一样，则无条件跳转
+    trueInst = falseInst = target;
+}
+
+/// @brief 析构函数
+BranchIRInst::~BranchIRInst()
+{}
+
+/// @brief 转换成字符串
+void BranchIRInst::toString(std::string & str)
+{
+    str = "br label " + trueInst->getLabelName();
+}
+
+//
+CondNotZeroIRInst::CondNotZeroIRInst(IRInstOperator op,Value *result,Value * src1,LabelIRInst* label_true,LabelIRInst* label_false):IRInst(IRInstOperator::IRINST_OP_NOT_EQUAL_I,result)
+{
+	
+    srcValues.push_back(src1);
+	trueInst = label_true;
+    falseInst = label_false;
+	
+}
+CondNotZeroIRInst::~CondNotZeroIRInst(){
+
+};
+void CondNotZeroIRInst::toString(std::string & str)
+{
+    Value * result = this->dstValue;
+    Value * src1 = this->getSrc1();
+    str = result->getName() + " = icmp ne " + src1->toString() + ", 0\n	" ;
+	str +="bc " +result->getName()+ 
+	 	  ", label " + trueInst->getLabelName() + 
+		  ", label " + falseInst->getLabelName();
 }

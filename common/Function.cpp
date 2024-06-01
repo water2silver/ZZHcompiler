@@ -129,7 +129,7 @@ void Function::toString(std::string & str)
     }
 
     // 输出函数头
-    str = returnType.toString() + " " + name + "(";
+    str = std::string("define ")+returnType.toString() + " @" + name + "(";
 
     bool firstParam = false;
     for (auto & param: params) {
@@ -145,10 +145,40 @@ void Function::toString(std::string & str)
         str += param_str;
     }
 
-    str += ")\n";
+    str += ")";
 
     str += "{\n";
-
+	//
+	//局部变量声明部分
+	for(auto &value : varsVector)
+	{
+		if(value->isLocalVar()) 
+		{
+			str += "\t" + std::string("declare i32 ") + value->label_name;
+			if(!value->name.empty())
+			{
+				str += std::string(" ; variable: ") + value->name;
+			}
+			str += std::string("\n");
+        }
+    }
+    //临时变量声明部分
+	for(auto &value : varsVector)
+	{
+		if(value->isTemp()) 
+		{
+            std::string valueType;
+            if (value->type.type == BasicType::TYPE_BOOL) 
+			{
+                valueType = std::string("i1");
+            } else if (value->type.type == BasicType::TYPE_INT) 
+			{
+                valueType = std::string("i32");
+			}
+            str += "\t" + std::string("declare ") + valueType + " " + value->name;
+			str += std::string("\n");
+		}
+	}
     // 遍历所有的线性IR指令，文本输出
     for (auto & inst: code.getInsts()) {
 
@@ -350,9 +380,10 @@ Value * Function::newTempValue(BasicType type)
 Value * Function::findValue(std::string name, bool create)
 {
     Value * temp = nullptr;
-
+    std::unordered_map<std::string, Value *>::iterator pIter;
     // 这里只是针对函数内的变量进行检查，如果要考虑全局变量，则需要继续检查symtab的符号表
-    auto pIter = varsMap.find(name);
+	//TODO 暂时不考虑作用域的问题
+	pIter = varsMap.find(name);
     if (pIter != varsMap.end()) {
 
         // 如果考虑作用域、存在重名的时候，需要从varsVector逆序检查到底用那个Value

@@ -13,7 +13,7 @@ fi
 name=$1
 
 # 构建你要执行的命令
-command="./cmake-build-debug/calculator -S -a -o  result/${name}.png tests/${name}.txt"
+command="./cmake-build-debug/calculator -S -a -o  result/${name}.png tests/${name}.c"
 
 # 执行命令
 $command

@@ -171,6 +171,15 @@ enum class ast_operator_type : int {
 /// @brief 抽象语法树AST的节点描述类
 class ast_node {
 public:
+	/// @brief 真标签-主要用于cond节点进行短路求值的遍历。
+    LabelIRInst *label_true;
+
+	/// @brief 假标签
+    LabelIRInst *label_false;
+
+	/// @brief 结束标签
+    LabelIRInst *label_end;
+
     /// @brief 父节点
     ast_node * parent;
 
@@ -222,6 +231,12 @@ public:
     /// @param _node_type 节点类型
     /// @param _line_no 行号
     ast_node(ast_operator_type _node_type, int32_t _line_no = -1);
+
+	/// @brief 设置标签
+    void set_label(LabelIRInst * label_true, LabelIRInst * label_false, LabelIRInst * label_end);
+
+	/// @brief 从另一个节点完全继承所有的label
+    void inherit_label(ast_node * node);
 };
 
 /// @brief 判断是否是叶子节点

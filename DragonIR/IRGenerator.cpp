@@ -64,9 +64,13 @@ IRGenerator::IRGenerator(ast_node * _root, SymbolTable * _symtab) : root(_root),
 	//TODO 暂支不区分var_decl 和 const_decl的IR形式
     ast2ir_handlers[ast_operator_type::AST_OP_VAR_DECL] = &IRGenerator::ir_decl;
     ast2ir_handlers[ast_operator_type::AST_OP_CONST_DECL] = &IRGenerator::ir_decl;
-
-
     ast2ir_handlers[ast_operator_type::AST_OP_VAR_DEF] = &IRGenerator::ir_var_def;
+
+	/*语句结构部分*/
+    ast2ir_handlers[ast_operator_type::AST_OP_IF] = &IRGenerator::ir_if;
+    ast2ir_handlers[ast_operator_type::AST_OP_COND] = &IRGenerator::ir_cond;
+
+
 
     /* 语句 */
     ast2ir_handlers[ast_operator_type::AST_OP_EXPR] = &IRGenerator::ir_expr_noshow;
@@ -86,6 +90,8 @@ IRGenerator::IRGenerator(ast_node * _root, SymbolTable * _symtab) : root(_root),
 
     /* 编译单元 */
     ast2ir_handlers[ast_operator_type::AST_OP_COMPILE_UNIT] = &IRGenerator::ir_compile_unit;
+
+    inCondtion = false;
 }
 
 /// @brief 编译单元AST节点翻译成线性中间IR
@@ -173,9 +179,10 @@ bool IRGenerator::ir_function_define(ast_node * node)
 
     // 获取函数的IR代码列表，用于后面追加指令用，注意这里用的是引用传值
     InterCode & irCode = symtab->currentFunc->getInterCode();
-
+	
     // 这里也可增加一个函数入口Label指令，便于后续基本块划分
-
+    LabelIRInst * entryLabelInst = new LabelIRInst();
+    irCode.addInst(entryLabelInst);
     // 创建并加入Entry入口指令
     irCode.addInst(new EntryIRInst());
 
@@ -219,6 +226,7 @@ bool IRGenerator::ir_function_define(ast_node * node)
     if (symtab->currentFunc->getReturnType().type != BasicType::TYPE_VOID) {
         // 函数出口指令
         irCode.addInst(new ExitIRInst(retValue));
+        // irCode.addInst(new BranchIRInst(exitLabelInst));
     } else {
         // 清理资源恢复原状
         symtab->currentFunc->deleteVarValue(retValue);
@@ -608,12 +616,13 @@ bool IRGenerator::ir_less_than(ast_node * node)
     // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
     // TODO real number add
 
-    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
 
     // 创建临时变量保存IR的值，以及线性IR指令
     node->blockInsts.addInst(left->blockInsts);
     node->blockInsts.addInst(right->blockInsts);
     node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_LESS_THAN_I, resultValue, left->val, right->val));
+    node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF,resultValue,node->label_true,node->label_false));
     node->val = resultValue;
 
     return true;
@@ -646,13 +655,14 @@ bool IRGenerator::ir_greater_than(ast_node * node)
     // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
     // TODO real number add
 
-    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
 
     // 创建临时变量保存IR的值，以及线性IR指令
     node->blockInsts.addInst(left->blockInsts);
     node->blockInsts.addInst(right->blockInsts);
     node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_GREATER_THAN_I, resultValue, left->val, right->val));
-    node->val = resultValue;
+    node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF,resultValue,node->label_true,node->label_false));
+	node->val = resultValue;
 
     return true;
 }
@@ -684,13 +694,14 @@ bool IRGenerator::ir_less_equal(ast_node * node)
     // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
     // TODO real number add
 
-    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
 
     // 创建临时变量保存IR的值，以及线性IR指令
     node->blockInsts.addInst(left->blockInsts);
     node->blockInsts.addInst(right->blockInsts);
     node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_LESS_EQUAL_I, resultValue, left->val, right->val));
-    node->val = resultValue;
+    node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF,resultValue,node->label_true,node->label_false));
+	node->val = resultValue;
 
     return true;
 }
@@ -722,13 +733,14 @@ bool IRGenerator::ir_greater_equal(ast_node * node)
     // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
     // TODO real number add
 
-    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
 
     // 创建临时变量保存IR的值，以及线性IR指令
     node->blockInsts.addInst(left->blockInsts);
     node->blockInsts.addInst(right->blockInsts);
     node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_GREATER_EQUAL_I, resultValue, left->val, right->val));
-    node->val = resultValue;
+    node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF,resultValue,node->label_true,node->label_false));
+	node->val = resultValue;
 
     return true;
 }
@@ -760,12 +772,13 @@ bool IRGenerator::ir_equal(ast_node * node)
     // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
     // TODO real number add
 
-    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
 
     // 创建临时变量保存IR的值，以及线性IR指令
     node->blockInsts.addInst(left->blockInsts);
     node->blockInsts.addInst(right->blockInsts);
     node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_EQUAL_I, resultValue, left->val, right->val));
+    node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_true, node->label_false));
     node->val = resultValue;
 
     return true;
@@ -798,13 +811,16 @@ bool IRGenerator::ir_not_equal(ast_node * node)
     // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
     // TODO real number add
 
-    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
 
     // 创建临时变量保存IR的值，以及线性IR指令
     node->blockInsts.addInst(left->blockInsts);
     node->blockInsts.addInst(right->blockInsts);
-    node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_NOT_EQUAL_I, resultValue, left->val, right->val));
-    node->val = resultValue;
+    node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_EQUAL_I, resultValue, left->val, right->val));
+    //not equal调转真假出口位置 
+	//TODO 思考，需要调换node本身的label_true label_false位置吗？
+	node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_false, node->label_true));
+	node->val = resultValue;
 
     return true;
 }
@@ -816,7 +832,12 @@ bool IRGenerator::ir_logical_and(ast_node * node)
 {
 	ast_node * src1_node = node->sons[0];
     ast_node * src2_node = node->sons[1];
-
+	//label or 的第二个子节点的入口地址
+    LabelIRInst * label_and = new LabelIRInst();
+    src1_node->inherit_label(node);
+	//这里是 and 节点和 or 节点不同的地方
+    src1_node->label_true = label_and;
+    src2_node->inherit_label(node);
     // 除法节点，左结合，先计算左节点，后计算右节点
 
     // 除法的左边操作数
@@ -836,27 +857,35 @@ bool IRGenerator::ir_logical_and(ast_node * node)
     // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
     // TODO real number add
 
-    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    // Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
 
     // 创建临时变量保存IR的值，以及线性IR指令
     node->blockInsts.addInst(left->blockInsts);
+    // node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF,left->val,left->label_true,left->label_false));
+
+    node->blockInsts.addInst(label_and);
     node->blockInsts.addInst(right->blockInsts);
-    node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_LOGICAL_AND_I, resultValue, left->val, right->val));
-    node->val = resultValue;
+    // node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF,right->val,right->label_true,right->label_false));
+    // node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_LOGICAL_OR_I, resultValue, left->val, right->val));
+    // node->val = resultValue;
 
     return true;
 }
 
-/// @brief 整数 || 运算AST节点翻译成线性中间IR
+/// @brief 整数 || 运算AST节点翻译成线性中间，似乎默认逻辑运算只会用在cond节点中
 /// @param node AST节点
 /// @return 翻译是否成功，true：成功，false：失败
 bool IRGenerator::ir_logical_or(ast_node * node)
 {
 	ast_node * src1_node = node->sons[0];
     ast_node * src2_node = node->sons[1];
+	//label or 的第二个子节点的入口地址
+    LabelIRInst * label_or = new LabelIRInst();
+    src1_node->inherit_label(node);
+    src1_node->label_false = label_or;
+    src2_node->inherit_label(node);
 
     // 除法节点，左结合，先计算左节点，后计算右节点
-
     // 除法的左边操作数
     ast_node * left = ir_visit_ast_node(src1_node);
     if (!left) {
@@ -874,15 +903,96 @@ bool IRGenerator::ir_logical_or(ast_node * node)
     // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
     // TODO real number add
 
-    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    // Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
 
     // 创建临时变量保存IR的值，以及线性IR指令
     node->blockInsts.addInst(left->blockInsts);
+    // node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF,left->val,left->label_true,left->label_false));
+
+    node->blockInsts.addInst(label_or);
     node->blockInsts.addInst(right->blockInsts);
-    node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_LOGICAL_OR_I, resultValue, left->val, right->val));
-    node->val = resultValue;
+    // node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF,right->val,right->label_true,right->label_false));
+    // node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_LOGICAL_OR_I, resultValue, left->val, right->val));
+    // node->val = resultValue;
 
     return true;
+}
+
+/// @brief if 节点的中间线性IR
+/// @param node AST节点
+/// @return 翻译是否成功，true：成功，false：失败
+bool IRGenerator::ir_if(ast_node * node)
+{
+    int result = 1;
+	
+	//res_cond 为共有部分
+	ast_node * cond_node = node->sons[0];
+	ast_node * true_node = node->sons[1];
+	auto label_true = new LabelIRInst();
+    auto label_false = new LabelIRInst();
+    auto label_end = new LabelIRInst();
+    cond_node->set_label(label_true, label_false, label_end);
+
+    ast_node * res_cond = ir_visit_ast_node(cond_node);
+    if(res_cond==nullptr)
+	{
+		result = 0;
+	}
+    node->blockInsts.addInst(res_cond->blockInsts);
+	//真出口，假出口，结束出口。
+    
+    // LabelValue * true_value = new LabelValue(label_true->getLabelName());
+    // LabelValue * false_value = new LabelValue(label_false->getLabelName());
+    // LabelValue * end_value = new LabelValue(label_end->getLabelName());
+    //这部分内容可能冗余了
+	// node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF,label_true,label_false));
+
+	//true 部分
+	ast_node * res_true = ir_visit_ast_node(true_node);
+	if(res_true==nullptr)
+	{
+		result = 0;
+	}
+	node->blockInsts.addInst(label_true);
+	node->blockInsts.addInst(res_true->blockInsts);
+    node->blockInsts.addInst(new BranchIRInst(label_end));
+    // false block部分
+    node->blockInsts.addInst(label_false);
+    if(node->sons.size() == 3)
+    {
+		ast_node * false_node = node->sons[2];
+        ast_node * res_false = ir_visit_ast_node(false_node);
+		if(res_false == nullptr)
+		{
+            result = 0;
+        }
+        node->blockInsts.addInst(res_false->blockInsts);
+	    node->blockInsts.addInst(new BranchIRInst(label_end));
+    }
+    node->blockInsts.addInst(label_end);
+
+    return result;
+}
+
+/// @brief cond的节点的中间线性IR
+/// @param node AST节点
+/// @return 翻译是否成功，true：成功，false：失败
+bool IRGenerator::ir_cond(ast_node * node)
+{
+	bool result = true;
+    node->sons[0]->inherit_label(node);
+
+    this->inCondtion = true;
+    ast_node * res = ir_visit_ast_node(node->sons[0]);
+    this->inCondtion = false;
+
+    if (res == nullptr) {
+        result = false;
+        printf("cond节点visit子节点失败");
+    }
+    node->blockInsts.addInst(res->blockInsts);
+    node->val = res->val;
+    return result;
 }
 
 /// @brief 变量定义节点翻译成中间线性IR
@@ -893,28 +1003,63 @@ bool IRGenerator::ir_var_def(ast_node * node)
     bool result = true;
     for (ast_node * son: node->sons) {
 
-		//不初始化的情况
-		if(son->node_type==ast_operator_type::AST_OP_LEAF_VAR_ID)
+		//函数内局部变量
+		if(symtab->currentFunc!=nullptr)
 		{
-            ast_node * res = ir_visit_ast_node(son);
-			if(res==nullptr)
+			//不初始化的情况
+			if(son->node_type==ast_operator_type::AST_OP_LEAF_VAR_ID)
 			{
-                result = false;
-            }
-            node->blockInsts.addInst(new DeclIRInst(IRInstOperator::IRINST_OP_VAR_DEF, son->val));
-        } else // 初始化的情况
-        {
-            ast_node * res1 = ir_visit_ast_node(son->sons[0]);
-            ast_node * res2 = ir_visit_ast_node(son->sons[1]);
-            if(res2==nullptr || res1==nullptr)
+				ast_node * res = ir_visit_ast_node(son);
+				if(res==nullptr)
+				{
+					result = false;
+				}
+				node->blockInsts.addInst(new DeclIRInst(IRInstOperator::IRINST_OP_VAR_DEF, son->val));
+			} else // 初始化的情况-这时候子节点为类型应该为ASSIGN
 			{
-                result = false;
-            }
-			//
-            node->blockInsts.addInst(res1->blockInsts);
-            node->blockInsts.addInst(res2->blockInsts);
-            node->blockInsts.addInst(new DeclIRInst(IRInstOperator::IRINST_OP_VAR_DEF, res1->val, res2->val));
-        }
+				ast_node * res1 = ir_visit_ast_node(son->sons[0]);
+				ast_node * res2 = ir_visit_ast_node(son->sons[1]);
+				if(res2==nullptr || res1==nullptr)
+				{
+					result = false;
+				}
+				//
+				node->blockInsts.addInst(res1->blockInsts);
+				node->blockInsts.addInst(res2->blockInsts);
+				node->blockInsts.addInst(new DeclIRInst(IRInstOperator::IRINST_OP_VAR_DEF, res1->val, res2->val));
+			}
+		}else //函数外的全局变量
+		{
+			//默认初始化为 0 
+			if(son->node_type==ast_operator_type::AST_OP_LEAF_VAR_ID)
+			{
+				ast_node * res = ir_visit_ast_node(son);
+				if(res==nullptr)
+				{
+					result = false;
+				}
+                symtab->globalVarDefInsts.addInst(new GlobalDeclIRInst(IRInstOperator::IRINST_OP_GLOBAL_DEF, son->val));
+                // node->blockInsts.addInst();
+            } else // 初始化的情况-这时候子节点为类型应该为ASSIGN
+			{
+				ast_node * res1 = ir_visit_ast_node(son->sons[0]);
+				ast_node * res2 = ir_visit_ast_node(son->sons[1]);
+				if(res2==nullptr || res1==nullptr)
+				{
+					result = false;
+				}
+				//
+                symtab->globalVarDefInsts.addInst(res1->blockInsts);
+                symtab->globalVarDefInsts.addInst(res2->blockInsts);
+                symtab->globalVarDefInsts.addInst(
+                    new GlobalDeclIRInst(IRInstOperator::IRINST_OP_GLOBAL_DEF, res1->val, res2->val));
+
+                // node->blockInsts.addInst(res1->blockInsts);
+				// node->blockInsts.addInst(res2->blockInsts);
+				// node->blockInsts.addInst(new GlobalDeclIRInst(IRInstOperator::IRINST_OP_GLOBAL_DEF, res1->val, res2->val));
+			}
+		}
+		
     }
     return result;
 }
@@ -1090,7 +1235,8 @@ bool IRGenerator::ir_return(ast_node * node)
     node->blockInsts.addInst(new AssignIRInst(symtab->currentFunc->getReturnValue(), right->val));
 
     // 跳转到函数的尾部出口指令上
-    node->blockInsts.addInst(new GotoIRInst(symtab->currentFunc->getExitLabel()));
+    //node->blockInsts.addInst(new GotoIRInst(symtab->currentFunc->getExitLabel()));
+    node->blockInsts.addInst(new BranchIRInst(symtab->currentFunc->getExitLabel()));
 
     node->val = right->val;
 
@@ -1114,20 +1260,43 @@ bool IRGenerator::ir_return(ast_node * node)
 bool IRGenerator::ir_leaf_node_var_id(ast_node * node)
 {
     Value * val;
-
     // 新建一个ID型Value
-
     // 变量，则需要在符号表中查找对应的值
     // 若变量之前没有有定值，则采用默认的值为0
+	//TODO 如何区分全局变量和局部变量？
 
-    val = symtab->currentFunc->findValue(node->name, false);
-    if (!val) {
+	// 当前有函数
+	if(symtab->currentFunc!=nullptr)
+	{
+		val = symtab->currentFunc->findValue(node->name, false);
+		if (!val) {
 
-        // 变量不存在，则创建一个变量
-        val = symtab->currentFunc->newVarValue(node->name);
+			// 变量不存在，则创建一个变量
+			val = symtab->currentFunc->newVarValue(node->name);
+		}
+		node->val = val;
+		
+		//当condtion条件下的处理,返回值应该是一个i1，而不是叶子节点的变量值
+		if(this->inCondtion && node->parent->sons.size()==1)
+		{	
+			//继承
+			node->inherit_label(node->parent);
+			// 直接在这个地方插入两条语句？
+			Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
+			node->blockInsts.addInst(new CondNotZeroIRInst(IRInstOperator::IRINST_OP_NOT_EQUAL_I,resultValue,node->val,node->label_true,node->label_false));
+			// node->blockInsts.addInst(new BranchIRInst(IRInstOperator::IRINST_OP_GOTO,))
+			node->val = resultValue;
+		}
+	}else
+	{
+        val = symtab->findValue(node->name, false);
+		if(!val)
+		{
+            val = symtab->newVarValue(node->name, BasicType::TYPE_INT);
+        }
+        node->val = val;
+
     }
-
-    node->val = val;
 
     return true;
 }

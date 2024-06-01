@@ -87,6 +87,12 @@ enum class IRInstOperator {
 	/// @brief 变量定义
 	IRINST_OP_VAR_DEF,
 
+	/// @brief IR分支
+	IRINST_OP_IF,
+
+	/// @brief 全局变量定义
+	IRINST_OP_GLOBAL_DEF,
+
     /// @brief 最大指令码，也是无效指令
     IRINST_OP_MAX
 };
@@ -205,7 +211,7 @@ protected:
     {
         static uint64_t tempLabelCount = 0; // 常量计数，默认从0开始
 
-        return "L" + std::to_string(tempLabelCount++);
+        return ".L" + std::to_string(++tempLabelCount);
     }
 };
 
@@ -338,5 +344,63 @@ public:
     virtual ~DeclIRInst() override;
 
     /// @brief 转换成字符串
+    void toString(std::string & str) override;
+};
+
+/// @brief 用于全局变量定义的语句。
+class GlobalDeclIRInst : public IRInst {
+protected:
+
+	
+public:
+    GlobalDeclIRInst(IRInstOperator _op,Value * _result, Value * _srcVal1);
+    GlobalDeclIRInst(IRInstOperator _op,Value * _result);
+
+
+	/// @brief 析构函数
+    virtual ~GlobalDeclIRInst() override;
+
+    /// @brief 转换成字符串
+    void toString(std::string & str) override;
+};
+
+class IfIRInst:public IRInst
+{
+protected:	
+
+public:
+    IfIRInst(IRInstOperator _op,Value* cond,LabelIRInst* label_true,LabelIRInst* label_false);
+
+    /// @brief 析构函数
+    virtual ~IfIRInst() override;
+
+    /// @brief 转换成字符串
+    void toString(std::string & str) override;
+};
+
+class BranchIRInst : public IRInst {
+
+public:
+    /// @brief return语句指令
+    /// @param target 跳转目标
+    BranchIRInst(IRInst * target);
+
+    /// @brief 析构函数
+    virtual ~BranchIRInst() override;
+
+    /// @brief 转换成字符串
+    void toString(std::string & str) override;
+};
+
+class CondNotZeroIRInst:public IRInst{
+public:
+    /// @brief  构造函数
+    CondNotZeroIRInst(IRInstOperator op,Value *result,Value * src1,LabelIRInst* label_true,LabelIRInst* label_false);
+
+    /// @brief  析构函数
+    virtual ~CondNotZeroIRInst() override;
+
+    /// @brief 转换成字符串
+    /// @param str 引用传递
     void toString(std::string & str) override;
 };

@@ -90,6 +90,14 @@ void SymbolTable::outputIR(const std::string & filePath)
         printf("fopen() failed\n");
         return;
     }
+	//全局变量的IR
+    auto varInsts = globalVarDefInsts.getInsts();
+    for (auto varDef: varInsts) {
+        std::string varStr;
+        varDef->toString(varStr);
+		
+		fprintf(fp, "%s", varStr.c_str());
+    }
 
     // 遍历所有的线性IR指令，文本输出
     for (auto func: funcVector) {

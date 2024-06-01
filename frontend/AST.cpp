@@ -68,7 +68,18 @@ ast_node::ast_node(var_id_attr attr) : line_no(attr.lineno), name(attr.id)
     // 目前这里默认设置为int类型
     type.type = BasicType::TYPE_INT;
 }
-
+/// @brief 设置标签
+void ast_node::set_label(LabelIRInst * label_true, LabelIRInst * label_false, LabelIRInst * label_end)
+{
+    this->label_true = label_true;
+    this->label_false = label_false;
+    this->label_end = label_end;
+}
+/// @brief 从另一个节点完全继承所有的label
+void ast_node::inherit_label(ast_node * node)
+{
+    this->set_label(node->label_true, node->label_false, node->label_end);
+}
 /// @brief 判断是否是叶子节点
 /// @param type 节点类型
 /// @return true：是叶子节点 false：内部节点

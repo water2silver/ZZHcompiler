@@ -211,6 +211,17 @@ protected:
 	/// @return 翻译是否成功，true：成功，false：失败
     bool ir_decl(ast_node * node);
 
+	/// @brief if 节点的中间线性IR
+	/// @param node AST节点
+	/// @return 翻译是否成功，true：成功，false：失败
+    bool ir_if(ast_node * node);
+
+    /// @brief cond的节点的中间线性IR
+    /// @param node AST节点
+    /// @return 翻译是否成功，true：成功，false：失败
+    bool ir_cond(ast_node * node);
+
+
     /// @brief 未知节点类型的节点处理
     /// @param node AST节点
     /// @return 翻译是否成功，true：成功，false：失败
@@ -226,6 +237,9 @@ protected:
 
     /// @brief AST节点运算符与动作函数关联的映射表
     std::unordered_map<ast_operator_type, ast2ir_handler_t> ast2ir_handlers;
+
+	/// @brief 当前是否处于cond运算中
+    bool inCondtion;
 
 private:
     /// @brief 抽象语法树的根
