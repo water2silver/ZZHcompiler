@@ -168,10 +168,13 @@ enum class ast_operator_type : int {
     AST_OP_MAX,
 };
 
+/// @brief 存放数组信息的辅助类
+
+
 /// @brief 抽象语法树AST的节点描述类
 class ast_node {
 public:
-	/// @brief 真标签-主要用于cond节点进行短路求值的遍历。
+    /// @brief 真标签-主要用于cond节点进行短路求值的遍历。
     LabelIRInst *label_true;
 
 	/// @brief 假标签
@@ -335,3 +338,5 @@ ast_node * create_contain_node(ast_operator_type node_type, ast_node * first_par
 /// @param params 实参节点
 /// @return 创建的节点
 ast_node * create_func_call(uint32_t line_no, const char * func_name, ast_node * params = nullptr);
+
+

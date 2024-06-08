@@ -174,14 +174,14 @@ void update_array_ast_node_info(ast_node * array_node)
 	
 	if(array_node->sons.empty())
 	{
-	    array_node->name.append("int");
+	    // array_node->name.append("int");
+	    array_node->name.append("");
         return;
     }
     update_array_ast_node_info(array_node->sons[1]);
     array_node->name = array_node->sons[1]->name;
     std::string tmp = "[" + std::to_string(array_node->sons[0]->integer_val) + "]";
-    array_node->name.insert(3, tmp);
-	
+    array_node->name.insert(0, tmp);
 }
 /// @brief 创建一个只有数值意义的节点——信息节点
 /// @param num是具体的数值

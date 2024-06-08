@@ -12,9 +12,20 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 #include "Common.h"
 #include "ValueType.h"
+
+class ArrayInfo{
+public:
+    std::vector<int> dim;
+    std::string dim_name;
+    // ArrayInfo(ast_node * node);
+    ArrayInfo(std::vector<int> array_dim);
+    ~ArrayInfo();
+    std::string getDimName();
+};
 
 /// @brief 变量、常量等管理的基类
 class Value {
@@ -66,7 +77,12 @@ protected:
     /// @brief 是否是内存变量
     bool _mem = false;
 
+	
+
 public:
+	/// @brief 给value值设置array_info
+    void set_array_info(std::vector<int> array_dim);
+
     /// @brief 变量名或内部标识的名字
     std::string name;
 
@@ -91,9 +107,12 @@ public:
     /// @brief 栈内寻找时基址寄存器名字
     int32_t baseRegNo = -1;
 
+	/// @brief 指向数组辅助信息的指针
+    ArrayInfo * array_info ;
+
 protected:
     /// @brief 默认实数类型的构造函数，初始值为0
-    Value(BasicType _type) : type(_type)
+    Value(BasicType _type) : type(_type),array_info(nullptr)
     {
         // 这里不需要代码
     }
@@ -101,7 +120,7 @@ protected:
     /// @brief 构造函数
     /// @param _name
     /// @param _type
-    Value(std::string _name, BasicType _type) : name(_name), type(_type)
+    Value(std::string _name, BasicType _type) : name(_name), type(_type),array_info(nullptr)
     {
         // 不需要增加代码
     }

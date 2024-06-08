@@ -581,11 +581,11 @@ static const yytype_int16 yyrline[] =
      231,   238,   242,   246,   250,   254,   258,   262,   266,   270,
      276,   284,   289,   293,   298,   302,   306,   312,   316,   321,
      326,   330,   335,   339,   345,   350,   360,   366,   371,   375,
-     381,   386,   392,   405,   411,   418,   422,   426,   433,   452,
-     461,   468,   479,   486,   494,   501,   511,   519,   524,   530,
-     536,   542,   546,   550,   554,   558,   580,   583,   587,   591,
-     595,   600,   607,   611,   617,   624,   631,   638,   646,   656,
-     659
+     381,   386,   392,   405,   411,   418,   422,   426,   432,   451,
+     460,   467,   478,   485,   493,   500,   510,   518,   523,   529,
+     535,   541,   545,   549,   553,   557,   579,   582,   586,   590,
+     594,   599,   606,   610,   616,   623,   630,   637,   645,   655,
+     658
 };
 #endif
 
@@ -1882,7 +1882,7 @@ yyreduce:
     break;
 
   case 68: /* ConstDef: T_ID '=' ConstInitVal  */
-#line 434 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 433 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
         {
         // 赋值语句，不显示值
 		// 变量节点
@@ -1898,7 +1898,7 @@ yyreduce:
     break;
 
   case 69: /* ConstDef: T_ID ArrayLists '=' ConstInitVal  */
-#line 453 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 452 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
         {
 		ast_node * id_node = new_ast_leaf_node(var_id_attr{(yyvsp[-3].var_id).id, (yyvsp[-3].var_id).lineno});
 		update_array_ast_node_info((yyvsp[-2].node));
@@ -1908,7 +1908,7 @@ yyreduce:
     break;
 
   case 70: /* VarDef: T_ID  */
-#line 462 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 461 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
         {
 		ast_node * id_node = new_ast_leaf_node(var_id_attr{(yyvsp[0].var_id).id, (yyvsp[0].var_id).lineno});
 		
@@ -1919,7 +1919,7 @@ yyreduce:
     break;
 
   case 71: /* VarDef: T_ID '=' InitVal  */
-#line 469 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 468 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
         {
 		// 赋值语句，不显示值
 		// 变量节点
@@ -1934,7 +1934,7 @@ yyreduce:
     break;
 
   case 72: /* VarDef: T_ID ArrayLists  */
-#line 480 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 479 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
         {
 		// ?
 		ast_node * id_node = new_ast_leaf_node(var_id_attr{(yyvsp[-1].var_id).id, (yyvsp[-1].var_id).lineno});
@@ -1945,7 +1945,7 @@ yyreduce:
     break;
 
   case 73: /* VarDef: T_ID ArrayLists '=' InitVal  */
-#line 487 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 486 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
         {
 		ast_node * id_node = new_ast_leaf_node(var_id_attr{(yyvsp[-3].var_id).id, (yyvsp[-3].var_id).lineno});
 		update_array_ast_node_info((yyvsp[-2].node));
@@ -1955,7 +1955,7 @@ yyreduce:
     break;
 
   case 74: /* ArrayLists: '[' ConstExp ']'  */
-#line 495 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 494 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
         {
 		
         // ast_node * num_node = new_ast_leaf_node(digit_int_attr{$2.val, $2.lineno});
@@ -1966,7 +1966,7 @@ yyreduce:
     break;
 
   case 75: /* ArrayLists: ArrayLists '[' ConstExp ']'  */
-#line 502 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 501 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
         {
         // ast_node * num_node = new_ast_leaf_node(digit_int_attr{$3.val, $3.lineno});
 		ast_node * array_node = new_ast_node(ast_operator_type::AST_OP_ARRAY,nullptr);
@@ -1978,7 +1978,7 @@ yyreduce:
     break;
 
   case 76: /* VarDecl: T_INT VarDefs ';'  */
-#line 512 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 511 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
         {
 		//TYPE_INT = 2
 		ast_node * id_node = new_ast_leaf_node(BasicType::TYPE_INT,0);
@@ -1989,7 +1989,7 @@ yyreduce:
     break;
 
   case 77: /* VarDefs: VarDef  */
-#line 520 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 519 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
         {
 		// $$ = $1;
 		(yyval.node) = create_contain_node(ast_operator_type::AST_OP_VAR_DEF, (yyvsp[0].node));
@@ -1998,7 +1998,7 @@ yyreduce:
     break;
 
   case 78: /* VarDefs: VarDefs ',' VarDef  */
-#line 525 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 524 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
         {	
         (yyval.node) = insert_ast_node((yyvsp[-2].node), (yyvsp[0].node));
 	}
@@ -2006,7 +2006,7 @@ yyreduce:
     break;
 
   case 79: /* AddExp: AddExp T_ADD MulExp  */
-#line 530 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 529 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                              {
         /* Expr = Expr + Term */
 
@@ -2017,7 +2017,7 @@ yyreduce:
     break;
 
   case 80: /* AddExp: AddExp T_SUB MulExp  */
-#line 536 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 535 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                           {
         /* Expr = Expr + Term */
 
@@ -2028,7 +2028,7 @@ yyreduce:
     break;
 
   case 81: /* AddExp: MulExp  */
-#line 542 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 541 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                {
 		(yyval.node) = (yyvsp[0].node);
 	}
@@ -2036,7 +2036,7 @@ yyreduce:
     break;
 
   case 82: /* MulExp: MulExp T_TIMES UnaryExp  */
-#line 547 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 546 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
         {
 		(yyval.node) = new_ast_node(ast_operator_type::AST_OP_TIMES,(yyvsp[-2].node),(yyvsp[0].node),nullptr);
 	}
@@ -2044,7 +2044,7 @@ yyreduce:
     break;
 
   case 83: /* MulExp: MulExp T_DIV UnaryExp  */
-#line 551 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 550 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
         {
 		(yyval.node) = new_ast_node(ast_operator_type::AST_OP_DIV,(yyvsp[-2].node),(yyvsp[0].node),nullptr);
 	}
@@ -2052,7 +2052,7 @@ yyreduce:
     break;
 
   case 84: /* MulExp: MulExp T_MOD UnaryExp  */
-#line 555 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 554 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
         {
 		(yyval.node) = new_ast_node(ast_operator_type::AST_OP_MOD,(yyvsp[-2].node),(yyvsp[0].node),nullptr);
 	}
@@ -2060,7 +2060,7 @@ yyreduce:
     break;
 
   case 85: /* MulExp: UnaryExp  */
-#line 559 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 558 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
         {
 		/* Expr = Term */
         (yyval.node) = (yyvsp[0].node);
@@ -2069,7 +2069,7 @@ yyreduce:
     break;
 
   case 86: /* UnaryExp: PrimaryExp  */
-#line 580 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 579 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                       {
         (yyval.node) = (yyvsp[0].node);
     }
@@ -2077,7 +2077,7 @@ yyreduce:
     break;
 
   case 87: /* UnaryExp: T_ID '(' ')'  */
-#line 583 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 582 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                    {
         // 用户自定义的不含实参的函数调用
         (yyval.node) = create_func_call((yyvsp[-2].var_id).lineno, (yyvsp[-2].var_id).id, nullptr);
@@ -2086,7 +2086,7 @@ yyreduce:
     break;
 
   case 88: /* UnaryExp: T_ID '(' RealParamList ')'  */
-#line 587 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 586 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                                  {
         // 用户自定义的含有实参的参数调用
         (yyval.node) = create_func_call((yyvsp[-3].var_id).lineno, (yyvsp[-3].var_id).id, (yyvsp[-1].node));
@@ -2095,7 +2095,7 @@ yyreduce:
     break;
 
   case 89: /* UnaryExp: T_ADD UnaryExp  */
-#line 592 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 591 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
         {
 		(yyval.node) = new_ast_node(ast_operator_type::AST_OP_POSITIVE,(yyvsp[0].node),nullptr);
 	}
@@ -2103,7 +2103,7 @@ yyreduce:
     break;
 
   case 90: /* UnaryExp: T_SUB UnaryExp  */
-#line 596 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 595 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
         {
 		(yyval.node) = new_ast_node(ast_operator_type::AST_OP_NEGATIVE,(yyvsp[0].node),nullptr);
 		
@@ -2112,7 +2112,7 @@ yyreduce:
     break;
 
   case 91: /* UnaryExp: T_NOT UnaryExp  */
-#line 601 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 600 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
         {
         //$$ = new_ast_node(ast_operator_type::AST_OP_EXPR_SHOW, $1, nullptr);
 		// 
@@ -2122,7 +2122,7 @@ yyreduce:
     break;
 
   case 92: /* PrimaryExp: '(' Expr ')'  */
-#line 607 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 606 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                            {
         /* PrimaryExp = Expr */
         (yyval.node) = (yyvsp[-1].node);
@@ -2131,7 +2131,7 @@ yyreduce:
     break;
 
   case 93: /* PrimaryExp: T_DIGIT  */
-#line 611 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 610 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
               {
         // 无符号整数识别
 
@@ -2142,7 +2142,7 @@ yyreduce:
     break;
 
   case 94: /* PrimaryExp: LVal  */
-#line 617 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 616 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
             {
         // 左值
         (yyval.node) = (yyvsp[0].node);
@@ -2151,7 +2151,7 @@ yyreduce:
     break;
 
   case 95: /* LVal: T_ID  */
-#line 624 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 623 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
             {
         // 终结符作为抽象语法树的叶子节点进行创建
         (yyval.node) = new_ast_leaf_node(var_id_attr{(yyvsp[0].var_id).id, (yyvsp[0].var_id).lineno});
@@ -2163,7 +2163,7 @@ yyreduce:
     break;
 
   case 96: /* LVal: T_ID LValueList  */
-#line 632 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 631 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
         {
 		ast_node *id_node = new_ast_leaf_node(var_id_attr{(yyvsp[-1].var_id).id, (yyvsp[-1].var_id).lineno});
         ast_node *return_node = create_contain_node(ast_operator_type::AST_OP_ARRAY_VISIT, id_node);
@@ -2173,7 +2173,7 @@ yyreduce:
     break;
 
   case 97: /* LValueList: '[' Expr ']'  */
-#line 639 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 638 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
         {
 		// ast_node *id_node = new_ast_leaf_node(var_id_attr{$2.id, $2.lineno});
 		// ast_node * info_node = new_info_node(ast_operator_type::AST_OP_INFO_ARRAY_VISIT,$2.val);
@@ -2185,7 +2185,7 @@ yyreduce:
     break;
 
   case 98: /* LValueList: LValueList '[' Expr ']'  */
-#line 647 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 646 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
         {
 		// ast_node * info_node = new_info_node(ast_operator_type::AST_OP_INFO_ARRAY_VISIT,$3.val);
 		// ast_node * info_node = new_ast_node(ast_operator_type::AST_OP_INFO_ARRAY_VISIT,$3,nullptr);
@@ -2195,7 +2195,7 @@ yyreduce:
     break;
 
   case 99: /* RealParamList: Expr  */
-#line 656 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 655 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                      {
         (yyval.node) = create_contain_node(ast_operator_type::AST_OP_FUNC_REAL_PARAMS, (yyvsp[0].node));
     }
@@ -2203,7 +2203,7 @@ yyreduce:
     break;
 
   case 100: /* RealParamList: RealParamList ',' Expr  */
-#line 659 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 658 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
                              {
         (yyval.node) = insert_ast_node((yyvsp[-2].node), (yyvsp[0].node));
     }
@@ -2404,7 +2404,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 663 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
+#line 662 "/home/zhao/calculator/frontend/flexbison/Calculator.y"
 
 
 // 语法识别错误要调用函数的定义

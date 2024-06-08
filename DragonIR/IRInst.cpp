@@ -412,10 +412,20 @@ void GlobalDeclIRInst::toString(std::string & str)
 {
 	if(srcValues.empty())
 	{
-        str = std::string("declare ") + std::string("i32 @") + dstValue->getName()+" = 0\n";
+        str = std::string("declare ") + std::string("i32 @") + dstValue->getName();
+		if(dstValue->array_info!=nullptr)
+		{
+            str += dstValue->array_info->getDimName();
+        }
+        str += " = 0\n";
     }else
 	{
-        str = std::string("declare ") + std::string("i32 @") + dstValue->getName() + " = " + srcValues[0]->toString()+"\n";
+        str = std::string("declare ") + std::string("i32 @") + dstValue->getName();
+		if(dstValue->array_info!=nullptr)
+		{
+            str += dstValue->array_info->getDimName();
+        }
+	 	str += " = " + srcValues[0]->toString() + "\n";
         // str += dstValue->getName() + " = " + srcValues[0]->getName();
     }
 }

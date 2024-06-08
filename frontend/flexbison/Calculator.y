@@ -429,7 +429,6 @@ ConstInitVal : ConstExp
 	}
 	;
 // 常数定义
-//TODO 数组还没做
 ConstDef : T_ID '=' ConstInitVal
 	{
         // 赋值语句，不显示值

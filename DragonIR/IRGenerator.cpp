@@ -65,9 +65,12 @@ IRGenerator::IRGenerator(ast_node * _root, SymbolTable * _symtab) : root(_root),
     ast2ir_handlers[ast_operator_type::AST_OP_VAR_DECL] = &IRGenerator::ir_decl;
     ast2ir_handlers[ast_operator_type::AST_OP_CONST_DECL] = &IRGenerator::ir_decl;
     ast2ir_handlers[ast_operator_type::AST_OP_VAR_DEF] = &IRGenerator::ir_var_def;
-	
+	//对数组定义的支持
+    ast2ir_handlers[ast_operator_type::AST_OP_ARRAY_DEF] = &IRGenerator::ir_array_def;
+    ast2ir_handlers[ast_operator_type::AST_OP_ARRAY] = &IRGenerator::ir_array;
 
-	/*语句结构部分*/
+
+    /*语句结构部分*/
     ast2ir_handlers[ast_operator_type::AST_OP_IF] = &IRGenerator::ir_if;
     ast2ir_handlers[ast_operator_type::AST_OP_WHILE] = &IRGenerator::ir_while;
 	
@@ -1046,8 +1049,9 @@ bool IRGenerator::ir_var_def(ast_node * node)
 		//函数内局部变量
 		if(symtab->currentFunc!=nullptr)
 		{
-			//不初始化的情况
-			if(son->node_type==ast_operator_type::AST_OP_LEAF_VAR_ID)
+			//TODO 现在假设所有数组均不初始化
+			//不初始化的情况，目前
+			if(son->node_type==ast_operator_type::AST_OP_LEAF_VAR_ID || son->node_type==ast_operator_type::AST_OP_ARRAY_DEF)
 			{
 				ast_node * res = ir_visit_ast_node(son);
 				if(res==nullptr)
@@ -1057,6 +1061,7 @@ bool IRGenerator::ir_var_def(ast_node * node)
 				node->blockInsts.addInst(new DeclIRInst(IRInstOperator::IRINST_OP_VAR_DEF, son->val));
 			} else // 初始化的情况-这时候子节点为类型应该为ASSIGN
 			{
+				//如果初始化，应为ASSIGN节点
 				ast_node * res1 = ir_visit_ast_node(son->sons[0]);
 				ast_node * res2 = ir_visit_ast_node(son->sons[1]);
 				if(res2==nullptr || res1==nullptr)
@@ -1071,7 +1076,7 @@ bool IRGenerator::ir_var_def(ast_node * node)
 		}else //函数外的全局变量
 		{
 			//默认初始化为 0 
-			if(son->node_type==ast_operator_type::AST_OP_LEAF_VAR_ID)
+			if(son->node_type==ast_operator_type::AST_OP_LEAF_VAR_ID || son->node_type==ast_operator_type::AST_OP_ARRAY_DEF)
 			{
 				ast_node * res = ir_visit_ast_node(son);
 				if(res==nullptr)
@@ -1101,6 +1106,85 @@ bool IRGenerator::ir_var_def(ast_node * node)
 		}
 		
     }
+    return result;
+}
+
+/// @brief 数组定义节点翻译成中间线性IR
+/// @param node AST节点
+/// @return 翻译是否成功，true：成功，false：失败
+bool IRGenerator::ir_array_def(ast_node * node)
+{
+    int result = 1;
+    ast_node * var_node = node->sons[0];
+    ast_node * array_node = node->sons[1];
+
+    ast_node * res_var = ir_visit_ast_node(var_node);
+	if(res_var == nullptr)
+	{
+        result = 0;
+    }
+	//TODO 
+    ast_node * res_array = ir_visit_ast_node(array_node);
+	if(res_array==nullptr)
+	{
+        result = 0;
+    }
+	//还是要解耦设计
+    std::vector<int> array_dim;
+    ast_node * tmp = array_node;
+	while(!tmp->sons.empty())
+	{
+        array_dim.push_back(tmp->sons[0]->integer_val);
+        tmp = tmp->sons[1];
+    }
+    Value * val;
+	if(symtab->currentFunc!=nullptr)
+	{
+		val = symtab->currentFunc->findValue(res_var->name, false);
+        val->set_array_info(array_dim);
+    }else
+	{
+        val = symtab->findValue(res_var->name, false);
+        val->set_array_info(array_dim);
+    }
+
+    //三个子节点，意味着有数组的初始化工作
+	if(node->sons.size()==3)
+	{
+
+	}
+    node->val = val;
+
+    return result;
+}
+
+// TODO 未来常数优化的起点。 
+/// @brief 数组定义节点的子节点,可能不存在线性IR生成，但是可能涉及常数优化？
+/// @param node AST节点
+/// @return 翻译是否成功，true：成功，false：失败
+bool IRGenerator::ir_array(ast_node * node)
+{
+    bool result = true;
+	//没有子节点，直接结束。
+	if(node->sons.empty())
+	{
+        return result;
+    }
+    ast_node * src_node1 = node->sons[0];
+    ast_node * src_node2 = node->sons[1];
+
+    ast_node * res_node1 = ir_visit_ast_node(src_node1);
+	if(res_node1==nullptr)
+	{
+        result = false;
+    }
+    ast_node * res_node2 = ir_visit_ast_node(src_node2);
+	if(res_node2==nullptr)
+	{
+        result = false;
+    }
+    node->blockInsts.addInst(res_node1->blockInsts);
+    node->blockInsts.addInst(res_node2->blockInsts);
     return result;
 }
 

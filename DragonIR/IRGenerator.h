@@ -191,6 +191,16 @@ protected:
 	/// @return 翻译是否成功，true：成功，false：失败
     bool ir_var_def(ast_node * node);
 
+	/// @brief 数组定义节点翻译成中间线性IR
+	/// @param node AST节点
+	/// @return 翻译是否成功，true：成功，false：失败
+    bool ir_array_def(ast_node * node);
+
+	/// @brief 数组定义节点的子节点,可能不存在线性IR生成，但是可能涉及常数优化？
+	/// @param node AST节点
+	/// @return 翻译是否成功，true：成功，false：失败
+    bool ir_array(ast_node * node);
+
 	/// @brief 常量定义节点翻译成中间线性IR
 	/// @param node AST节点
 	/// @return 翻译是否成功，true：成功，false：失败

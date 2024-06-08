@@ -155,7 +155,12 @@ void Function::toString(std::string & str)
 		if(value->isLocalVar()) 
 		{
 			str += "\t" + std::string("declare i32 ") + value->label_name;
-			if(!value->name.empty())
+			if(value->array_info!=nullptr)
+			{
+                str += value->array_info->getDimName();
+            }
+
+            if(!value->name.empty())
 			{
 				str += std::string(" ; variable: ") + value->name;
 			}
