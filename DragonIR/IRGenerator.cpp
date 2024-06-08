@@ -65,9 +65,12 @@ IRGenerator::IRGenerator(ast_node * _root, SymbolTable * _symtab) : root(_root),
     ast2ir_handlers[ast_operator_type::AST_OP_VAR_DECL] = &IRGenerator::ir_decl;
     ast2ir_handlers[ast_operator_type::AST_OP_CONST_DECL] = &IRGenerator::ir_decl;
     ast2ir_handlers[ast_operator_type::AST_OP_VAR_DEF] = &IRGenerator::ir_var_def;
+	
 
 	/*语句结构部分*/
     ast2ir_handlers[ast_operator_type::AST_OP_IF] = &IRGenerator::ir_if;
+    ast2ir_handlers[ast_operator_type::AST_OP_WHILE] = &IRGenerator::ir_while;
+	
     ast2ir_handlers[ast_operator_type::AST_OP_COND] = &IRGenerator::ir_cond;
 
 
@@ -955,7 +958,11 @@ bool IRGenerator::ir_if(ast_node * node)
 	}
 	node->blockInsts.addInst(label_true);
 	node->blockInsts.addInst(res_true->blockInsts);
-    node->blockInsts.addInst(new BranchIRInst(label_end));
+	// 只有有false block的时候，才给true block的末尾增加跳转语句.
+	if(node->sons.size()==3)
+	{
+    	node->blockInsts.addInst(new BranchIRInst(label_end));
+	}
     // false block部分
     node->blockInsts.addInst(label_false);
     if(node->sons.size() == 3)
@@ -967,9 +974,42 @@ bool IRGenerator::ir_if(ast_node * node)
             result = 0;
         }
         node->blockInsts.addInst(res_false->blockInsts);
-	    node->blockInsts.addInst(new BranchIRInst(label_end));
+	    // node->blockInsts.addInst(new BranchIRInst(label_end));
     }
     node->blockInsts.addInst(label_end);
+
+    return result;
+}
+
+/// @brief while 节点的中间线性IR
+/// @param node AST节点
+/// @return 翻译是否成功，true：成功，false：失败
+bool IRGenerator::ir_while(ast_node * node)
+{
+    int result = 1;
+    ast_node * cond_node = node->sons[0];
+    ast_node * block_node = node->sons[1];
+	//while的label跟if的label有区别看能不能兼容吧
+    LabelIRInst * cond_label = new LabelIRInst();
+	//truelabel 即为block的语句
+    LabelIRInst * true_label = new LabelIRInst();
+	//falselabel即为离开while
+    LabelIRInst * false_label = new LabelIRInst();
+    node->set_label(true_label, false_label, cond_label);
+	cond_node->inherit_label(node);
+    ast_node * res_cond = ir_visit_ast_node(cond_node);
+    ast_node * res_block = ir_visit_ast_node(block_node);
+    
+
+    if (res_cond == nullptr || res_block == nullptr) {
+        result = 0;
+    }
+    node->blockInsts.addInst(cond_label);
+    node->blockInsts.addInst(res_cond->blockInsts);
+    node->blockInsts.addInst(true_label);
+    node->blockInsts.addInst(res_block->blockInsts);
+    node->blockInsts.addInst(new BranchIRInst(cond_label));
+    node->blockInsts.addInst(false_label);
 
     return result;
 }
@@ -1276,14 +1316,18 @@ bool IRGenerator::ir_leaf_node_var_id(ast_node * node)
 		}
 		node->val = val;
 		
-		//当condtion条件下的处理,返回值应该是一个i1，而不是叶子节点的变量值
-		if(this->inCondtion && node->parent->sons.size()==1)
+		//(a) (a||b) (a&&b)
+		if( node->parent->sons.size()==1 ||node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND || node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR)
 		{	
 			//继承
 			node->inherit_label(node->parent);
 			// 直接在这个地方插入两条语句？
+			//老师的IR里面会把非0比较的变量赋值给一个临时变量
+			Value * tmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
 			Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
-			node->blockInsts.addInst(new CondNotZeroIRInst(IRInstOperator::IRINST_OP_NOT_EQUAL_I,resultValue,node->val,node->label_true,node->label_false));
+			node->blockInsts.addInst(new AssignIRInst(tmpValue,node->val));
+
+			node->blockInsts.addInst(new CondNotZeroIRInst(IRInstOperator::IRINST_OP_NOT_EQUAL_I,resultValue,tmpValue,node->label_true,node->label_false));
 			// node->blockInsts.addInst(new BranchIRInst(IRInstOperator::IRINST_OP_GOTO,))
 			node->val = resultValue;
 		}

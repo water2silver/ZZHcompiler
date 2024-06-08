@@ -147,7 +147,7 @@ void Function::toString(std::string & str)
 
     str += ")";
 
-    str += "{\n";
+    str += " {\n";
 	//
 	//局部变量声明部分
 	for(auto &value : varsVector)
