@@ -20,7 +20,8 @@ enum class BasicType : int {
     TYPE_FLOAT, // Float类型
 	TYPE_BREAK, //	break类型
 	TYPE_CONTINUE,//continue类型。
-	TYPE_ARRAY,
+	TYPE_ARRAY,	//
+	TYPE_POINTER, //指针类型
 	TYPE_BOOL, 	// bool类型，部分临时变量会用到这个类型。
     TYPE_MAX,   // 其它类型，未知类型
 };

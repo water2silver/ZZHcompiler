@@ -68,6 +68,8 @@ IRGenerator::IRGenerator(ast_node * _root, SymbolTable * _symtab) : root(_root),
 	//对数组定义的支持
     ast2ir_handlers[ast_operator_type::AST_OP_ARRAY_DEF] = &IRGenerator::ir_array_def;
     ast2ir_handlers[ast_operator_type::AST_OP_ARRAY] = &IRGenerator::ir_array;
+    ast2ir_handlers[ast_operator_type::AST_OP_ARRAY_VISIT] = &IRGenerator::ir_array_visit;
+
 
 
     /*语句结构部分*/
@@ -1188,6 +1190,98 @@ bool IRGenerator::ir_array(ast_node * node)
     return result;
 }
 
+/// @brief 数组访问节点
+/// @param node AST节点
+/// @return 翻译是否成功，true：成功，false：失败
+bool IRGenerator::ir_array_visit(ast_node * node)
+{
+    bool result = true;
+    ast_node * var_node = node->sons[0];
+    ast_node * visit_node = node->sons[1];
+    int dim_size = visit_node->sons.size();
+    ast_node* res_var = ir_visit_ast_node(var_node);
+	if(res_var==nullptr)
+	{
+        result = false;
+    }
+    Value * val;
+    // 函数内访问
+    if(symtab->currentFunc!=nullptr)
+	{
+        val = symtab->currentFunc->findValue(var_node->name, false);
+    } else // 全局访问
+    {
+        val = symtab->findValue(var_node->name, false);
+    }
+	//错误检查
+    if(val==nullptr)
+	{
+		printf("未定义变量\n");
+	}
+	if(val->array_info==nullptr)
+	{
+		printf("该变量无数组信息\n");
+	}
+	if(val->array_info->getDim().size()!=dim_size)
+	{
+        printf("数组访问维度出错了\n");
+    }
+
+    Value * returnVal;
+
+    std::vector<int> array_dim = val->array_info->getDim();
+    
+	if(dim_size==1)
+	{
+        Value * tmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+        Value * index = new ConstValue((int32_t)visit_node->sons[0]->integer_val);
+        Value * int_size = new ConstValue(4);
+        returnVal = symtab->currentFunc->newTempValue(BasicType::TYPE_POINTER);
+
+        node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_TIMES_I, tmpValue,index, int_size));
+        node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_ADD_I, returnVal, res_var->val,tmpValue));
+    
+	} else {
+        Value * oldTmpValue;
+
+        for (int i = 0; i < dim_size - 1;i++)
+		{
+			if(i==0)
+			{
+                Value * mulResTmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+                Value * addResTmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+                Value * constValue1 = new ConstValue((int32_t) visit_node->sons[i]->integer_val);
+                Value * constValue2 = new ConstValue(array_dim[i+1]);
+                Value * constValue3 = new ConstValue((int32_t) visit_node->sons[i + 1]->integer_val);
+                node->blockInsts.addInst(
+                    new BinaryIRInst(IRInstOperator::IRINST_OP_TIMES_I, mulResTmpValue, constValue1, constValue2));
+                node->blockInsts.addInst(
+                    new BinaryIRInst(IRInstOperator::IRINST_OP_ADD_I, addResTmpValue, mulResTmpValue, constValue3));
+                oldTmpValue = addResTmpValue;
+                continue;
+            }
+			Value * mulResTmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+            Value * addResTmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+            Value * constValue1 = new ConstValue(array_dim[i + 1]);
+            Value * constValue2 = new ConstValue((int32_t) visit_node->sons[i + 1]->integer_val);
+            node->blockInsts.addInst(
+                new BinaryIRInst(IRInstOperator::IRINST_OP_TIMES_I, mulResTmpValue, oldTmpValue, constValue1));
+            node->blockInsts.addInst(
+                new BinaryIRInst(IRInstOperator::IRINST_OP_ADD_I, addResTmpValue, mulResTmpValue, constValue2));
+            oldTmpValue = addResTmpValue;
+        }
+        Value * index = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+        Value * int_size = new ConstValue(4);
+        node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_TIMES_I, index, oldTmpValue, int_size));
+        returnVal = symtab->currentFunc->newTempValue(BasicType::TYPE_POINTER);
+        node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_ADD_I, returnVal, res_var->val, index));
+        // returnVal = oldTmpValue;
+    }
+    node->val = returnVal;
+
+    return result;
+}
+
 /// @brief 定义节点翻译成中间线性IR，不区分是否为可变变量。
 /// @param node AST节点
 /// @return 翻译是否成功，true：成功，false：失败
@@ -1322,8 +1416,10 @@ bool IRGenerator::ir_assign(ast_node * node)
     node->blockInsts.addInst(left->blockInsts);
     node->blockInsts.addInst(new AssignIRInst(left->val, right->val));
 
+	//因为存在指针赋值问题，不把左侧的类型修改为right type
     // 这里假定赋值的类型是一致的
-    left->val->type = right->val->type;
+    // left->val->type = right->val->type;
+
     node->val = left->val;
 
     return true;

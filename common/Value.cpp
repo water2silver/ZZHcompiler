@@ -33,6 +33,11 @@ std::string ArrayInfo::getDimName()
     return this->dim_name;
 }
 
+std::vector<int> ArrayInfo::getDim()
+{
+    return this->dim;
+}
+
 void Value::set_array_info(std::vector<int> array_dim)
 {
     this->array_info = new ArrayInfo(array_dim);

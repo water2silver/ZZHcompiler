@@ -179,6 +179,9 @@ void Function::toString(std::string & str)
             } else if (value->type.type == BasicType::TYPE_INT) 
 			{
                 valueType = std::string("i32");
+			}else if(value->type.type == BasicType::TYPE_POINTER)
+			{
+                valueType = std::string("i32*");
 			}
             str += "\t" + std::string("declare ") + valueType + " " + value->name;
 			str += std::string("\n");

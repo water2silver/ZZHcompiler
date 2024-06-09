@@ -25,6 +25,7 @@ public:
     ArrayInfo(std::vector<int> array_dim);
     ~ArrayInfo();
     std::string getDimName();
+    std::vector<int> getDim();
 };
 
 /// @brief 变量、常量等管理的基类
@@ -136,7 +137,7 @@ public:
     /// @return 变量名
     virtual std::string getName() const
     {
-        return name;
+		return name;
     }
 
     /// @brief Value变字符串显示
@@ -144,23 +145,26 @@ public:
     virtual std::string toString()
     {
         // return type.toString() + " " + getName();
-		if(_var)
+        std::string res;
+		if(this->type.type == BasicType::TYPE_POINTER)
 		{
-			if(!label_name.empty())
+            res += "*";
+        }
+        if (_var) {
+            if(!label_name.empty())
 			{
-                return this->label_name;
+                res+=this->label_name;
             }else
 			{
-                return this->name;
+                res+= this->name;
             }
-        }else if(_temp)
-		{
-            return this->name;
-        }else
-		{
-			//常量和mem变量的情况。
-            return this->name;
+        } else if (_temp) {
+           	res+= this->name;
+        } else {
+            //常量和mem变量的情况。
+            res+= this->name;
         }
+        return res;
     }
 
     /// @brief 获取函数栈内偏移
