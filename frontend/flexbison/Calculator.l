@@ -33,7 +33,7 @@
 /* 不进行命令行交互，只能分析文件 */
 %option never-interactive
 
-%x COMMENT
+%x COMMENT HEX OCT
 /* 辅助定义式或者宏，后面使用时带上大括号 */
 
 d			[0-9]
@@ -69,9 +69,23 @@ white_line  [\r\n]
                 ; // 忽略行注释
             }
 
-{d}+		{
+[1-9]{d}*	{
                 // 词法识别无符号整数，注意对于负数，则需要识别为负号和无符号数两个Token
                 yylval.integer_num.val = (uint32_t)strtol(yytext, (char **)NULL, 10);
+                yylval.integer_num.lineno = yylineno;
+                return T_DIGIT;
+            }
+
+0[0-7]*		{
+				// 词法识别八进制无符号整数
+				yylval.integer_num.val = (uint32_t)strtol(yytext, (char **)NULL, 8);
+                yylval.integer_num.lineno = yylineno;
+                return T_DIGIT;
+        	}
+
+0[xX][0-9a-fA-F]+	{
+				// 词法识别十六进制无符号整数
+				yylval.integer_num.val = (uint32_t)strtol(yytext, (char **)NULL, 16);
                 yylval.integer_num.lineno = yylineno;
                 return T_DIGIT;
             }

@@ -138,6 +138,11 @@ ast_node * new_ast_node(ast_operator_type type, ...)
 /// @param node 节点
 ast_node * insert_ast_node(ast_node * parent, ast_node * node)
 {
+	//如果node == nullptr 这个nullptr由空Block带来。
+	if(node==nullptr)
+	{
+        return parent;
+    }
     node->parent = parent;
     parent->sons.push_back(node);
     return parent;
