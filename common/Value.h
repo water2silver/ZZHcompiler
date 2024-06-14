@@ -77,8 +77,8 @@ protected:
 
     /// @brief 是否是内存变量
     bool _mem = false;
-
-	
+public:
+    bool _global = false;
 
 public:
 	/// @brief 给value值设置array_info
@@ -140,6 +140,11 @@ public:
 		return name;
     }
 
+	void setGlobal()
+	{
+        this->_global = true;
+    }
+
     /// @brief Value变字符串显示
     /// @return 字符串
     virtual std::string toString()
@@ -150,7 +155,10 @@ public:
 		{
             res += "*";
         }
-        if (_var) {
+		if(_global)
+		{
+            res += "@" + name;
+        } else if (_var) {
             if(!label_name.empty())
 			{
                 res+=this->label_name;
@@ -159,7 +167,7 @@ public:
                 res+= this->name;
             }
         } else if (_temp) {
-           	res+= this->name;
+            res+= this->name;
         } else {
             //常量和mem变量的情况。
             res+= this->name;

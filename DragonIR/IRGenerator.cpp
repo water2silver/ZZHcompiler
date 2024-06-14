@@ -1107,9 +1107,6 @@ bool IRGenerator::ir_var_def(ast_node * node)
                 symtab->globalVarDefInsts.addInst(
                     new GlobalDeclIRInst(IRInstOperator::IRINST_OP_GLOBAL_DEF, res1->val, res2->val));
 
-                // node->blockInsts.addInst(res1->blockInsts);
-				// node->blockInsts.addInst(res2->blockInsts);
-				// node->blockInsts.addInst(new GlobalDeclIRInst(IRInstOperator::IRINST_OP_GLOBAL_DEF, res1->val, res2->val));
 			}
 		}
 		
@@ -1294,6 +1291,7 @@ bool IRGenerator::ir_array_visit(ast_node * node)
         node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_ADD_I, returnVal, res_var->val, index));
         // returnVal = oldTmpValue;
     }
+	// returnVal.type
 	//数组作为左值进行赋值
 	if(node->parent->sons[0]==node && node->parent->node_type==ast_operator_type::AST_OP_ASSIGN)
 	{
@@ -1555,8 +1553,8 @@ bool IRGenerator::ir_leaf_node_var_id(ast_node * node)
 		{
             val = symtab->newVarValue(node->name, BasicType::TYPE_INT);
         }
+        val->setGlobal();
         node->val = val;
-
     }
 
     return true;
