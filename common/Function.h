@@ -47,6 +47,40 @@ public:
     std::string toString();
 };
 
+class VarsStack {
+public:
+    std::vector<std::pair<Value *, int>> vec;
+    int length = 0;
+
+public:
+	/// @brief VarsStack构造函数
+    VarsStack();
+
+    /// @brief 是否为空
+    bool empty();
+
+    /// @brief 插入value和depth元素到vec中
+    /// @param v
+    /// @param depth
+    /// @return
+    bool insert(Value * v, int depth);
+
+    /// @brief  根据变量名在栈中自顶向下寻找变量-不考虑depth.
+    /// @param name 
+    /// @return 找到变量的指针。
+    Value * find(std::string name);
+
+    /// @brief 在当前作用域（depth相等情况）下，寻找变量。
+    /// @param name 变量名
+    /// @param depth 
+    /// @return Value*
+    Value * findWithDepth(std::string name, int depth);
+
+    /// @brief 删除栈中所有当前depth的变量。
+    void deleteVars(int depth);
+
+};
+
 /// @brief 描述函数信息的类
 class Function {
 
@@ -175,6 +209,12 @@ public:
     /// \return 变量对应的值
     Value * findValue(std::string name, bool create = false);
 
+    /// @brief 按照name和depth进行变量查找。该函数主要用于变量定义。
+    /// @param name 
+    /// @param depth 
+    /// @return 
+    Value * findValueWithDepth(std::string name, int depth);
+
     /// @brief 新建变量型Value
     /// @param name 变量ID
     /// @param type 变量类型
@@ -191,6 +231,10 @@ public:
 
     /// @brief 设置符号表，以便全局符号查找
     void setSymtab(SymbolTable * _symtab);
+
+    /// @brief  删除varsStack当前depth的变量
+    /// @param depth 
+    void stackPop(int depth);
 
 protected:
     /// @brief Value插入到符号表中
@@ -227,8 +271,11 @@ private:
 
     /// @brief 函数内变量的向量表
     std::vector<Value *> varsVector;
-	
-	/// @brief 临时变量的列表
+
+	/// @brief 局部变量栈，目标是取缔varsMap
+    VarsStack varsStack;
+
+    /// @brief 临时变量的列表
     std::vector<Value *> tempVector;
 
     /// @brief 函数出口Label指令
@@ -259,3 +306,6 @@ private:
     std::string protectedRegStr;
 
 };
+
+
+

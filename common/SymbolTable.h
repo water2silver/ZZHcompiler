@@ -129,5 +129,5 @@ private:
     std::vector<Function *> funcVector;
 
 	/// @brief 表示当前的block层次
-    int blockDepth = 0;
+    int blockDepth ;
 };

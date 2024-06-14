@@ -28,6 +28,7 @@ SymbolTable::SymbolTable()
                        {{"", BasicType::TYPE_INT}}, // 形参类型
                        true                         // 内置函数
     );
+    blockDepth = 0;
 }
 
 /// @brief 根据函数名查找函数信息

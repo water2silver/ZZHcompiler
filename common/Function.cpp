@@ -334,14 +334,17 @@ Value * Function::newVarValue(std::string name, BasicType type)
 {
     Value * retVal;
 
-    retVal = findValue(name);
-    if (retVal == nullptr) {
-        retVal = new VarValue(name, type);
-        insertValue(retVal);
-    } else {
-        // 已存在的Value，返回失败
-        retVal = nullptr;
-    }
+    // retVal = findValue(name);
+    // if (retVal == nullptr) {
+    //     retVal = new VarValue(name, type);
+    //     insertValue(retVal);
+    // } else {
+    //     // 已存在的Value，返回失败
+    //     retVal = nullptr;
+    // }
+	//使用newVarValue前需要手动检查是否存在重名变量。
+	retVal = new VarValue(name, type);
+	insertValue(retVal);
 
     return retVal;
 }
@@ -353,6 +356,13 @@ void Function::insertValue(Value * val)
 {
     varsMap.emplace(val->name, val);
     varsVector.push_back(val);
+    this->varsStack.insert(val, symtab->getBlockDepth());
+}
+/// @brief  删除varsStack当前depth的变量
+/// @param depth 
+void Function::stackPop(int depth)
+{
+	this->varsStack.deleteVars(depth);
 }
 
 /// @brief 新建一个匿名变量型的Value，并加入到符号表，用于后续释放空间
@@ -388,16 +398,17 @@ Value * Function::newTempValue(BasicType type)
 Value * Function::findValue(std::string name, bool create)
 {
     Value * temp = nullptr;
-    std::unordered_map<std::string, Value *>::iterator pIter;
+    // std::unordered_map<std::string, Value *>::iterator pIter;
     // 这里只是针对函数内的变量进行检查，如果要考虑全局变量，则需要继续检查symtab的符号表
-	//TODO 暂时不考虑作用域的问题
-	pIter = varsMap.find(name);
-    if (pIter != varsMap.end()) {
+	// pIter = varsMap.find(name);
+    // if (pIter != varsMap.end()) {
 
-        // 如果考虑作用域、存在重名的时候，需要从varsVector逆序检查到底用那个Value
+    //     // 如果考虑作用域、存在重名的时候，需要从varsVector逆序检查到底用那个Value
 
-        temp = pIter->second;
-    }
+    //     temp = pIter->second;
+    // }
+	//通过varsStack查找。
+    temp = this->varsStack.find(name);
 
     // 没有找到，并且指定了全局符号表，则继续查找
     if ((!temp) && symtab) {
@@ -413,8 +424,103 @@ Value * Function::findValue(std::string name, bool create)
     return temp;
 }
 
+/// @brief 按照name和depth进行变量查找。该函数主要用于变量定义。
+/// @param name 
+/// @param depth 
+/// @return 
+Value * Function::findValueWithDepth(std::string name, int depth)
+{
+    Value * ret;
+    ret = this->varsStack.findWithDepth(name, depth);
+    return ret;
+}
+
 /// @brief 设置符号表，以便全局符号查找
 void Function::setSymtab(SymbolTable * _symtab)
 {
     symtab = _symtab;
+}
+
+VarsStack::VarsStack()
+{
+    this->length = 0;
+}
+
+bool VarsStack::empty()
+{
+	return this->length == 0;
+}
+
+bool VarsStack::insert(Value* v,int depth)
+{
+	vec.emplace_back(v,depth);
+	length++;
+	return true;
+}
+
+Value* VarsStack::find(std::string name)
+{
+	Value * ret = nullptr;
+	if(this->length==0)
+	{
+		return ret;
+	}
+	int n = this->length;
+	while(n--)
+	{
+		if(name==this->vec[n].first->getName())
+		{
+			ret = this->vec[n].first;
+			break;
+		}
+	}
+	return ret;
+}
+
+void VarsStack::deleteVars(int depth)
+{
+	if(this->empty())
+	{
+		return;
+	}
+	int n = this->length;
+	while(n--)
+	{
+		if(this->vec[n].second==depth)
+		{
+			this->vec.pop_back();
+			this->length--;
+		}else
+		{
+			break;
+		}
+	}
+	
+}
+
+/// @brief 在当前作用域（depth相等情况）下，寻找变量。
+/// @param name 变量名
+/// @param depth 
+/// @return Value*
+Value * VarsStack::findWithDepth(std::string name, int depth)
+{
+	Value * ret = nullptr;
+	if(this->length==0)
+	{
+		return ret;
+	}
+	int n = this->length;
+	while(n--)
+	{	
+		if(this->vec[n].second != depth)
+		{
+            break;
+        }
+        if(name==this->vec[n].first->getName())
+		{
+			ret = this->vec[n].first;
+			break;
+		}
+	}
+	return ret;
 }

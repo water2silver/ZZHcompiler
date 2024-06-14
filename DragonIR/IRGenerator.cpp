@@ -171,6 +171,7 @@ bool IRGenerator::ir_function_define(ast_node * node)
 
     // 创建一个新的函数定义，函数的返回类型设置为VOID，待定，必须等return时才能确定，目前可以是VOID或者INT类型
     symtab->currentFunc = new Function(node->name, node->type.type);
+    symtab->currentFunc->setSymtab(symtab);
     bool result = symtab->insertFunction(symtab->currentFunc);
     if (!result) {
         // 清理资源
@@ -344,6 +345,7 @@ bool IRGenerator::ir_function_call(ast_node * node)
 /// @return 翻译是否成功，true：成功，false：失败
 bool IRGenerator::ir_block(ast_node * node)
 {
+    symtab->addBlockDepth();
     std::vector<ast_node *>::iterator pIter;
     for (pIter = node->sons.begin(); pIter != node->sons.end(); ++pIter) {
 
@@ -355,7 +357,11 @@ bool IRGenerator::ir_block(ast_node * node)
 
         node->blockInsts.addInst(temp->blockInsts);
     }
-
+	if(symtab->currentFunc)
+	{
+        symtab->currentFunc->stackPop(symtab->getBlockDepth());
+    }
+    symtab->subBlockDepth();
     return true;
 }
 
@@ -1508,7 +1514,17 @@ bool IRGenerator::ir_leaf_node_var_id(ast_node * node)
 	// 当前有函数
 	if(symtab->currentFunc!=nullptr)
 	{
-		val = symtab->currentFunc->findValue(node->name, false);
+		//如果是变量定义。
+		if(node->parent->node_type==ast_operator_type::AST_OP_VAR_DEF||
+		   (node->parent->node_type == ast_operator_type::AST_OP_ASSIGN && node->parent->parent->node_type==ast_operator_type::AST_OP_VAR_DEF)
+		)
+		{
+			val = symtab->currentFunc->findValueWithDepth(node->name,symtab->getBlockDepth());
+		}else
+		{
+			val = symtab->currentFunc->findValue(node->name,false);
+
+		}
 		if (!val) {
 
 			// 变量不存在，则创建一个变量
@@ -1517,7 +1533,8 @@ bool IRGenerator::ir_leaf_node_var_id(ast_node * node)
 		node->val = val;
 		
 		//(a) (a||b) (a&&b)
-		if( node->parent->sons.size()==1 ||node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND || node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR)
+		if( (node->parent->sons.size()==1&&node->parent->node_type==ast_operator_type::AST_OP_COND) 
+		 	|| (node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND || node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR))
 		{	
 			//继承
 			node->inherit_label(node->parent);
