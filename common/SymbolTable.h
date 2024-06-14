@@ -90,6 +90,16 @@ public:
     /// @return 新建的函数对象实例
     Function * newFunction(std::string name, BasicType returnType, bool builtin = false);
 
+	/// @brief block层次增加
+    void addBlockDepth();
+
+	/// @brief block层次减少
+    void subBlockDepth();
+
+    /// @brief  获取当前的blockDepth大小
+    /// @return blockDepth
+    int getBlockDepth();
+
 protected:
     /// @brief Value插入到符号表中
     /// @param val Value信息
@@ -117,4 +127,7 @@ private:
 
     /// @brief  函数列表
     std::vector<Function *> funcVector;
+
+	/// @brief 表示当前的block层次
+    int blockDepth = 0;
 };

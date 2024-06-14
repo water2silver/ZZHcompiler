@@ -249,3 +249,22 @@ Function * SymbolTable::newFunction(std::string name, BasicType returnType, bool
     insertFunction(func);
     return func;
 }
+
+/// @brief block层次增加
+void SymbolTable::addBlockDepth()
+{
+    this->blockDepth++;
+}
+
+/// @brief block层次减少
+void SymbolTable::subBlockDepth()
+{
+    this->blockDepth--;
+}
+
+/// @brief  获取当前的blockDepth大小
+/// @return blockDepth
+int SymbolTable::getBlockDepth()
+{
+    return this->blockDepth;
+}

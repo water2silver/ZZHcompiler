@@ -1277,7 +1277,16 @@ bool IRGenerator::ir_array_visit(ast_node * node)
         node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_ADD_I, returnVal, res_var->val, index));
         // returnVal = oldTmpValue;
     }
-    node->val = returnVal;
+	//数组作为左值进行赋值
+	if(node->parent->sons[0]==node && node->parent->node_type==ast_operator_type::AST_OP_ASSIGN)
+	{
+    	node->val = returnVal;
+	}else//数组作为右值
+	{
+		Value * tmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+		node->blockInsts.addInst(new AssignIRInst(tmpValue, returnVal));
+        node->val = tmpValue;
+    }
 
     return result;
 }
