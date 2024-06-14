@@ -1234,11 +1234,13 @@ bool IRGenerator::ir_array_visit(ast_node * node)
 	if(dim_size==1)
 	{
         Value * tmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
-        Value * index = new ConstValue((int32_t)visit_node->sons[0]->integer_val);
+        ast_node * index_node = ir_visit_ast_node(visit_node->sons[0]);
+        node->blockInsts.addInst(index_node->blockInsts);
+        // Value * index = new ConstValue((int32_t) index_node->integer_val);
         Value * int_size = new ConstValue(4);
         returnVal = symtab->currentFunc->newTempValue(BasicType::TYPE_POINTER);
 
-        node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_TIMES_I, tmpValue,index, int_size));
+        node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_TIMES_I, tmpValue,index_node->val, int_size));
         node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_ADD_I, returnVal, res_var->val,tmpValue));
     
 	} else {
@@ -1250,24 +1252,33 @@ bool IRGenerator::ir_array_visit(ast_node * node)
 			{
                 Value * mulResTmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
                 Value * addResTmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
-                Value * constValue1 = new ConstValue((int32_t) visit_node->sons[i]->integer_val);
+				//
+        		ast_node * index_node1 = ir_visit_ast_node(visit_node->sons[0]);
+		        node->blockInsts.addInst(index_node1->blockInsts);
+                // Value * constValue1 = new ConstValue((int32_t) index_node->integer_val);
                 Value * constValue2 = new ConstValue(array_dim[i+1]);
-                Value * constValue3 = new ConstValue((int32_t) visit_node->sons[i + 1]->integer_val);
+				//
+                ast_node * index_node2 = ir_visit_ast_node(visit_node->sons[1]);
+       		 	node->blockInsts.addInst(index_node2->blockInsts);	
+
+                // Value * constValue3 = new ConstValue((int32_t) index_node2->integer_val);
                 node->blockInsts.addInst(
-                    new BinaryIRInst(IRInstOperator::IRINST_OP_TIMES_I, mulResTmpValue, constValue1, constValue2));
+                    new BinaryIRInst(IRInstOperator::IRINST_OP_TIMES_I, mulResTmpValue, index_node1->val, constValue2));
                 node->blockInsts.addInst(
-                    new BinaryIRInst(IRInstOperator::IRINST_OP_ADD_I, addResTmpValue, mulResTmpValue, constValue3));
+                    new BinaryIRInst(IRInstOperator::IRINST_OP_ADD_I, addResTmpValue, mulResTmpValue, index_node2->val));
                 oldTmpValue = addResTmpValue;
                 continue;
             }
 			Value * mulResTmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
             Value * addResTmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
             Value * constValue1 = new ConstValue(array_dim[i + 1]);
-            Value * constValue2 = new ConstValue((int32_t) visit_node->sons[i + 1]->integer_val);
+			ast_node *index_node = ir_visit_ast_node(visit_node->sons[i+1]);
+       		node->blockInsts.addInst(index_node->blockInsts);	
+            // Value * constValue2 = new ConstValue((int32_t) index_node->integer_val);
             node->blockInsts.addInst(
                 new BinaryIRInst(IRInstOperator::IRINST_OP_TIMES_I, mulResTmpValue, oldTmpValue, constValue1));
             node->blockInsts.addInst(
-                new BinaryIRInst(IRInstOperator::IRINST_OP_ADD_I, addResTmpValue, mulResTmpValue, constValue2));
+                new BinaryIRInst(IRInstOperator::IRINST_OP_ADD_I, addResTmpValue, mulResTmpValue, index_node->val));
             oldTmpValue = addResTmpValue;
         }
         Value * index = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
