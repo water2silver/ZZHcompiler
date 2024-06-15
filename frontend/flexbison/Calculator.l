@@ -128,7 +128,7 @@ white_line  [\r\n]
 }
 "break"		{
 				//continue
-				return T_CONTINUE;
+				return T_BREAK;
 }
 {l}+({d}|{l})* {
                 yylval.var_id.id = strdup(yytext);

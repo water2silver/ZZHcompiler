@@ -77,7 +77,8 @@ IRGenerator::IRGenerator(ast_node * _root, SymbolTable * _symtab) : root(_root),
     ast2ir_handlers[ast_operator_type::AST_OP_WHILE] = &IRGenerator::ir_while;
 	
     ast2ir_handlers[ast_operator_type::AST_OP_COND] = &IRGenerator::ir_cond;
-
+	//break
+	// ast2ir_handlers[ast_operator_type::AST_OP_B]
 
 
     /* 语句 */
@@ -1015,6 +1016,11 @@ bool IRGenerator::ir_while(ast_node * node)
     LabelIRInst * false_label = new LabelIRInst();
     node->set_label(true_label, false_label, cond_label);
 	cond_node->inherit_label(node);
+	
+	//插入标签。
+    symtab->currentFunc->continueLabelStack.push(cond_label);
+    symtab->currentFunc->breakLabelStack.push(false_label);
+
     ast_node * res_cond = ir_visit_ast_node(cond_node);
     ast_node * res_block = ir_visit_ast_node(block_node);
     
@@ -1029,6 +1035,9 @@ bool IRGenerator::ir_while(ast_node * node)
     node->blockInsts.addInst(new BranchIRInst(cond_label));
     node->blockInsts.addInst(false_label);
 
+	//弹出标签。
+    symtab->currentFunc->continueLabelStack.pop();
+    symtab->currentFunc->breakLabelStack.pop();
     return result;
 }
 
@@ -1601,8 +1610,20 @@ bool IRGenerator::ir_leaf_node_float(ast_node * node)
 /// @return 翻译是否成功，true：成功，false：失败
 bool IRGenerator::ir_leaf_type(ast_node *node)
 {
-	//TODO
-	//暂时不做任何处理-zzh
+    // 用于处理continue break;
+    if (symtab->currentFunc == nullptr) {
+        return false;
+    }
+    if(node->type.type==BasicType::TYPE_BREAK)
+	{
+        auto label = symtab->currentFunc->breakLabelStack.top();
+        node->blockInsts.addInst(new BranchIRInst(label));
+    }else if(node->type.type==BasicType::TYPE_CONTINUE)
+	{
+        auto label = symtab->currentFunc->continueLabelStack.top();
+        node->blockInsts.addInst(new BranchIRInst(label));
+    }
+
     return true;
 }
 

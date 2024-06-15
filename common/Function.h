@@ -13,6 +13,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <stack>
 
 #include "IRCode.h"
 #include "Value.h"
@@ -304,6 +305,12 @@ private:
 
     /// @brief 被保护寄存器字符串
     std::string protectedRegStr;
+public:
+	/// @brief break语句label的栈
+    std::stack<LabelIRInst *> breakLabelStack;
+
+	/// @brief continue 语句的label栈。
+    std::stack<LabelIRInst *> continueLabelStack;
 
 };
 

@@ -1024,7 +1024,7 @@ YY_RULE_SETUP
 #line 129 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
 {
 				//continue
-				return T_CONTINUE;
+				return T_BREAK;
 }
 	YY_BREAK
 case 18:
