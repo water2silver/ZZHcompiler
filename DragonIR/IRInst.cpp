@@ -240,7 +240,11 @@ void FuncCallIRInst::toString(std::string & str)
 
     for (size_t k = 0; k < srcValues.size(); ++k) {
 
-        str += srcValues[k]->toString();
+        str += "i32 " +srcValues[k]->toString();
+		if(srcValues[k]->array_info!=nullptr)
+		{
+            str += srcValues[k]->array_info->getDimName();
+        }
 
         if (k != (srcValues.size() - 1)) {
             str += ", ";

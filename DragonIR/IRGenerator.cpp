@@ -12,7 +12,7 @@
 #include <cstdio>
 #include <unordered_map>
 #include <vector>
-
+#include <iostream>
 #include "AST.h"
 #include "IRCode.h"
 #include "IRGenerator.h"
@@ -168,7 +168,10 @@ bool IRGenerator::ir_function_define(ast_node * node)
     //     // TODO 自行追加语义错误处理
     //     return false;
     // }
-
+	if(node->name=="putint")
+	{
+        return true;
+    }
     // 创建一个新的函数定义，函数的返回类型设置为VOID，待定，必须等return时才能确定，目前可以是VOID或者INT类型
     symtab->currentFunc = new Function(node->name, node->type.type);
     symtab->currentFunc->setSymtab(symtab);
@@ -182,7 +185,8 @@ bool IRGenerator::ir_function_define(ast_node * node)
 
         // 函数已经定义过了，不能重复定义，语义错误：出错返回。
         // TODO 自行追加语义错误处理
-        printf("函数重复定义");
+        // printf("函数重复定义");
+        std::cout << "函数重复定义" + node->name << std::endl;
         return false;
     }
 
@@ -265,9 +269,12 @@ bool IRGenerator::ir_function_formal_params(ast_node * node)
 
         // 创建变量，默认整型
         Value * var = symtab->currentFunc->newVarValue(son->name, BasicType::TYPE_INT);
-
+		//TODO -数组的情况
+		//这个tempValue不会被declare语句再输出一次
+        Value * tempValue = new TempValue(BasicType::TYPE_INT);
+        node->blockInsts.addInst(new AssignIRInst(var, tempValue));
         // 默认是整数类型
-        params.emplace_back(son->name, BasicType::TYPE_INT, var);
+        params.emplace_back(tempValue->getName(), BasicType::TYPE_INT, tempValue);
     }
 
     return true;

@@ -108,9 +108,17 @@ FuncDef : T_FUNC T_ID '(' ')' Block  {
 	{
         $$ = create_func_def(BasicType::TYPE_VOID,$2.lineno, $2.id, $5, nullptr);
 	}
+	| T_VOID T_ID '(' ')' ';'
+	{
+        $$ = create_func_def(BasicType::TYPE_VOID,$2.lineno, $2.id, nullptr, nullptr);
+	}
 	|T_VOID T_ID '('FuncFormalParams ')' Block
 	{
         $$ = create_func_def(BasicType::TYPE_VOID,$2.lineno, $2.id, $6, $4);
+	}
+	|T_VOID T_ID '('FuncFormalParams ')' ';'
+	{
+        $$ = create_func_def(BasicType::TYPE_VOID,$2.lineno, $2.id, nullptr, $4);
 	}
 	| T_INT T_ID '(' ')' Block
 	{
