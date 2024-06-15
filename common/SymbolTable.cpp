@@ -23,11 +23,21 @@
 SymbolTable::SymbolTable()
 {
     // 加入内置函数
-    (void) newFunction("putint",                    // 函数名
+    
+    (void) newFunction("getint", BasicType::TYPE_INT, {}, true);
+    (void) newFunction("getch", BasicType::TYPE_INT, {}, true);
+    (void) newFunction("getarray", BasicType::TYPE_INT, {{"", BasicType::TYPE_POINTER}}, true);
+	(void) newFunction("putint",                    // 函数名
                        BasicType::TYPE_VOID,        // 返回值类型
                        {{"", BasicType::TYPE_INT}}, // 形参类型
                        true                         // 内置函数
     );
+	(void) newFunction("putch", BasicType::TYPE_VOID, {{"", BasicType::TYPE_INT}}, true);
+	(void) newFunction("putarray", BasicType::TYPE_VOID, {{"", BasicType::TYPE_INT},{"",BasicType::TYPE_POINTER}}, true);
+    //pointer也不太一样，这个是指向，普通指向int ,这里指向char
+	(void) newFunction("putstr", BasicType::TYPE_VOID, {{"", BasicType::TYPE_POINTER}}, true);
+
+
     blockDepth = 0;
 }
 
