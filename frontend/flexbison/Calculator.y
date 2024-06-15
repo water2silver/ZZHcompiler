@@ -128,6 +128,14 @@ FuncDef : T_FUNC T_ID '(' ')' Block  {
 	{
         $$ = create_func_def(BasicType::TYPE_INT,$2.lineno, $2.id, $6, $4);
 	}
+	|T_INT T_ID '(' ')' ';'
+	{
+        $$ = create_func_def(BasicType::TYPE_INT,$2.lineno, $2.id, nullptr, nullptr);
+	}
+	| T_INT T_ID '('FuncFormalParams ')' ';'
+	{
+        $$ = create_func_def(BasicType::TYPE_INT,$2.lineno, $2.id, nullptr, $4);
+	}
     ;
 
 // 函数参数

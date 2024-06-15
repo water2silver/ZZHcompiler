@@ -169,7 +169,9 @@ bool IRGenerator::ir_function_define(ast_node * node)
     //     // TODO 自行追加语义错误处理
     //     return false;
     // }
-	if(node->name=="putint")
+	if(node->name =="getint"||node->name=="getch"||node->name=="getarray"||
+	   node->name=="putint"|| node->name=="putch" || node->name =="putarray" ||
+	   node->name =="putstr")
 	{
         return true;
     }
