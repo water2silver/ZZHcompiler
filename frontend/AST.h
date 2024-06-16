@@ -240,6 +240,9 @@ public:
 
 	/// @brief 从另一个节点完全继承所有的label
     void inherit_label(ast_node * node);
+
+	/// @brief 交换真假label;
+    void swap_true_false_label();
 };
 
 /// @brief 判断是否是叶子节点

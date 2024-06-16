@@ -492,8 +492,8 @@ void CondNotZeroIRInst::toString(std::string & str)
 {
     Value * result = this->dstValue;
     Value * src1 = this->getSrc1();
-    str = result->getName() + " = icmp ne " + src1->toString() + ", 0\n	" ;
-	str +="bc " +result->getName()+ 
-	 	  ", label " + trueInst->getLabelName() + 
-		  ", label " + falseInst->getLabelName();
+    str = result->getName() + " = icmp ne " + src1->toString() + ", 0" ;
+	// str +="bc " +result->getName()+ 
+	//  	  ", label " + trueInst->getLabelName() + 
+	// 	  ", label " + falseInst->getLabelName();
 }

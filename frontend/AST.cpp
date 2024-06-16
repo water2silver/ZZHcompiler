@@ -80,6 +80,15 @@ void ast_node::inherit_label(ast_node * node)
 {
     this->set_label(node->label_true, node->label_false, node->label_end);
 }
+
+/// @brief 交换真假label;
+void ast_node::swap_true_false_label()
+{
+    auto label = this->label_true;
+    this->label_true = this->label_false;
+    this->label_false = label;
+}
+
 /// @brief 判断是否是叶子节点
 /// @param type 节点类型
 /// @return true：是叶子节点 false：内部节点

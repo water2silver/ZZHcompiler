@@ -1024,6 +1024,9 @@ bool IRGenerator::ir_while(ast_node * node)
     symtab->currentFunc->breakLabelStack.push(false_label);
 
     ast_node * res_cond = ir_visit_ast_node(cond_node);
+	// 倒反天罡！
+    node->inherit_label(cond_node);
+	
     ast_node * res_block = ir_visit_ast_node(block_node);
     
 
@@ -1377,13 +1380,15 @@ bool IRGenerator::ir_negative(ast_node * node)
 
     ast_node * src1_node = node->sons[0];
 
+    src1_node->inherit_label(node);
     ast_node * result = ir_visit_ast_node(src1_node);
     if (!result) {
         // 解析错误
         return false;
     }
+    node->inherit_label(src1_node);
 
-	Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
     node->blockInsts.addInst(result->blockInsts);
 
     if (result->val != nullptr) {
@@ -1392,6 +1397,17 @@ bool IRGenerator::ir_negative(ast_node * node)
         node->blockInsts.addInst(new UnaryIRInst(IRInstOperator::IRINST_OP_NEGATIVE_I, resultValue, result->val));
     }
     node->val = resultValue;
+
+	if(node->parent->node_type==ast_operator_type::AST_OP_COND
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND)
+	{
+        Value * tmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
+        node->blockInsts.addInst(new CondNotZeroIRInst(IRInstOperator::IRINST_OP_NOT_EQUAL_I, tmpValue, node->val));
+        node->val = tmpValue;
+        node->blockInsts.addInst(
+            new IfIRInst(IRInstOperator::IRINST_OP_IF, node->val, node->label_true, node->label_false));
+    }
 
     return true;
 }
@@ -1404,23 +1420,36 @@ bool IRGenerator::ir_not(ast_node * node)
 	// TODO real number print
 
     ast_node * src1_node = node->sons[0];
+    src1_node->inherit_label(node);
+    src1_node->swap_true_false_label();
 
     ast_node * result = ir_visit_ast_node(src1_node);
+	// 倒反天罡！
+    node->inherit_label(src1_node);
     if (!result) {
         // 解析错误
         return false;
     }
 
-	Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    // Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
     node->blockInsts.addInst(result->blockInsts);
 
-    if (result->val != nullptr) {
-
-        //TODO 一元操作符的线性IR生成
-        node->blockInsts.addInst(new UnaryIRInst(IRInstOperator::IRINST_OP_LOGICAL_NOT_I, resultValue, result->val));
+    // if (result->val != nullptr) {
+    //     //TODO 一元操作符的线性IR生成
+    //     node->blockInsts.addInst(new UnaryIRInst(IRInstOperator::IRINST_OP_LOGICAL_NOT_I, resultValue, result->val));
+    // }
+    node->val = result->val;
+    //
+    if(node->parent->node_type==ast_operator_type::AST_OP_COND
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND)
+	{
+        Value * tmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
+        node->blockInsts.addInst(new CondNotZeroIRInst(IRInstOperator::IRINST_OP_NOT_EQUAL_I, tmpValue, node->val));
+        node->val = tmpValue;
+        node->blockInsts.addInst(
+            new IfIRInst(IRInstOperator::IRINST_OP_IF, node->val, node->label_true, node->label_false));
     }
-    node->val = resultValue;
-
     return true;
 }
 
@@ -1548,21 +1577,31 @@ bool IRGenerator::ir_leaf_node_var_id(ast_node * node)
 		}
 		node->val = val;
 		
-		//(a) (a||b) (a&&b)
-		if( (node->parent->sons.size()==1&&node->parent->node_type==ast_operator_type::AST_OP_COND) 
-		 	|| (node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND || node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR))
+		//(a) (a||b) (a&&b) 
+		//  那么 (!a) (-a) 呢?
+		if( (node->parent->sons.size()==1&&node->parent->node_type==ast_operator_type::AST_OP_COND ) 
+		 	|| (node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND 
+			|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR
+			|| node->parent->node_type==ast_operator_type::AST_OP_NEGATIVE
+			|| node->parent->node_type==ast_operator_type::AST_OP_NOT))
 		{	
-			//继承
-			node->inherit_label(node->parent);
+
 			// 直接在这个地方插入两条语句？
 			//老师的IR里面会把非0比较的变量赋值给一个临时变量
 			Value * tmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
 			Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
 			node->blockInsts.addInst(new AssignIRInst(tmpValue,node->val));
 
-			node->blockInsts.addInst(new CondNotZeroIRInst(IRInstOperator::IRINST_OP_NOT_EQUAL_I,resultValue,tmpValue,node->label_true,node->label_false));
-			// node->blockInsts.addInst(new BranchIRInst(IRInstOperator::IRINST_OP_GOTO,))
-			node->val = resultValue;
+			//将判断是否为0的操作与 bc分支语句分开。
+			node->blockInsts.addInst(new CondNotZeroIRInst(IRInstOperator::IRINST_OP_NOT_EQUAL_I,resultValue,tmpValue));
+            if( !(node->parent->node_type==ast_operator_type::AST_OP_NEGATIVE||node->parent->node_type==ast_operator_type::AST_OP_NOT))
+			{
+				node->blockInsts.addInst(
+					new IfIRInst(IRInstOperator::IRINST_OP_GOTO, resultValue, node->label_true, node->label_false)
+				);
+			}
+			
+            node->val = resultValue;
 		}
 	}else
 	{
