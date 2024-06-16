@@ -264,23 +264,48 @@ bool IRGenerator::ir_function_define(ast_node * node)
 /// @return 翻译是否成功，true：成功，false：失败
 bool IRGenerator::ir_function_formal_params(ast_node * node)
 {
+    bool result = true;
     // 获取当前要保存函数的形式参数清单
     auto & params = symtab->currentFunc->getParams();
 
     // 遍历形式参数列表，孩子是叶子节点
     for (auto son: node->sons) {
+		if(son->node_type==ast_operator_type::AST_OP_FUNC_ARRAY)
+		{
 
-        // 创建变量，默认整型
-        Value * var = symtab->currentFunc->newVarValue(son->name, BasicType::TYPE_INT);
-		//TODO -数组的情况
-		//这个tempValue不会被declare语句再输出一次
-        Value * tempValue = new TempValue(BasicType::TYPE_INT);
-        node->blockInsts.addInst(new AssignIRInst(var, tempValue));
-        // 默认是整数类型
-        params.emplace_back(tempValue->getName(), BasicType::TYPE_INT, tempValue);
+			Value * var = symtab->currentFunc->newVarValue(son->sons[0]->name, BasicType::TYPE_INT);
+
+			std::vector<int> array_dim;
+			ast_node * tmp = son->sons[1];
+			while(!tmp->sons.empty())
+			{
+				array_dim.push_back(tmp->sons[0]->integer_val);
+				tmp = tmp->sons[1];
+			}
+            array_dim[array_dim.size() - 1] = 0;
+            var->set_array_info(array_dim);
+
+            //这个tempValue不会被declare语句再输出一次
+			Value * tempValue = new TempValue(BasicType::TYPE_INT);
+            tempValue->set_array_info(array_dim);
+            node->blockInsts.addInst(new AssignIRInst(var, tempValue));
+            // 默认是整数类型
+			params.emplace_back(tempValue->getName(), BasicType::TYPE_INT, tempValue);
+
+		}else if(son->node_type==ast_operator_type::AST_OP_FUNC_FORMAL_PARAM)
+		{
+			// 创建变量，默认整型
+			Value * var = symtab->currentFunc->newVarValue(son->name, BasicType::TYPE_INT);
+			//这个tempValue不会被declare语句再输出一次
+			Value * tempValue = new TempValue(BasicType::TYPE_INT);
+			node->blockInsts.addInst(new AssignIRInst(var, tempValue));
+			// 默认是整数类型
+			params.emplace_back(tempValue->getName(), BasicType::TYPE_INT, tempValue);
+		}
+        
     }
 
-    return true;
+    return result;
 }
 
 /// @brief 函数调用AST节点翻译成线性中间IR

@@ -34,9 +34,13 @@ std::string FuncFormalParam::toString()
 {
     std::string typeName;
     typeName = type.toString();
-
+    std::string str= typeName + " " + name;
+	if(this->val->array_info!=nullptr)
+	{
+        str += this->val->array_info->getDimName();
+    }
     // 类型名 空格 形参参数名
-    return typeName + " " + name;
+    return str;
 }
 
 /// @brief 匿名构造函数
