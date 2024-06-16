@@ -283,7 +283,7 @@ bool IRGenerator::ir_function_formal_params(ast_node * node)
 				array_dim.push_back(tmp->sons[0]->integer_val);
 				tmp = tmp->sons[1];
 			}
-            array_dim[array_dim.size() - 1] = 0;
+            array_dim[0] = 0;
             var->set_array_info(array_dim);
 
             //这个tempValue不会被declare语句再输出一次
@@ -1272,13 +1272,74 @@ bool IRGenerator::ir_array_visit(ast_node * node)
 	{
 		printf("该变量无数组信息\n");
 	}
-	//如果不等于，意味着要访问大数组的子数组
-	if(val->array_info->getDim().size()!=dim_size)
-	{
-        printf("数组访问维度出错了\n");
-    }
 
     Value * returnVal;
+    std::vector<int> new_array_dim;
+    // 如果不等于，意味着要访问大数组的子数组
+    if(val->array_info->getDim().size()!=dim_size)
+	{
+		//这是子数组的维度计算。
+        int mulSize = 1;
+        for (int i = dim_size; i < val->array_info->getDim().size();i++)
+		{
+            mulSize *= val->array_info->getDim()[i];
+            new_array_dim.push_back(val->array_info->getDim()[i]);
+        }
+        Value * tmpValue;
+		if(dim_size==1)
+		{
+			Value * visit_value = new ConstValue((int32_t)visit_node->sons[0]->integer_val);
+			Value * dim_value = new ConstValue(mulSize);
+            
+			tmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+            node->blockInsts.addInst(
+                new BinaryIRInst(IRInstOperator::IRINST_OP_TIMES_I, tmpValue, visit_value,dim_value));
+
+		} else {
+            for (int i = 0; i < dim_size;i++)
+			{
+				Value * mulResValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+				Value * visit_value = new ConstValue((int32_t)visit_node->sons[i]->integer_val);
+				Value * dim_value = new ConstValue(val->array_info->getDim()[i+1]);
+				if(i==dim_size-1)
+				{
+					dim_value = new ConstValue(mulSize);
+				}
+				// 第一次使用
+				if(i==0)
+				{
+					//使用visit_value
+					node->blockInsts.addInst(
+									new BinaryIRInst(IRInstOperator::IRINST_OP_TIMES_I, mulResValue, visit_value, dim_value));
+				}else
+				{
+					//使用上一次循环的计算结果。
+					node->blockInsts.addInst(
+									new BinaryIRInst(IRInstOperator::IRINST_OP_TIMES_I, mulResValue, tmpValue, dim_value));
+				}
+                tmpValue = mulResValue;
+                if (i != dim_size - 1) {
+                    Value * addResValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+					Value * visit_value2 = new ConstValue((int32_t)visit_node->sons[i+1]->integer_val);
+
+					node->blockInsts.addInst(
+						new BinaryIRInst(IRInstOperator::IRINST_OP_ADD_I, addResValue, mulResValue, visit_value2));
+					tmpValue = addResValue;
+                }
+            }
+        }
+
+        //乘 4 ，退出
+        Value * index = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+        Value * int_size = new ConstValue(4);
+        node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_TIMES_I, index, tmpValue, int_size));
+        returnVal = symtab->currentFunc->newTempValue(BasicType::TYPE_POINTER);
+        node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_ADD_I, returnVal, res_var->val, index));
+        returnVal->set_array_info(new_array_dim);
+        node->val = returnVal;
+        return result;
+    }
+
 
     std::vector<int> array_dim = val->array_info->getDim();
     

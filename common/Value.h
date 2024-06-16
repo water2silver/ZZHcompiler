@@ -137,7 +137,7 @@ public:
     /// @return 变量名
     virtual std::string getName() const
     {
-		return name;
+        return name ;
     }
 
 	void setGlobal()
@@ -151,7 +151,7 @@ public:
     {
         // return type.toString() + " " + getName();
         std::string res;
-		if(this->type.type == BasicType::TYPE_POINTER)
+		if(this->type.type == BasicType::TYPE_POINTER &&this->array_info==nullptr)
 		{
             res += "*";
         }

@@ -185,10 +185,21 @@ void Function::toString(std::string & str)
                 valueType = std::string("i32");
 			}else if(value->type.type == BasicType::TYPE_POINTER)
 			{
-                valueType = std::string("i32*");
+				if(value->array_info!=nullptr)
+				{
+                	valueType = std::string("i32");
+
+				}else
+				{
+                	valueType = std::string("i32*");
+				}
 			}
             str += "\t" + std::string("declare ") + valueType + " " + value->name;
-			str += std::string("\n");
+			if(value->array_info!=nullptr)
+			{
+                str += value->array_info->getDimName();
+            }
+            str += std::string("\n");
 		}
 	}
     // 遍历所有的线性IR指令，文本输出
