@@ -1553,6 +1553,12 @@ bool IRGenerator::ir_not(ast_node * node)
 	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR
 	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND)
 	{
+		//实际上这里的判定应该写的更仔细一点。
+		if(node->sons[0]->node_type==ast_operator_type::AST_OP_LOGICAL_AND
+		|| node->sons[0]->node_type==ast_operator_type::AST_OP_LOGICAL_OR)
+		{
+            return true;
+        }
         Value * tmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
         node->blockInsts.addInst(new CondNotZeroIRInst( tmpValue, node->val));
         node->val = tmpValue;
