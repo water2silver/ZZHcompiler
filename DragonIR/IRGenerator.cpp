@@ -210,7 +210,8 @@ bool IRGenerator::ir_function_define(ast_node * node)
 
     // 新建一个Value，用于保存函数的返回值，如果没有返回值可不用申请，
     // 目前未知，先创建一个，不用后续可释放
-    Value * retValue = symtab->currentFunc->newVarValue(BasicType::TYPE_INT);
+    BasicType returnType = node->sons[0]->type.type;
+    Value * retValue = symtab->currentFunc->newVarValue(returnType);
 
     // 保存函数返回值变量到函数信息中，在return语句翻译时需要设置值到这个变量中
     symtab->currentFunc->setReturnValue(retValue);
@@ -1271,6 +1272,7 @@ bool IRGenerator::ir_array_visit(ast_node * node)
 	{
 		printf("该变量无数组信息\n");
 	}
+	//如果不等于，意味着要访问大数组的子数组
 	if(val->array_info->getDim().size()!=dim_size)
 	{
         printf("数组访问维度出错了\n");
@@ -1540,32 +1542,37 @@ bool IRGenerator::ir_return(ast_node * node)
             // 某个变量没有定值
             return false;
         }
-    }
+		// 创建临时变量保存IR的值，以及线性IR指令
+		node->blockInsts.addInst(right->blockInsts);
+
+		// 返回值赋值到函数返回值变量上，然后跳转到函数的尾部
+		node->blockInsts.addInst(new AssignIRInst(symtab->currentFunc->getReturnValue(), right->val));
+		
+		node->val = right->val;
+	}
 
     // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
 
-    // 创建临时变量保存IR的值，以及线性IR指令
-    node->blockInsts.addInst(right->blockInsts);
-
-    // 返回值赋值到函数返回值变量上，然后跳转到函数的尾部
-    node->blockInsts.addInst(new AssignIRInst(symtab->currentFunc->getReturnValue(), right->val));
+    
 
     // 跳转到函数的尾部出口指令上
     //node->blockInsts.addInst(new GotoIRInst(symtab->currentFunc->getExitLabel()));
     node->blockInsts.addInst(new BranchIRInst(symtab->currentFunc->getExitLabel()));
 
-    node->val = right->val;
+    
 
     // 这里设置返回值类型
-    ValueType & returnType = symtab->currentFunc->getReturnType();
-    if (returnType.type == BasicType::TYPE_VOID) {
-        // 设置类型
-        returnType.type = right->val->type.type;
-    } else if (returnType.type != right->val->type.type) {
-        // 两者类型不一致，要出错显示
-        // 或者隐式转换成更高的类型
-        // TODO 这里目前什么都不做
-    }
+    // ValueType & returnType = symtab->currentFunc->getReturnType();
+    // if (returnType.type == BasicType::TYPE_VOID) {
+    //     // 设置类型
+    //     // returnType.type = right->val->type.type;
+    //     returnType.type = BasicType::TYPE_VOID;
+
+    // } else if (returnType.type != right->val->type.type) {
+    //     // 两者类型不一致，要出错显示
+    //     // 或者隐式转换成更高的类型
+    //     // TODO 这里目前什么都不做
+    // }
 
     return true;
 }

@@ -421,7 +421,7 @@ void GlobalDeclIRInst::toString(std::string & str)
 		{
             str += dstValue->array_info->getDimName();
         }
-        str += " = 0\n";
+        str += "\n";
     }else
 	{
         str = std::string("declare ") + std::string("i32 @") + dstValue->getName();
