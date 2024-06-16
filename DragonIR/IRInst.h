@@ -395,7 +395,7 @@ public:
 class CondNotZeroIRInst:public IRInst{
 public:
     /// @brief  构造函数
-    CondNotZeroIRInst(IRInstOperator op,Value *result,Value * src1,LabelIRInst* label_true=nullptr,LabelIRInst* label_false=nullptr);
+    CondNotZeroIRInst(Value *result,Value * src1,LabelIRInst* label_true=nullptr,LabelIRInst* label_false=nullptr);
 
     /// @brief  析构函数
     virtual ~CondNotZeroIRInst() override;

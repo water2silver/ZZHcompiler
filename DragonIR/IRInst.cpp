@@ -477,7 +477,7 @@ void BranchIRInst::toString(std::string & str)
 }
 
 //
-CondNotZeroIRInst::CondNotZeroIRInst(IRInstOperator op,Value *result,Value * src1,LabelIRInst* label_true,LabelIRInst* label_false):IRInst(IRInstOperator::IRINST_OP_NOT_EQUAL_I,result)
+CondNotZeroIRInst::CondNotZeroIRInst(Value *result,Value * src1,LabelIRInst* label_true,LabelIRInst* label_false):IRInst(IRInstOperator::IRINST_OP_NOT_EQUAL_I,result)
 {
 	
     srcValues.push_back(src1);

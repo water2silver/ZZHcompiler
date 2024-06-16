@@ -1412,6 +1412,27 @@ bool IRGenerator::ir_array_visit(ast_node * node)
         node->val = tmpValue;
     }
 
+	if( (node->parent->sons.size()==1&&node->parent->node_type==ast_operator_type::AST_OP_COND ) 
+	|| (node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND 
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR
+	|| node->parent->node_type==ast_operator_type::AST_OP_NEGATIVE
+	|| node->parent->node_type==ast_operator_type::AST_OP_NOT))
+	{	
+		Value * tmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+		Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
+		node->blockInsts.addInst(new AssignIRInst(tmpValue,node->val));
+
+		//将判断是否为0的操作与 bc分支语句分开。
+		node->blockInsts.addInst(new CondNotZeroIRInst(resultValue,tmpValue));
+		if( !(node->parent->node_type==ast_operator_type::AST_OP_NEGATIVE||node->parent->node_type==ast_operator_type::AST_OP_NOT))
+		{
+			node->blockInsts.addInst(
+				new IfIRInst(IRInstOperator::IRINST_OP_GOTO, resultValue, node->label_true, node->label_false)
+			);
+		}
+		
+		node->val = resultValue;
+	}
     return result;
 }
 
@@ -1491,7 +1512,7 @@ bool IRGenerator::ir_negative(ast_node * node)
 	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND)
 	{
         Value * tmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
-        node->blockInsts.addInst(new CondNotZeroIRInst(IRInstOperator::IRINST_OP_NOT_EQUAL_I, tmpValue, node->val));
+        node->blockInsts.addInst(new CondNotZeroIRInst(tmpValue, node->val));
         node->val = tmpValue;
         node->blockInsts.addInst(
             new IfIRInst(IRInstOperator::IRINST_OP_IF, node->val, node->label_true, node->label_false));
@@ -1533,7 +1554,7 @@ bool IRGenerator::ir_not(ast_node * node)
 	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND)
 	{
         Value * tmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
-        node->blockInsts.addInst(new CondNotZeroIRInst(IRInstOperator::IRINST_OP_NOT_EQUAL_I, tmpValue, node->val));
+        node->blockInsts.addInst(new CondNotZeroIRInst( tmpValue, node->val));
         node->val = tmpValue;
         node->blockInsts.addInst(
             new IfIRInst(IRInstOperator::IRINST_OP_IF, node->val, node->label_true, node->label_false));
@@ -1686,7 +1707,7 @@ bool IRGenerator::ir_leaf_node_var_id(ast_node * node)
 			node->blockInsts.addInst(new AssignIRInst(tmpValue,node->val));
 
 			//将判断是否为0的操作与 bc分支语句分开。
-			node->blockInsts.addInst(new CondNotZeroIRInst(IRInstOperator::IRINST_OP_NOT_EQUAL_I,resultValue,tmpValue));
+			node->blockInsts.addInst(new CondNotZeroIRInst(resultValue,tmpValue));
             if( !(node->parent->node_type==ast_operator_type::AST_OP_NEGATIVE||node->parent->node_type==ast_operator_type::AST_OP_NOT))
 			{
 				node->blockInsts.addInst(
