@@ -20,6 +20,7 @@
 #include "SymbolTable.h"
 #include "Value.h"
 #include "ValueType.h"
+#include "IROptimization.h"
 
 /// @brief 构造函数
 /// @param _root AST的根
@@ -456,9 +457,8 @@ bool IRGenerator::ir_add(ast_node * node)
 {
     ast_node * src1_node = node->sons[0];
     ast_node * src2_node = node->sons[1];
-
+	
     // 加法节点，左结合，先计算左节点，后计算右节点
-
     // 加法的左边操作数
     ast_node * left = ir_visit_ast_node(src1_node);
     if (!left) {
@@ -471,6 +471,12 @@ bool IRGenerator::ir_add(ast_node * node)
     if (!right) {
         // 某个变量没有定值
         return false;
+    }
+	//常数优化，放在遍历之后。
+    bool constantOptimizationResult = constantOptimization(node);
+	if(constantOptimizationResult)
+	{
+        return true;
     }
 
     // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
@@ -1496,8 +1502,31 @@ bool IRGenerator::ir_negative(ast_node * node)
         return false;
     }
     node->inherit_label(src1_node);
+	//针对负整数的优化
+	if((src1_node->node_type==ast_operator_type::AST_OP_LEAF_LITERAL_UINT)||(src1_node->val!=nullptr && src1_node->val->isConst()))
+	{
+        int32_t num = 0;
+        int32_t int_num = 0;
+        if (src1_node->node_type == ast_operator_type::AST_OP_LEAF_LITERAL_UINT) {
+            num = src1_node->integer_val;
+        } else if (src1_node->val != nullptr && src1_node->val->isConst()) {
+            num = src1_node->val->intVal;
+        } else {
+            printf("you should not reach here \n");
+        }
+        int_num = -1 * num;
+        Value * val = new ConstValue(int_num);
+        node->val = val;
+        return true;
+    }
 
-    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    Value * resultValue;
+    if (symtab->currentFunc != nullptr) {
+        resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    } else {
+        resultValue = new TempValue(BasicType::TYPE_INT);
+    }
+
     node->blockInsts.addInst(result->blockInsts);
 
     if (result->val != nullptr) {

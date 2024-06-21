@@ -388,13 +388,15 @@ DeclIRInst::~DeclIRInst()
 
 void DeclIRInst::toString(std::string & str)
 {
+	
 	if(srcValues.empty())
 	{
         //str = std::string("declare ") + std::string("i32 %l") + dstValue->getName();
     }else
 	{
+        std::string tmp = srcValues[0]->name;
         // str = std::string("declare ") + std::string("i32 %l") + dstValue->getName() + "\r";
-        str += dstValue->label_name + " = " + srcValues[0]->getName();
+        str += dstValue->label_name + " = " + tmp;
     }
 }
 GlobalDeclIRInst::GlobalDeclIRInst(IRInstOperator _op,Value * _result, Value * _srcVal1)
