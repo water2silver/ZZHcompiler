@@ -1733,16 +1733,20 @@ bool IRGenerator::ir_leaf_node_var_id(ast_node * node)
 			|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR
 			|| node->parent->node_type==ast_operator_type::AST_OP_NEGATIVE
 			|| node->parent->node_type==ast_operator_type::AST_OP_NOT))
-		{	
-
-			// 直接在这个地方插入两条语句？
-			//老师的IR里面会把非0比较的变量赋值给一个临时变量
-			Value * tmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
-			Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
-			node->blockInsts.addInst(new AssignIRInst(tmpValue,node->val));
-
+		{
+            Value * tmpValue = nullptr;
+            Value * resultValue = nullptr;
+            // 垃圾操作一下
+            if(!(node->parent->node_type==ast_operator_type::AST_OP_NEGATIVE))
+			{
+				//老师的IR里面会把非0比较的变量赋值给一个临时变量
+				tmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+				resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
+				node->blockInsts.addInst(new AssignIRInst(tmpValue,node->val));
+				node->blockInsts.addInst(new CondNotZeroIRInst(resultValue,tmpValue));
+				node->val = resultValue;
+			}
 			//将判断是否为0的操作与 bc分支语句分开。
-			node->blockInsts.addInst(new CondNotZeroIRInst(resultValue,tmpValue));
             if( !(node->parent->node_type==ast_operator_type::AST_OP_NEGATIVE||node->parent->node_type==ast_operator_type::AST_OP_NOT))
 			{
 				node->blockInsts.addInst(
@@ -1750,7 +1754,7 @@ bool IRGenerator::ir_leaf_node_var_id(ast_node * node)
 				);
 			}
 			
-            node->val = resultValue;
+            // node->val = resultValue;
 		}
 	}else
 	{

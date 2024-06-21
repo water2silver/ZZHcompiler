@@ -81,6 +81,24 @@ public:
     void deleteVars(int depth);
 
 };
+// class VarsStack {
+// public:
+//     std::vector<std::pair<Value *, int>> vec;
+//     int length = 0;
+// public:
+// 	/// @brief VarsStack构造函数
+//     VarsStack();
+//     /// @brief 是否为空
+//     bool empty();
+//     /// @brief 插入value和depth元素到vec中
+//     bool insert(Value * v, int depth);
+//     /// @brief  根据变量名在栈中自顶向下寻找变量-不考虑depth.
+//     Value * find(std::string name);
+//     /// @brief 在当前作用域（depth相等情况）下，寻找变量。
+//     Value * findWithDepth(std::string name, int depth);
+//     /// @brief 删除栈中所有当前depth的变量。
+//     void deleteVars(int depth);
+// };
 
 
 class CFGNode {
