@@ -100,6 +100,9 @@ public:
     /// @return blockDepth
     int getBlockDepth();
 
+	/// @brief 输出控制流图。
+    void OutputCFG();
+
 protected:
     /// @brief Value插入到符号表中
     /// @param val Value信息

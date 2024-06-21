@@ -279,3 +279,12 @@ int SymbolTable::getBlockDepth()
 {
     return this->blockDepth;
 }
+
+/// @brief 输出控制流图。
+void SymbolTable::OutputCFG()
+{
+	for(auto func:this->funcVector)
+	{
+        func->OutputCFG();
+    }
+}

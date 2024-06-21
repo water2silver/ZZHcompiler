@@ -82,6 +82,106 @@ public:
 
 };
 
+
+class CFGNode {
+
+public:
+	std::string getName()
+	{
+        return name;
+    }
+	InterCode& getInterCode()
+	{
+        return code;
+    }
+	CFGNode(std::string _name):name(_name)
+	{
+    }
+	void addInst(IRInst* inst)
+	{
+        code.addInst(inst);
+    }
+
+protected:
+    std::string name;
+    InterCode code;
+};
+
+class CFGEdge{
+public:
+	CFGEdge(CFGNode * node1,CFGNode* node2):preNode(node1),nextNode(node2)
+	{
+
+	}
+	CFGEdge(std::string name1,std::string name2):preName(name1),nextName(name2)
+	{
+
+	}
+
+public:
+    CFGNode* preNode;
+    CFGNode* nextNode;
+	std::string preName;
+    std::string nextName;
+};
+
+
+class CFGManager
+{
+public:
+    CFGManager(){};
+    ~CFGManager(){};
+	bool insertNode(CFGNode * node)
+	{
+        this->nodeVector.push_back(node);
+        this->nodeMap.emplace(node->getName(), node);
+        return true;
+    }
+
+	
+
+	bool insertEdge(std::string name1,std::string name2)
+	{
+        bool res = true;
+        
+        CFGEdge * cfgEdge = new CFGEdge(name1, name2);
+        this->edgeVector.push_back(cfgEdge);
+        return res;
+    }
+
+    CFGNode* findNode(std::string nodeName)
+	{
+        CFGNode * res = nullptr;
+        if (this->nodeMap.count(nodeName) == 0) {
+            res = nullptr;
+            return res;
+        }
+        res = this->nodeMap[nodeName];
+        return res;
+    }
+
+	std::vector<CFGNode*>& getNodeVector()
+	{
+        return this->nodeVector;
+    }
+
+	std::vector<CFGEdge*>& getEdgeVector()
+	{
+        return this->edgeVector;
+    }
+
+	std::unordered_map<std::string, CFGNode *>& getNodeMap()
+	{
+        return this->nodeMap;
+    }
+
+public: 
+    std::vector<CFGNode *> nodeVector;
+    std::unordered_map<std::string, CFGNode *> nodeMap;
+    std::vector<CFGEdge *> edgeVector;
+
+};
+
 /// @brief 描述函数信息的类
 class Function {
 
@@ -101,7 +201,10 @@ public:
     Function(std::string _name, BasicType _type, FuncFormalParam _param, bool _builtin = false);
 
     void setParams(std::vector<Value *> &values);
-	
+
+    /// @brief  Function内部的CFG生成。
+    void OutputCFG();
+
     /// @brief 取得函数名字
     /// @return 函数名字
     std::string & getName();
@@ -236,6 +339,9 @@ public:
     /// @brief  删除varsStack当前depth的变量
     /// @param depth 
     void stackPop(int depth);
+
+	/// @brief CFG节点，边管理类
+    CFGManager cfgManager;
 
 protected:
     /// @brief Value插入到符号表中

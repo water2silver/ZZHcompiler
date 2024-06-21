@@ -163,6 +163,16 @@ public:
         return labelName;
     }
 
+	std::string getTrueLabelName()
+	{
+        return trueInst->getLabelName();
+    }
+
+	std::string getFalseLabelName()
+	{
+        return falseInst->getLabelName();
+    }
+
 protected:
     /// @brief IR指令操作码
     enum IRInstOperator op;

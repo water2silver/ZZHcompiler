@@ -308,11 +308,16 @@ int main(int argc, char * argv[])
 
             // 设置返回结果：正常
             result = 0;
+			// 基本块划分。
+        	symtab.OutputCFG();
+
+            OutputCFG(&symtab, std::string(""));
 
             break;
         }
 
         // 这里可追加中间代码优化，体系结果无关的优化等
+		
 
         // 后端处理，体系结果相关的操作
         // 这里提供两种模式：第一种是解释执行器CodeSimulator；第二种为面向ARM32的汇编产生器CodeGeneratorArm32

@@ -10,7 +10,7 @@
  */
 
 #include <algorithm>
-
+#include <string>
 #include "Function.h"
 #include "SymbolTable.h"
 
@@ -538,4 +538,54 @@ Value * VarsStack::findWithDepth(std::string name, int depth)
 		}
 	}
 	return ret;
+}
+
+/// @brief  Function内部的CFG生成。
+void Function::OutputCFG()
+{
+	if(name =="getint"||name=="getch"||name=="getarray"||
+	   name=="putint"|| name=="putch" || name =="putarray" ||
+	   name =="putstr")
+	{
+        return;
+    }
+    // std::string filePath = std::string("result/cfg-" + this->getName() + ".png");
+
+	//生成Node与Edge。
+	std::string labelName;
+	CFGNode * cfgNode;
+	for (auto & inst: code.getInsts()) {
+        
+        if (inst->getOp() == IRInstOperator::IRINST_OP_LABEL) {
+
+            //else 后面的block没有跳转语句
+			if((!labelName.empty())&&cfgNode!=nullptr)
+			{
+                cfgManager.insertEdge(labelName, inst->getLabelName());
+            }
+
+            labelName = inst->getLabelName();
+           	cfgNode = new CFGNode(labelName);
+
+            cfgManager.insertNode(cfgNode);
+            //
+        } else if (inst->getOp() == IRInstOperator::IRINST_OP_IF) {
+            std::string labelname1 = inst->getTrueLabelName();
+            std::string labelname2 = inst->getFalseLabelName();
+            cfgManager.insertEdge(cfgNode->getName(), labelname1);
+            cfgManager.insertEdge(cfgNode->getName(), labelname2);
+            cfgNode->addInst(inst);
+
+            cfgNode = nullptr;
+
+        } else if (inst->getOp() == IRInstOperator::IRINST_OP_GOTO) {
+            std::string aimNodeName = inst->getTrueLabelName();
+            cfgManager.insertEdge(cfgNode->getName(), aimNodeName);
+        	cfgNode->addInst(inst);
+            cfgNode = nullptr;
+        } else {
+            cfgNode->addInst(inst);
+        }
+    }
+
 }

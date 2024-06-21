@@ -17,3 +17,8 @@
 /// @param root 抽象语法树的根
 /// @param filePath 转换成图形的文件名，主要要通过文件名后缀来区分图片的类型，如png，svg，pdf等皆可
 void OutputAST(ast_node * root, std::string filePath);
+
+/// @brief 控制流图的图形化显示
+/// @param symtab 
+/// @param filePath 
+void OutputCFG(SymbolTable * symtab, std::string filePath);

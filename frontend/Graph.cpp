@@ -15,6 +15,9 @@
 
 #include "AST.h"
 #include "Common.h"
+#include "SymbolTable.h"
+#include "Function.h"
+
 
 using namespace std;
 
@@ -345,4 +348,95 @@ void OutputAST(ast_node * root, const std::string filePath)
     gvFreeLayout(gv, g);
     agclose(g);
     gvFreeContext(gv);
+}
+
+/// @brief 用于控制流图的绘制
+/// @param g 有向图
+/// @param nodeVector 节点向量表 
+/// @param edgeVector 边向量表
+/// @param nodeMap 	  节点名映射
+void graph_visit_ast_node(Agraph_t *g, std::vector<CFGNode *> &nodeVector, std::vector<CFGEdge*> &edgeVector,std::unordered_map<std::string,CFGNode*>& nodeMap)
+{
+    std::unordered_map<std::string, Agnode_t *> graphNodeMap;
+    for (int i = 0; i < nodeVector.size();i++) {
+        CFGNode *node = nodeVector[i];
+        Agnode_t *cfgnode = agnode(g, (char *)node->getName().c_str(), 1);
+        graphNodeMap.emplace(node->getName(), cfgnode);
+        string IRs;
+        std::vector<IRInst *> code;
+        code = node->getInterCode().getInsts();
+        // 换行要用\\l
+        for (auto &inst : code) {
+            std::string instStr;
+            inst->toString(instStr);
+            IRs += instStr + " \\l ";
+        }
+        // | 用于分栏
+        std::string label = node->getName() + "|" + IRs;
+        agsafeset(cfgnode, (char *)"label", (char *)label.c_str(), "");
+        agsafeset(cfgnode, (char *)"shape", (char *)"record", (char *)"");
+    }
+    for (int i = 0;i < edgeVector.size();i++) {
+        CFGEdge *edge = edgeVector[i];
+        std::string label1 = edge->preName;
+        std::string label2 = edge->nextName;
+        // 创建边
+        agedge(g, graphNodeMap[label1], graphNodeMap[label2], "", 1);
+    }
+}
+
+/// @brief 控制流图的图形化显示
+/// @param symtab 
+/// @param filePath 
+void OutputCFG(SymbolTable * symtab, std::string filePath)
+{
+	//理论上每一个func都会导出一个控制流图。
+	for(auto func:symtab->getFunctionList())
+	{
+        std::string name = func->getName();
+        if (name == "getint" || name == "getch" || name == "getarray" || name == "putint" || name == "putch" ||
+            name == "putarray" || name == "putstr") {
+            continue;
+        }
+        filePath = "result/cfg-" + func->getName() + ".png";
+        auto nodeVector = func->cfgManager.getNodeVector();
+        auto edgeVector = func->cfgManager.getEdgeVector();
+        auto nodeMap = func->cfgManager.getNodeMap();
+
+		// 创建GV的上下文
+		GVC_t * gv = gvContext();
+
+		// 创建一个图形，Agdirected指明有向图
+		Agraph_t * g = agopen((char *) "ast", Agdirected, nullptr);
+
+		// 设置graph的属性
+		// agsafeset(g, (char *)"rankdir", (char *)"LR", (char *)"LR");
+
+		// 指定输出的图像质量
+		agsafeset(g, (char *) "dpi", (char *) "600", (char *) "");
+
+		// 遍历AST产生图形的结点以及相关边
+		graph_visit_ast_node(g,nodeVector,edgeVector,nodeMap);
+
+		// 设置图形的布局
+		gvLayout(gv, g, "dot");
+
+		// 解析文件名的后缀。由于gvRenderFilename要根据后缀来判断产生什么类型的图片，默认png
+		string fileExtName;
+
+		string::size_type pos = filePath.find_last_of('.');
+		if (pos == string::npos) {
+			fileExtName = "png";
+		} else {
+			fileExtName = filePath.substr(pos + 1);
+		}
+
+		// 输出到一个文件中，png格式
+		gvRenderFilename(gv, g, fileExtName.c_str(), filePath.c_str());
+
+		// 关闭图形上下文，并清理资源
+		gvFreeLayout(gv, g);
+		agclose(g);
+		gvFreeContext(gv);
+    }
 }
