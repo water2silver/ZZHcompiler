@@ -36,6 +36,13 @@ InstSelectorArm32::InstSelectorArm32(vector<IRInst *> & _irCode, ILocArm32 & _il
     translator_handlers[IRInstOperator::IRINST_OP_SUB_I] = &InstSelectorArm32::translate_sub_int32;
 
     translator_handlers[IRInstOperator::IRINST_OP_FUNC_CALL] = &InstSelectorArm32::translate_call;
+
+	//变量定义语句
+	translator_handlers[IRInstOperator::IRINST_OP_VAR_DEF] = &InstSelectorArm32::translate_var_def;
+
+	//乘法计算
+	translator_handlers[IRInstOperator::IRINST_OP_TIMES_I] = &InstSelectorArm32::translate_mul_int32;
+
 }
 
 /// @brief 指令选择执行
@@ -156,6 +163,40 @@ void InstSelectorArm32::translate_assign(IRInst * inst)
     }
 }
 
+/// @brief 变量定义语句，其实跟赋值语句差不多。
+/// @param inst IR指令。
+void InstSelectorArm32::translate_var_def(IRInst * inst)
+{
+	if(inst->getSrc1()==nullptr)
+	{
+        return;
+    }
+    Value * rs = inst->getDst();
+    Value * arg1 = inst->getSrc1();
+
+    if (arg1->regId != -1) {
+        // 寄存器 => 内存
+        // 寄存器 => 寄存器
+
+        // r8 -> rs 可能用到r9
+        iloc.store_var(arg1->regId, rs, 9);
+
+    } else if (rs->regId != -1) {
+        // 内存变量 => 寄存器
+
+        iloc.load_var(rs->regId, arg1);
+
+    } else {
+        // 内存变量 => 内存变量
+
+        // arg1 -> r8
+        iloc.load_var(REG_ALLOC_SIMPLE_SRC1_REG_NO, arg1);
+
+        // r8 -> rs 可能用到r9
+        iloc.store_var(REG_ALLOC_SIMPLE_SRC1_REG_NO, rs, 9);
+    }
+}
+
 /// @brief 二元操作指令翻译成ARM32汇编
 /// @param inst IR指令
 /// @param operator_name 操作码
@@ -216,10 +257,11 @@ void InstSelectorArm32::translate_two_operator(IRInst * inst,
     // 看结果变量是否是寄存器，若不是则采用参数指定的寄存器rs_reg_name
     if (rs->regId != -1) {
         rs_reg_no = rs->regId;
-    } else if (rs->isTemp()) {
-        // 临时变量
-        rs->regId = rs_reg_no;
     }
+	// else if (rs->isTemp()) {
+    //     // 临时变量
+    //     rs->regId = rs_reg_no;
+    // }
 
     std::string rs_reg_name = PlatformArm32::regName[rs_reg_no];
 
@@ -238,6 +280,14 @@ void InstSelectorArm32::translate_add_int32(IRInst * inst)
 {
     translate_two_operator(inst, "add");
 }
+
+/// @brief 整数乘法指令翻译成ARM32汇编
+/// @param inst IR指令
+void InstSelectorArm32::translate_mul_int32(IRInst * inst)
+{
+    translate_two_operator(inst, "mul");
+}
+
 
 /// @brief 整数减法指令翻译成ARM32汇编
 /// @param inst IR指令
@@ -265,7 +315,7 @@ void InstSelectorArm32::translate(IRInst * inst)
     pIter = translator_handlers.find(op);
     if (pIter == translator_handlers.end()) {
         // 没有找到，则说明当前不支持
-        printf("Translate: Operator(%d) not support", (int) op);
+        printf("Translate: Operator(%d) not support\n", (int) op);
         return;
     }
 

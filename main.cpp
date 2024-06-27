@@ -309,9 +309,9 @@ int main(int argc, char * argv[])
             // 设置返回结果：正常
             result = 0;
 			// 基本块划分。
-        	// symtab.OutputCFG();
+        	symtab.OutputCFG();
 
-            // OutputCFG(&symtab, std::string(""));
+            OutputCFG(&symtab, std::string(""));
 
             break;
         }

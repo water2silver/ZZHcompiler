@@ -146,6 +146,9 @@ void CodeGeneratorArm32::adjustFormalParamStack(Function * func)
         }
 
         Value * val = params[k].val;
+		//真实值
+		Value * real_val = func->findValue(params[k].varName);
+		real_val->baseRegNo = REG_ALLOC_SIMPLE_FP_REG_NO;
 
         // 栈内分配，但是寄存器偏移先不填写，待定
         val->baseRegNo = REG_ALLOC_SIMPLE_FP_REG_NO;
@@ -172,12 +175,14 @@ void CodeGeneratorArm32::adjustFormalParamInsts(Function * func)
         if (params[k].name.empty()) {
             continue;
         }
-
-        Value * val = params[k].val;
+		//这里的params的val是临时变量
+        // Value * val = params[k].val;
+		//这才是真正在栈里面分配了空间的值。
+        Value * real_val = func->findValue(params[k].varName);
 
         // 产生赋值指令,R#n寄存器赋值到对应的变量上，放到放到Entry指令的后面
         // 注意R#n寄存器需要事先分配几个Value
-        newInsts.push_back(new AssignIRInst(val, RegVal[k]));
+        newInsts.push_back(new AssignIRInst(real_val, RegVal[k]));
     }
 
     // 形参的前四个采用fp+偏移寻址，后面的sp+偏移寻址实参空间
@@ -218,9 +223,15 @@ void CodeGeneratorArm32::adjustFormalParamInsts(Function * func)
     auto & insts = func->getInterCode().getInsts();
 
     // Entry指令的下一条指令
-    auto pEntryAfterIter = insts.begin() + 1;
+    auto pEntryAfterIter = insts.begin() + 2;
+
+	// 插入之前，先擦除IR部分语句，能感觉到下面新增的这些语句是有重复的。
+    for (int k = 0; k < params.size();k++) {
+        insts.erase(pEntryAfterIter);
+    }
 
     // 逐个插入指令到entry的后面
+	// 我的entry前面还有一条label指令，所以要+2
     insts.insert(pEntryAfterIter, newInsts.begin(), newInsts.end());
 }
 
@@ -235,7 +246,7 @@ void CodeGeneratorArm32::adjustFuncCallInsts(Function * func)
 
     // 函数返回值用R0寄存器，若函数调用有返回值，则赋值R0到对应寄存器
     for (auto pIter = insts.begin(); pIter != insts.end(); pIter++) {
-
+		
         // 检查是否是函数调用指令，并且含有返回值
         FuncCallIRInst * callInst = dynamic_cast<FuncCallIRInst *>(*pIter);
         if (callInst) {
@@ -312,8 +323,8 @@ void CodeGeneratorArm32::stackAlloc(Function * func)
 
         // 对于简单类型的寄存器分配策略，临时变量都会用寄存器，这里需要忽略
         // 而对于图着色等，临时变量可能会变更内存分配，这时应该调整类型
-        if (var->isTemp())
-            continue;
+        // if (var->isTemp())
+        //     continue;
 
         if ((var->regId == -1) && (var->baseRegNo == -1)) {
 

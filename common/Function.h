@@ -24,7 +24,7 @@ class SymbolTable;
 class FuncFormalParam {
 
 public:
-    /// @brief 参数名字，可为空
+    /// @brief 参数名字，可为空 临时变量的编号名
     std::string name;
 
     /// @brief 形参类型
@@ -46,6 +46,13 @@ public:
     /// @brief 输出字符串
     /// @param str
     std::string toString();
+
+    /// @brief 对应变量的真实名字。
+    std::string varName;
+
+    /// @brief 设置对应变量的名字。
+    /// @param _name 
+    void setVarName(std::string _name);
 };
 
 class VarsStack {

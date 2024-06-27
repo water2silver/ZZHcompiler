@@ -184,6 +184,9 @@ tests 目录下存放了一些简单的测试用例。其中 test1.c 是 test1.t
 ```shell
 # 通过计算器翻译 test1.txt 成 ARM32 汇编
 ./cmake-build-debug/calculator -S -o tests/test1.s tests/test1.txt
+./cmake-build-debug/calculator -S -o result/mytest.s tests/mytest.c
+./cmake-build-debug/calculator -S -o result/000.s func-point/2023_func_00_main.c
+
 # 把 test1-1.c 通过 arm 版的交叉编译器 gcc 翻译成汇编
 arm-linux-gnueabihf-gcc -S -include tests/std.h -o tests/test1-1.s tests/test1-1.c
 ```
@@ -199,8 +202,11 @@ test1-1.c 是脚本型语言 test1.txt 的 C 语言表达。
 ```shell
 # 通过 ARM gcc 编译器把汇编程序翻译成可执行程序，目标平台 ARM32
 arm-linux-gnueabihf-gcc -static -g -o tests/test1 tests/std.c tests/test1.s
+
+arm-linux-gnueabihf-gcc -static -g -o ./a ../tests/std.c ./000.s
 # 通过 ARM gcc 编译器把汇编程序翻译成可执行程序，目标平台 ARM32
 arm-linux-gnueabihf-gcc -static -g -o tests/test1-1 tests/std.c tests/test1-1.s
+
 ```
 
 有以下几个点需要注意：
@@ -218,6 +224,9 @@ arm-linux-gnueabihf-gcc -static -g -o tests/test1-1 tests/std.c tests/test1-1.s
 ```shell
 qemu-arm-static tests/test1
 qemu-arm-static tests/test1-1
+qemu-arm-static a
+### 查看上面指令的返回值。
+echo $?
 ```
 
 这里可比较运行的结果，如果两者不一致，则计算器程序有问题。

@@ -28,6 +28,13 @@ FuncFormalParam::FuncFormalParam(std::string _name) : name(_name)
 FuncFormalParam::FuncFormalParam(std::string _name, BasicType _type, Value * _val) : name(_name), type(_type), val(_val)
 {}
 
+/// @brief 设置对应变量的名字。
+/// @param _name 
+void FuncFormalParam::setVarName(std::string _name)
+{
+    this->varName = _name;
+}
+
 /// @brief 函数形参转字符串输出
 /// @return
 std::string FuncFormalParam::toString()
@@ -567,6 +574,7 @@ void Function::OutputCFG()
             labelName = inst->getLabelName();
            	cfgNode = new CFGNode(labelName);
 
+            cfgNode->addInst(inst);
             cfgManager.insertNode(cfgNode);
             //
         } else if (inst->getOp() == IRInstOperator::IRINST_OP_IF) {

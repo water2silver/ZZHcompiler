@@ -349,6 +349,10 @@ void ILocArm32::store_var(int src_reg_no, Value * var, int tmp_reg_no)
         int32_t off = getAdjustOffset(var);
 
         // 基址寄存器名字
+		// if(var->baseRegNo==-1)
+		// {
+        //     var->baseRegNo = 11;
+        // }
         tmpReg = PlatformArm32::regName[var->baseRegNo];
 
         // str r8,[r9]

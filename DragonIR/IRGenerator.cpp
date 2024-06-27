@@ -293,8 +293,9 @@ bool IRGenerator::ir_function_formal_params(ast_node * node)
             node->blockInsts.addInst(new AssignIRInst(var, tempValue));
             // 默认是整数类型
 			params.emplace_back(tempValue->getName(), BasicType::TYPE_INT, tempValue);
+            params[params.size() - 1].setVarName(var->name);
 
-		}else if(son->node_type==ast_operator_type::AST_OP_FUNC_FORMAL_PARAM)
+        }else if(son->node_type==ast_operator_type::AST_OP_FUNC_FORMAL_PARAM)
 		{
 			// 创建变量，默认整型
 			Value * var = symtab->currentFunc->newVarValue(son->name, BasicType::TYPE_INT);
@@ -303,6 +304,8 @@ bool IRGenerator::ir_function_formal_params(ast_node * node)
 			node->blockInsts.addInst(new AssignIRInst(var, tempValue));
 			// 默认是整数类型
 			params.emplace_back(tempValue->getName(), BasicType::TYPE_INT, tempValue);
+            params[params.size() - 1].setVarName(var->name);
+
 		}
         
     }

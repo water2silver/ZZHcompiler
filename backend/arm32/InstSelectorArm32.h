@@ -56,6 +56,10 @@ protected:
     /// @param inst IR指令
     void translate_assign(IRInst * inst);
 
+    /// @brief 变量定义语句，其实跟赋值语句差不多。
+    /// @param inst IR指令。
+    void translate_var_def(IRInst * inst);
+
     /// @brief Label指令指令翻译成ARM32汇编
     /// @param inst IR指令
     void translate_label(IRInst * inst);
@@ -71,6 +75,11 @@ protected:
     /// @brief 整数减法指令翻译成ARM32汇编
     /// @param inst IR指令
     void translate_sub_int32(IRInst * inst);
+
+	
+    /// @brief 整数乘法指令翻译成ARM32汇编
+    /// @param inst IR指令
+    void translate_mul_int32(IRInst * inst);
 
     /// @brief 二元操作指令翻译成ARM32汇编
     /// @param inst IR指令
