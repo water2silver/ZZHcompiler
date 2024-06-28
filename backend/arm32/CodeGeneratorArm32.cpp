@@ -57,8 +57,6 @@ void CodeGeneratorArm32::genHeader()
 void CodeGeneratorArm32::genDataSection()
 {
     // 可直接操作文件指针fp进行写操作
-
-    // 目前不支持全局变量和静态变量，以及字符串常量
 	
 	// 全局变量支持。
 	for(auto &inst :symtab.getGlobalVarDefInsts().getInsts())
@@ -82,10 +80,10 @@ void CodeGeneratorArm32::genDataSection()
         res->createGlobalName();
         std::string str = res->getName();
         str += ":\n";
-        str += "        .long   ";
 		//非数组情况
 		if(res->array_info==nullptr)
 		{
+	        str += "        .long   ";
 			if(arg!=nullptr)
 			{
 				str += to_string(arg->intVal) + "\n";
@@ -96,8 +94,10 @@ void CodeGeneratorArm32::genDataSection()
         }else
 		{
 			//数组情况
-
-		}
+	        str += "        .zero   ";
+            str += std::to_string(res->array_info->getArraySize() * 4) ;
+            str += "\n";
+        }
         fprintf(fp, "%s", str.c_str());
     }
 

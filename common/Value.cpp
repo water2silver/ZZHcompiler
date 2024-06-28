@@ -38,7 +38,20 @@ std::vector<int> ArrayInfo::getDim()
     return this->dim;
 }
 
+/// @brief 得到数组总大小（可以容纳整数数量）
+/// @return 
+int ArrayInfo::getArraySize()
+{
+    int res = 1;
+    for (int i = 0; i < this->dim.size();i++)
+	{
+        res *= dim[i];
+    }
+    return res == 1 ? 0 : res;
+}
+
 void Value::set_array_info(std::vector<int> array_dim)
 {
     this->array_info = new ArrayInfo(array_dim);
 }
+

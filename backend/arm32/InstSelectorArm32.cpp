@@ -28,7 +28,7 @@ InstSelectorArm32::InstSelectorArm32(vector<IRInst *> & _irCode, ILocArm32 & _il
     translator_handlers[IRInstOperator::IRINST_OP_EXIT] = &InstSelectorArm32::translate_exit;
 
     translator_handlers[IRInstOperator::IRINST_OP_LABEL] = &InstSelectorArm32::translate_label;
-    translator_handlers[IRInstOperator::IRINST_OP_GOTO] = &InstSelectorArm32::translate_goto;
+    // translator_handlers[IRInstOperator::IRINST_OP_GOTO] = &InstSelectorArm32::translate_goto;
 
     translator_handlers[IRInstOperator::IRINST_OP_ASSIGN] = &InstSelectorArm32::translate_assign;
 
@@ -42,6 +42,10 @@ InstSelectorArm32::InstSelectorArm32(vector<IRInst *> & _irCode, ILocArm32 & _il
 
 	//乘法计算
 	translator_handlers[IRInstOperator::IRINST_OP_TIMES_I] = &InstSelectorArm32::translate_mul_int32;
+	//除法计算
+	translator_handlers[IRInstOperator::IRINST_OP_DIV_I] = &InstSelectorArm32::translate_div_int32;
+
+
 
 	/* 表达式运算，关系运算*/
     translator_handlers[IRInstOperator::IRINST_OP_LESS_THAN_I] = &InstSelectorArm32::translate_less_than;
@@ -156,6 +160,9 @@ void InstSelectorArm32::translate_assign(IRInst * inst)
 {
     Value * rs = inst->getDst();
     Value * arg1 = inst->getSrc1();
+    std::string srcRegName1 = PlatformArm32::regName[REG_ALLOC_SIMPLE_SRC1_REG_NO];
+    std::string srcRegName2 = PlatformArm32::regName[REG_ALLOC_SIMPLE_SRC2_REG_NO];
+
 
     if (arg1->regId != -1) {
         // 寄存器 => 内存
@@ -172,11 +179,35 @@ void InstSelectorArm32::translate_assign(IRInst * inst)
     } else {
         // 内存变量 => 内存变量
 
-        // arg1 -> r8
-        iloc.load_var(REG_ALLOC_SIMPLE_SRC1_REG_NO, arg1);
+		// 数组赋值的特化处理。
+		if( rs->type.type==BasicType::TYPE_POINTER)
+		{
+            // 给数组赋值。a[1] = 3;
+            // iloc.inst("ldr",
+            //           "r5",
+            //           "[" + PlatformArm32::regName[rs->baseRegNo] + +",#" + std::to_string(rs->getOffset()) + "]");
+			// iloc.load_var(4, arg1);
+            // iloc.inst("str", "r4", std::string("[r5]"));
 
-        // r8 -> rs 可能用到r9
-        iloc.store_var(REG_ALLOC_SIMPLE_SRC1_REG_NO, rs, 9);
+			iloc.load_var(REG_ALLOC_SIMPLE_SRC2_REG_NO, rs);
+			iloc.load_var(REG_ALLOC_SIMPLE_SRC1_REG_NO, arg1);
+			iloc.inst("str", srcRegName1, "["+ srcRegName2 +"]");
+
+        }else if( arg1->type.type==BasicType::TYPE_POINTER) 
+		{
+			//把数组的值赋给其他。
+			// iloc.inst("ldr",
+            //           "r4",
+            //           "[" + PlatformArm32::regName[arg1->baseRegNo] + +",#" + std::to_string(arg1->getOffset()) + "]");
+			// iloc.inst("ldr", "r4", "[r4]");
+            iloc.load_var(REG_ALLOC_SIMPLE_SRC1_REG_NO, arg1);
+			iloc.inst("ldr", srcRegName1, "["+ srcRegName1 +"]");
+            iloc.store_var(REG_ALLOC_SIMPLE_SRC1_REG_NO, rs, 9);
+        } else {
+            // arg1 -> r8
+			iloc.load_var(REG_ALLOC_SIMPLE_SRC1_REG_NO, arg1);
+			iloc.store_var(REG_ALLOC_SIMPLE_SRC1_REG_NO, rs, 9);
+        }
     }
 }
 
@@ -434,6 +465,12 @@ void InstSelectorArm32::translate_mul_int32(IRInst * inst)
     translate_two_operator(inst, "mul");
 }
 
+/// @brief 整数除法乘法指令翻译成ARM32汇编
+/// @param inst IR指令
+void InstSelectorArm32::translate_div_int32(IRInst * inst)
+{
+    translate_two_operator(inst, "sdiv");
+}
 
 /// @brief 整数减法指令翻译成ARM32汇编
 /// @param inst IR指令

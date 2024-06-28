@@ -287,13 +287,29 @@ void ILocArm32::load_var(int rs_reg_no, Value * var)
 			// 全局变量load两次。
 			if(var->_global)
 			{
-                emit("ldr", rsReg, var->global_name);
-                load_base(rs_reg_no, rs_reg_no, 0);
-                return;
+				//数组
+				if(var->array_info==nullptr)
+				{
+					emit("ldr", rsReg, var->global_name);
+					load_base(rs_reg_no, rs_reg_no, 0);
+					return;
+				}else
+				{
+					emit("ldr", rsReg, var->global_name);
+                    return;
+                }
+                //非数组
+
             }
 
-            // 目前只考虑局部变量，不考虑数组等
             int off = getAdjustOffset(var);
+			//
+			// 考虑数组的情况
+			if(var->array_info!=nullptr)
+			{
+				emit("add", rsReg,PlatformArm32::regName[var->baseRegNo] ,"#" + std::to_string(off));
+				return;
+			}
 
             // 对于栈内分配的局部数组，可直接在栈指针上进行移动与运算
             // 但对于形参，其保存的是调用函数栈的数组的地址，需要读取出来
@@ -331,6 +347,7 @@ void ILocArm32::store_var(int src_reg_no, Value * var, int tmp_reg_no)
 
     std::string srcReg = PlatformArm32::regName[src_reg_no];
     std::string tmpReg = PlatformArm32::regName[tmp_reg_no];
+    std::string baseReg = PlatformArm32::regName[var->baseRegNo];
 
     // -1表示非寄存器，其他表示寄存器的索引值
     int id = var->regId;
@@ -357,11 +374,15 @@ void ILocArm32::store_var(int src_reg_no, Value * var, int tmp_reg_no)
             emit("str", srcReg, "[" + tmpReg + "]");
             return;
         }
-
-        // 目前只考虑局部变量
-
-        // 栈帧偏移
+		// 栈帧偏移
         int32_t off = getAdjustOffset(var);
+		//考虑数组的情况
+		// if(var->type.type==BasicType::TYPE_POINTER)
+		// {
+        //     emit("ldr", tmpReg,  "[" + baseReg+",#"+std::to_string(off)+"]");
+        //     emit("str", srcReg, "[" + tmpReg + "]");
+        //     return;
+        // }
 
         // 基址寄存器名字
 		// if(var->baseRegNo==-1)

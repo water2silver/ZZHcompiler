@@ -26,6 +26,10 @@ public:
     ~ArrayInfo();
     std::string getDimName();
     std::vector<int> getDim();
+
+    /// @brief 得到数组总大小（可以容纳整数数量）
+    /// @return 
+    int getArraySize();
 };
 
 /// @brief 变量、常量等管理的基类
@@ -80,6 +84,9 @@ protected:
 public:
     /// @brief 是否是全局变量。
     bool _global = false;
+
+    /// @brief 是否是函数内的被传递进来的数组。
+    bool isParamArray = false;
 
 public:
 	/// @brief 给value值设置array_info
@@ -233,7 +240,11 @@ public:
     {
         // 这里假定为4字节
         // 实际需要根据ValueType获取大小
-        if (type.type == BasicType::TYPE_INT) {
+		if(this->array_info!=nullptr)
+		{
+			//这么做，合理吗？
+            return this->array_info->getArraySize()*4;
+        } else if (type.type == BasicType::TYPE_INT) {
             // int 4字节
             return 4;
         } else if (type.type == BasicType::TYPE_FLOAT) {

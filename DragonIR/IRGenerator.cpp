@@ -642,7 +642,14 @@ bool IRGenerator::ir_mod(ast_node * node)
     // 创建临时变量保存IR的值，以及线性IR指令
     node->blockInsts.addInst(left->blockInsts);
     node->blockInsts.addInst(right->blockInsts);
-    node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_MOD_I, resultValue, left->val, right->val));
+    //node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_MOD_I, resultValue, left->val, right->val));
+    // 将 mod 指令优化为 / * -指令
+    Value * divValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+	Value * mulValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_DIV_I, divValue, left->val, right->val));
+    node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_TIMES_I, mulValue, divValue, right->val));
+    node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_SUB_I, resultValue, left->val, mulValue));
+
     node->val = resultValue;
 
     return true;
