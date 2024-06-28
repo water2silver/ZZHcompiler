@@ -118,6 +118,13 @@ public:
 	/// @brief 把全局变量的定义单独存起来。  
 	InterCode globalVarDefInsts;
 
+    /// @brief  返回全局变量定义inst的引用。
+    /// @return 
+    InterCode & getGlobalVarDefInsts()
+	{
+        return globalVarDefInsts;
+    }
+
 private:
     /// @brief 变量名映射表，变量名-变量，只保存全局变量以及常量
     std::unordered_map<std::string, Value *> varsMap;

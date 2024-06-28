@@ -59,6 +59,48 @@ void CodeGeneratorArm32::genDataSection()
     // 可直接操作文件指针fp进行写操作
 
     // 目前不支持全局变量和静态变量，以及字符串常量
+	
+	// 全局变量支持。
+	for(auto &inst :symtab.getGlobalVarDefInsts().getInsts())
+	{
+        auto res = inst->getDst();
+        res->createGlobalName();
+        std::string str;
+        str += res->global_name + ":\n";
+        str += "        " + std::string(".long   ") + res->getName() + "\n";
+        fprintf(fp, "%s", str.c_str());
+    }
+
+    fprintf(fp, ".data\n");
+	for(auto & inst :symtab.getGlobalVarDefInsts().getInsts())
+	{
+        auto res = inst->getDst();
+        Value * arg = nullptr;
+        if (!inst->getSrc().empty()) {
+            arg = inst->getSrc1();
+        }
+        res->createGlobalName();
+        std::string str = res->getName();
+        str += ":\n";
+        str += "        .long   ";
+		//非数组情况
+		if(res->array_info==nullptr)
+		{
+			if(arg!=nullptr)
+			{
+				str += to_string(arg->intVal) + "\n";
+			}else
+			{
+                str += "0\n";
+            }
+        }else
+		{
+			//数组情况
+
+		}
+        fprintf(fp, "%s", str.c_str());
+    }
+
 }
 
 /// @brief 针对函数进行汇编指令生成，放到.text代码段中

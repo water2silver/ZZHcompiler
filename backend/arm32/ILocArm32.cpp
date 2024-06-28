@@ -116,7 +116,7 @@ std::string ILocArm32::toStr(int num, bool flag)
 void ILocArm32::label(std::string name)
 {
     // .L1:
-    emit(name, ":");
+    emit(name);
 }
 
 /// @brief 0个源操作数指令
@@ -268,6 +268,7 @@ void ILocArm32::load_var(int rs_reg_no, Value * var)
     } else {
 
         // 不是常量
+		
 
         if (var->regId != -1) {
 
@@ -282,6 +283,14 @@ void ILocArm32::load_var(int rs_reg_no, Value * var)
                 emit("mov", rsReg, regName);
             }
         } else {
+
+			// 全局变量load两次。
+			if(var->_global)
+			{
+                emit("ldr", rsReg, var->global_name);
+                load_base(rs_reg_no, rs_reg_no, 0);
+                return;
+            }
 
             // 目前只考虑局部变量，不考虑数组等
             int off = getAdjustOffset(var);
@@ -342,6 +351,12 @@ void ILocArm32::store_var(int src_reg_no, Value * var, int tmp_reg_no)
 
         // 对于全局变量，首先把全局变量的左值保存到寄存器中，后间接寻址
         // 对于局部变量，则直接从栈基址+偏移寻址
+		if(var->_global)
+		{
+            emit("ldr", tmpReg, var->global_name);
+            emit("str", srcReg, "[" + tmpReg + "]");
+            return;
+        }
 
         // 目前只考虑局部变量
 

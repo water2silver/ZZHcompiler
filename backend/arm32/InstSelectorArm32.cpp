@@ -43,6 +43,21 @@ InstSelectorArm32::InstSelectorArm32(vector<IRInst *> & _irCode, ILocArm32 & _il
 	//乘法计算
 	translator_handlers[IRInstOperator::IRINST_OP_TIMES_I] = &InstSelectorArm32::translate_mul_int32;
 
+	/* 表达式运算，关系运算*/
+    translator_handlers[IRInstOperator::IRINST_OP_LESS_THAN_I] = &InstSelectorArm32::translate_less_than;
+    translator_handlers[IRInstOperator::IRINST_OP_GREATER_THAN_I] = &InstSelectorArm32::translate_greater_than;
+    translator_handlers[IRInstOperator::IRINST_OP_LESS_EQUAL_I] = &InstSelectorArm32::translate_less_equal;
+    translator_handlers[IRInstOperator::IRINST_OP_GREATER_EQUAL_I] = &InstSelectorArm32::translate_greater_equal;
+    translator_handlers[IRInstOperator::IRINST_OP_EQUAL_I] = &InstSelectorArm32::translate_equal;
+    translator_handlers[IRInstOperator::IRINST_OP_NOT_EQUAL_I] = &InstSelectorArm32::translate_not_equal;
+
+    translator_handlers[IRInstOperator::IRINST_OP_NOT_ZERO_I] = &InstSelectorArm32::translate_not_zero;
+    
+	//IfIRInst
+	translator_handlers[IRInstOperator::IRINST_OP_IF] = &InstSelectorArm32::translate_if;
+	//branchIRInst
+	translator_handlers[IRInstOperator::IRINST_OP_GOTO] = &InstSelectorArm32::translate_branch;
+
 }
 
 /// @brief 指令选择执行
@@ -69,7 +84,9 @@ void InstSelectorArm32::translate_nop(IRInst * inst)
 /// @param inst IR指令
 void InstSelectorArm32::translate_label(IRInst * inst)
 {
-    // iloc.label(inst->getLabel());
+    std::string str;
+    inst->toString(str);
+    iloc.label(str);
 }
 
 /// @brief goto指令指令翻译成ARM32汇编
@@ -167,7 +184,7 @@ void InstSelectorArm32::translate_assign(IRInst * inst)
 /// @param inst IR指令。
 void InstSelectorArm32::translate_var_def(IRInst * inst)
 {
-	if(inst->getSrc1()==nullptr)
+	if(inst->getSrc().empty())
 	{
         return;
     }
@@ -195,6 +212,135 @@ void InstSelectorArm32::translate_var_def(IRInst * inst)
         // r8 -> rs 可能用到r9
         iloc.store_var(REG_ALLOC_SIMPLE_SRC1_REG_NO, rs, 9);
     }
+}
+
+/// @brief 非0的指令的计算
+/// @param inst 
+void InstSelectorArm32::translate_not_zero(IRInst * inst)
+{
+	translate_compare(inst, "not_zero");
+}
+
+/// @brief == 指令计算。
+/// @param inst 
+void InstSelectorArm32::translate_equal(IRInst * inst)
+{
+	translate_compare(inst, "beq");
+}
+
+/// @brief != 指令计算。
+/// @param inst 
+void InstSelectorArm32::translate_not_equal(IRInst * inst)
+{
+	translate_compare(inst, "bne");
+}
+
+/// @brief ＞指令计算。
+/// @param inst 
+void InstSelectorArm32::translate_greater_than(IRInst * inst)
+{
+	translate_compare(inst, "bgt");
+}
+
+/// @brief ＞=指令计算。
+/// @param inst 
+void InstSelectorArm32::translate_greater_equal(IRInst * inst)
+{
+	translate_compare(inst, "bge");
+}
+
+/// @brief <指令计算。
+/// @param inst 
+void InstSelectorArm32::translate_less_than(IRInst * inst)
+{
+	translate_compare(inst, "blt");
+}
+
+/// @brief <=指令计算。
+/// @param inst 
+void InstSelectorArm32::translate_less_equal(IRInst * inst)
+{
+	translate_compare(inst, "ble");
+}
+/// @brief 比较指令
+/// @param inst 
+void InstSelectorArm32::translate_compare(	IRInst * inst,
+											string operator_name,
+											Value * resVal, 
+											int op1_reg_no,
+											int op2_reg_no)
+{
+	Value * arg1 = inst->getSrc1();
+    Value * arg2 = inst->getSrc2();
+	std::string arg1_reg_name, arg2_reg_name;
+    int arg1_reg_no = arg1->regId, arg2_reg_no = arg2->regId;
+
+    // 看arg1是否是寄存器，若是则寄存器寻址，否则要load变量到寄存器中
+    if (arg1_reg_no == -1) {
+        // arg1 -> r8
+        iloc.load_var(op1_reg_no, arg1);
+    } else if (arg1_reg_no != op1_reg_no) {
+        // 已分配的操作数1的寄存器和操作数2的缺省寄存器一致，这样会使得操作数2的值设置到一个寄存器上
+        // 缺省寄存器  2    3
+        // 实际寄存器  3    -1   有问题
+        // 实际寄存器  3    3    有问题
+        // 实际寄存器  3    4    无问题
+        if ((arg1_reg_no == op2_reg_no) && ((arg2_reg_no == -1) || (arg2_reg_no == op2_reg_no))) {
+            iloc.mov_reg(op1_reg_no, arg1_reg_no);
+        } else {
+            op1_reg_no = arg1_reg_no;
+        }
+    }
+
+    arg1_reg_name = PlatformArm32::regName[op1_reg_no];
+
+    // 看arg2是否是寄存器，若是则寄存器寻址，否则要load变量到寄存器中
+    if (arg2_reg_no == -1) {
+        // arg1 -> r8
+        iloc.load_var(op2_reg_no, arg2);
+    } else if (arg2_reg_no != op2_reg_no) {
+        // 已分配的操作数2的寄存器和操作数1的缺省寄存器一致，这样会使得操作数2的值设置到一个寄存器上
+        // 缺省寄存器  2    3
+        // 实际寄存器  -1   2   有问题
+        // 实际寄存器  2    2    有问题
+        // 实际寄存器  4    2    无问题
+        if ((arg2_reg_no == op1_reg_no) && ((arg1_reg_no == -1) || (arg1_reg_no == op1_reg_no))) {
+            iloc.mov_reg(op2_reg_no, arg2_reg_no);
+        } else {
+            op2_reg_no = arg2_reg_no;
+        }
+    }
+
+    arg2_reg_name = PlatformArm32::regName[op2_reg_no];
+
+    iloc.inst("cmp", arg1_reg_name, arg2_reg_name);
+    // iloc.inst(operator_name, inst->getTrueLabelName());
+
+}
+
+/// @brief 处理bc语句的label
+/// @param inst 
+void InstSelectorArm32::translate_if(IRInst * inst)
+{
+	if(!inst->additon.empty())
+	{
+        iloc.inst(inst->additon, inst->getTrueLabelName());
+    }else
+	{
+		//Cond Not Equa Zero
+		iloc.inst("beq", inst->getFalseLabelName());
+	    iloc.inst("b", inst->getTrueLabelName());
+        return;
+    }
+    iloc.inst("b", inst->getFalseLabelName());
+}
+
+/// @brief 跳转指令
+/// @param inst 
+void InstSelectorArm32::translate_branch(IRInst * inst)
+{
+	//单调转的语句
+    iloc.inst("b", inst->getTrueLabelName());
 }
 
 /// @brief 二元操作指令翻译成ARM32汇编

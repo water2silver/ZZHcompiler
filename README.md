@@ -253,7 +253,7 @@ sudo apt-get install -y gdb-multiarch
 
 ```shell
 # 启动 gdb server，监视的端口号为 1234
-qemu-arm-static -g 1234 tests/test1
+qemu-arm-static -g 1234 tests/try/1
 ```
 
 其中-g 指定远程调试的端口，这里指定端口号为 1234，这样 qemu 会开启 gdb 的远程调试服务。
@@ -267,7 +267,7 @@ qemu-arm-static -g 1234 tests/test1
 注意这里的 gdb 要支持目标 CPU 的 gdb-multiarch，而不是本地的 gdb。
 
 ```shell
-gdb-multiarch tests/test1
+gdb-multiarch tests/try/1
 # 输入如下的命令，远程连接 qemu 的 gdb server
 target remote localhost:1234
 # 在 main 函数入口设置断点

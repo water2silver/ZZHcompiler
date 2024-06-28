@@ -78,6 +78,7 @@ protected:
     /// @brief 是否是内存变量
     bool _mem = false;
 public:
+    /// @brief 是否是全局变量。
     bool _global = false;
 
 public:
@@ -89,6 +90,15 @@ public:
 
 	/// @brief 标签名。这个名字的意义，从name->label_name的映射。
     std::string label_name;
+
+	/// @brief 用于全局变量的标签名。
+    std::string global_name;
+
+	/// 
+	void createGlobalName()
+	{
+        this->global_name = ".global_" + this->name;
+    }
 
     /// @brief 类型
     ValueType type;

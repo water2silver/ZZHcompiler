@@ -81,6 +81,52 @@ protected:
     /// @param inst IR指令
     void translate_mul_int32(IRInst * inst);
 
+    /// @brief 处理bc语句的label
+    /// @param inst 
+    void translate_if(IRInst * inst);
+
+    /// @brief 跳转指令
+    /// @param inst 
+    void translate_branch(IRInst * inst);
+
+    /// 比较计算的指令。
+
+    /// @brief ＞指令计算。
+    /// @param inst 
+    void translate_greater_than(IRInst * inst);
+
+	/// @brief ＞=指令计算。
+    /// @param inst 
+    void translate_greater_equal(IRInst * inst);
+
+	/// @brief <指令计算。
+    /// @param inst 
+    void translate_less_than(IRInst * inst);
+
+	/// @brief <=指令计算。
+    /// @param inst 
+    void translate_less_equal(IRInst * inst);
+
+	/// @brief == 指令计算。
+    /// @param inst 
+    void translate_equal(IRInst * inst);
+
+	/// @brief != 指令计算。
+    /// @param inst 
+    void translate_not_equal(IRInst * inst);
+
+	/// @brief 非0的指令的计算
+    /// @param inst 
+    void translate_not_zero(IRInst * inst);
+
+    /// @brief 比较指令
+    /// @param inst 
+    void translate_compare(	IRInst * inst,
+							string operator_name = "cmp",
+							Value * resVal = nullptr, 
+							int op1_reg_no = REG_ALLOC_SIMPLE_SRC1_REG_NO,
+							int op2_reg_no = REG_ALLOC_SIMPLE_SRC2_REG_NO);
+
     /// @brief 二元操作指令翻译成ARM32汇编
     /// @param inst IR指令
     /// @param operator_name 操作码

@@ -681,8 +681,11 @@ bool IRGenerator::ir_less_than(ast_node * node)
     node->blockInsts.addInst(left->blockInsts);
     node->blockInsts.addInst(right->blockInsts);
     node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_LESS_THAN_I, resultValue, left->val, right->val));
-    node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF,resultValue,node->label_true,node->label_false));
-    node->val = resultValue;
+    // node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF,resultValue,node->label_true,node->label_false));
+    auto inst = new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_true, node->label_false);
+    inst->setAddition("blt");
+    node->blockInsts.addInst(inst);
+	node->val = resultValue;
 
     return true;
 }
@@ -720,8 +723,10 @@ bool IRGenerator::ir_greater_than(ast_node * node)
     node->blockInsts.addInst(left->blockInsts);
     node->blockInsts.addInst(right->blockInsts);
     node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_GREATER_THAN_I, resultValue, left->val, right->val));
-    node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF,resultValue,node->label_true,node->label_false));
-	node->val = resultValue;
+    auto inst = new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_true, node->label_false);
+    inst->setAddition("bgt");
+    node->blockInsts.addInst(inst);
+    node->val = resultValue;
 
     return true;
 }
@@ -759,7 +764,10 @@ bool IRGenerator::ir_less_equal(ast_node * node)
     node->blockInsts.addInst(left->blockInsts);
     node->blockInsts.addInst(right->blockInsts);
     node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_LESS_EQUAL_I, resultValue, left->val, right->val));
-    node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF,resultValue,node->label_true,node->label_false));
+    // node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF,resultValue,node->label_true,node->label_false));
+	auto inst = new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_true, node->label_false);
+    inst->setAddition("ble");
+    node->blockInsts.addInst(inst);
 	node->val = resultValue;
 
     return true;
@@ -798,7 +806,10 @@ bool IRGenerator::ir_greater_equal(ast_node * node)
     node->blockInsts.addInst(left->blockInsts);
     node->blockInsts.addInst(right->blockInsts);
     node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_GREATER_EQUAL_I, resultValue, left->val, right->val));
-    node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF,resultValue,node->label_true,node->label_false));
+    // node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF,resultValue,node->label_true,node->label_false));
+	auto inst = new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_true, node->label_false);
+    inst->setAddition("bge");
+    node->blockInsts.addInst(inst);
 	node->val = resultValue;
 
     return true;
@@ -837,8 +848,11 @@ bool IRGenerator::ir_equal(ast_node * node)
     node->blockInsts.addInst(left->blockInsts);
     node->blockInsts.addInst(right->blockInsts);
     node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_EQUAL_I, resultValue, left->val, right->val));
-    node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_true, node->label_false));
-    node->val = resultValue;
+    // node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_true, node->label_false));
+	auto inst = new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_true, node->label_false);
+    inst->setAddition("beq");
+    node->blockInsts.addInst(inst);
+	node->val = resultValue;
 
     return true;
 }
@@ -878,7 +892,11 @@ bool IRGenerator::ir_not_equal(ast_node * node)
     node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_EQUAL_I, resultValue, left->val, right->val));
     //not equal调转真假出口位置 
 	//TODO 思考，需要调换node本身的label_true label_false位置吗？
-	node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_false, node->label_true));
+	// node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_false, node->label_true));
+    auto inst = new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_false, node->label_true);
+    inst->setAddition("beq");
+    node->blockInsts.addInst(inst);
+	
 	node->val = resultValue;
 
     return true;
@@ -1092,7 +1110,7 @@ bool IRGenerator::ir_cond(ast_node * node)
     this->inCondtion = true;
     ast_node * res = ir_visit_ast_node(node->sons[0]);
     this->inCondtion = false;
-
+ 
     if (res == nullptr) {
         result = false;
         printf("cond节点visit子节点失败");
@@ -1436,7 +1454,7 @@ bool IRGenerator::ir_array_visit(ast_node * node)
 		if( !(node->parent->node_type==ast_operator_type::AST_OP_NEGATIVE||node->parent->node_type==ast_operator_type::AST_OP_NOT))
 		{
 			node->blockInsts.addInst(
-				new IfIRInst(IRInstOperator::IRINST_OP_GOTO, resultValue, node->label_true, node->label_false)
+				new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_true, node->label_false)
 			);
 		}
 		
@@ -1753,7 +1771,7 @@ bool IRGenerator::ir_leaf_node_var_id(ast_node * node)
             if( !(node->parent->node_type==ast_operator_type::AST_OP_NEGATIVE||node->parent->node_type==ast_operator_type::AST_OP_NOT))
 			{
 				node->blockInsts.addInst(
-					new IfIRInst(IRInstOperator::IRINST_OP_GOTO, resultValue, node->label_true, node->label_false)
+					new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_true, node->label_false)
 				);
 			}
 			

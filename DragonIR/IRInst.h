@@ -69,6 +69,9 @@ enum class IRInstOperator {
 	/// @brief !=整数指令，二元运算
 	IRINST_OP_NOT_EQUAL_I,
 
+	/// @brief 非0判断指令所用
+	IRINST_OP_NOT_ZERO_I,
+
 	/// @brief &&整数指令，二元运算
 	IRINST_OP_LOGICAL_AND_I,
 
@@ -171,6 +174,14 @@ public:
 	std::string getFalseLabelName()
 	{
         return falseInst->getLabelName();
+    }
+
+    /// @brief 附加信息，表示上一步的操作 >= > <= < == != 登。
+    std::string additon;
+
+	void setAddition(std::string info)
+	{
+        this->additon = info;
     }
 
 protected:

@@ -436,7 +436,7 @@ void GlobalDeclIRInst::toString(std::string & str)
     }
 }
 
-IfIRInst::IfIRInst(IRInstOperator _op,Value * cond,LabelIRInst* label_true,LabelIRInst* label_false):IRInst(_op)
+IfIRInst::IfIRInst(IRInstOperator _op,Value * cond,LabelIRInst* label_true,LabelIRInst* label_false):IRInst(IRInstOperator::IRINST_OP_IF)
 {
     trueInst = label_true;
     falseInst = label_false;
@@ -479,11 +479,14 @@ void BranchIRInst::toString(std::string & str)
 }
 
 //
-CondNotZeroIRInst::CondNotZeroIRInst(Value *result,Value * src1,LabelIRInst* label_true,LabelIRInst* label_false):IRInst(IRInstOperator::IRINST_OP_NOT_EQUAL_I,result)
+CondNotZeroIRInst::CondNotZeroIRInst(Value *result,Value * src1,LabelIRInst* label_true,LabelIRInst* label_false):IRInst(IRInstOperator::IRINST_OP_NOT_ZERO_I,result)
 {
 	
     srcValues.push_back(src1);
-	trueInst = label_true;
+	//便于后端统一处理。
+    Value * constValue = new ConstValue(0);
+    srcValues.push_back(constValue);
+    trueInst = label_true;
     falseInst = label_false;
 	
 }
