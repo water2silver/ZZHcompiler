@@ -107,7 +107,10 @@ public:
     /// @brief 构造函数
     IRInst();
 
-    /// @brief 构造函数
+    /// @brief 用于函数调用时传参的标志位。
+    bool functionParam = false;
+    
+	/// @brief 构造函数
     /// @param op
     /// @param result
     IRInst(IRInstOperator op, Value * result = nullptr);
@@ -205,6 +208,8 @@ protected:
 
     /// @brief 目标假出口指令，指向Label指令，主要用于有条件跳转
     IRInst * falseInst;
+
+
 };
 
 /// @brief Label指令

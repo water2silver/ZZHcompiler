@@ -339,6 +339,9 @@ void GotoIRInst::toString(std::string & str)
 UnaryIRInst::UnaryIRInst(IRInstOperator _op, Value * _result, Value * _srcVal1):IRInst(_op,_result)
 {
     srcValues.push_back(_srcVal1);
+	//用于后端进行取负指令的使用。
+	//TODO 应该不会有bug吧
+    srcValues.push_back(new ConstValue(0));
 }
 /// @brief 析构函数
 UnaryIRInst::~UnaryIRInst()

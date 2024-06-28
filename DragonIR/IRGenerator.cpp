@@ -277,8 +277,8 @@ bool IRGenerator::ir_function_formal_params(ast_node * node)
 
 			Value * var = symtab->currentFunc->newVarValue(son->sons[0]->name, BasicType::TYPE_INT);
 
-			std::vector<int> array_dim;
-			ast_node * tmp = son->sons[1];
+            std::vector<int> array_dim;
+            ast_node * tmp = son->sons[1];
 			while(!tmp->sons.empty())
 			{
 				array_dim.push_back(tmp->sons[0]->integer_val);
@@ -293,7 +293,10 @@ bool IRGenerator::ir_function_formal_params(ast_node * node)
             node->blockInsts.addInst(new AssignIRInst(var, tempValue));
             // 默认是整数类型
 			params.emplace_back(tempValue->getName(), BasicType::TYPE_INT, tempValue);
+			// 这是为了在后端方便找到对应的局部变量。
             params[params.size() - 1].setVarName(var->name);
+			//设置后端需要的信息。
+			var->isParamArray = true;
 
         }else if(son->node_type==ast_operator_type::AST_OP_FUNC_FORMAL_PARAM)
 		{

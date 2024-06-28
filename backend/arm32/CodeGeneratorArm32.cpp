@@ -310,7 +310,8 @@ void CodeGeneratorArm32::adjustFuncCallInsts(Function * func)
                 esp += 4;
 
                 assignInst = new AssignIRInst(newVal, args[k]);
-
+				//设置特殊标志位，意味着这条赋值语句特别用于数组传参。
+                assignInst->functionParam = true;
                 // 函数调用指令前插入后，pIter仍指向函数调用指令
                 pIter = insts.insert(pIter, assignInst);
                 pIter++;
@@ -320,7 +321,8 @@ void CodeGeneratorArm32::adjustFuncCallInsts(Function * func)
 
                 // 寄存器传值到形参变量中
                 assignInst = new AssignIRInst(RegVal[k], args[k]);
-
+				//设置特殊标志位，意味着这条赋值语句特别用于数组传参。
+                assignInst->functionParam = true;
                 // 函数调用指令前插入后，pIter仍指向函数调用指令
                 pIter = insts.insert(pIter, assignInst);
                 pIter++;

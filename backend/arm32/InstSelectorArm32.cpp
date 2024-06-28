@@ -44,6 +44,8 @@ InstSelectorArm32::InstSelectorArm32(vector<IRInst *> & _irCode, ILocArm32 & _il
 	translator_handlers[IRInstOperator::IRINST_OP_TIMES_I] = &InstSelectorArm32::translate_mul_int32;
 	//除法计算
 	translator_handlers[IRInstOperator::IRINST_OP_DIV_I] = &InstSelectorArm32::translate_div_int32;
+	//取负指令
+	translator_handlers[IRInstOperator::IRINST_OP_NEGATIVE_I] = &InstSelectorArm32::translate_negative;
 
 
 
@@ -173,7 +175,7 @@ void InstSelectorArm32::translate_assign(IRInst * inst)
 
     } else if (rs->regId != -1) {
         // 内存变量 => 寄存器
-
+		// 函数传参应该会走这里。
         iloc.load_var(rs->regId, arg1);
 
     } else {
@@ -486,6 +488,14 @@ void InstSelectorArm32::translate_call(IRInst * inst)
     FuncCallIRInst * callInst = dynamic_cast<FuncCallIRInst *>(inst);
     iloc.call_fun(callInst->name);
 }
+
+/// @brief 取负指令。
+/// @param inst 
+void InstSelectorArm32::translate_negative(IRInst * inst)
+{
+    translate_two_operator(inst, "rsb");
+}
+
 
 /// @brief 指令翻译成ARM32汇编
 /// @param inst IR指令

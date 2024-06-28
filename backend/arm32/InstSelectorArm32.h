@@ -85,10 +85,6 @@ protected:
     /// @param inst IR指令
     void translate_div_int32(IRInst * inst);
 
-	/// @brief 整数取余指令翻译成ARM32汇编
-    /// @param inst IR指令
-    void translate_mod_int32(IRInst * inst);
-
     /// @brief 处理bc语句的label
     /// @param inst 
     void translate_if(IRInst * inst);
@@ -96,6 +92,10 @@ protected:
     /// @brief 跳转指令
     /// @param inst 
     void translate_branch(IRInst * inst);
+
+    /// @brief 取负指令。
+    /// @param inst 
+    void translate_negative(IRInst * inst);
 
     /// 比较计算的指令。
 

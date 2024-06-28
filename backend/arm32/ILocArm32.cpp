@@ -298,14 +298,14 @@ void ILocArm32::load_var(int rs_reg_no, Value * var)
 					emit("ldr", rsReg, var->global_name);
                     return;
                 }
-                //非数组
-
+                printf("you should not touch here!\n");
             }
 
             int off = getAdjustOffset(var);
 			//
 			// 考虑数组的情况
-			if(var->array_info!=nullptr)
+			// 满足条件 var 是数组，并且不能是 形参数组。
+			if(var->array_info!=nullptr && (!var->isParamArray))
 			{
 				emit("add", rsReg,PlatformArm32::regName[var->baseRegNo] ,"#" + std::to_string(off));
 				return;

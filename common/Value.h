@@ -243,7 +243,16 @@ public:
 		if(this->array_info!=nullptr)
 		{
 			//这么做，合理吗？
-            return this->array_info->getArraySize()*4;
+            int res;
+			if(this->isParamArray)
+			{
+                res = 4;
+			}
+			else
+			{
+                res = this->array_info->getArraySize() * 4;
+            }
+            return res;
         } else if (type.type == BasicType::TYPE_INT) {
             // int 4字节
             return 4;
