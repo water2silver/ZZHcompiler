@@ -16,6 +16,7 @@
 #include "InstSelectorArm32.h"
 #include "PlatformArm32.h"
 #include "Value.h"
+#include "CodeGeneratorArm32.h"
 
 /// @brief 构造函数
 /// @param _irCode 指令
@@ -69,8 +70,24 @@ InstSelectorArm32::InstSelectorArm32(vector<IRInst *> & _irCode, ILocArm32 & _il
 /// @brief 指令选择执行
 void InstSelectorArm32::run()
 {
+    int count = 1;
     for (auto inst: ir) {
-
+		//
+        if(iloc.getCode().size()/900>=count)
+		{
+            count++;
+			// 全局变量支持。
+			for(auto &inst :iloc.symtab->getGlobalVarDefInsts().getInsts())
+			{
+				auto res = inst->getDst();
+				res->setGlobalName(CodeGeneratorArm32::globalValueCount);
+				std::string str;
+				str += res->global_name + ":\n";
+				str += "        " + std::string(".long   ") + res->getName() ;
+                iloc.label(str);
+            }
+            CodeGeneratorArm32::globalValueCount++;
+        }
         // 逐个指令进行翻译
         if (!inst->isDead()) {
             translate(inst);
@@ -165,6 +182,20 @@ void InstSelectorArm32::translate_assign(IRInst * inst)
     std::string srcRegName1 = PlatformArm32::regName[REG_ALLOC_SIMPLE_SRC1_REG_NO];
     std::string srcRegName2 = PlatformArm32::regName[REG_ALLOC_SIMPLE_SRC2_REG_NO];
 
+	ArmInst::addtionInfo = "";
+    ArmInst::addtionInfo = "\t@IRInst:assign" ;
+    if(inst->getDst())
+	{
+        ArmInst::addtionInfo += "\t" + inst->getDst()->getName();
+    }
+	if(inst->getSrc1())
+	{
+        ArmInst::addtionInfo += "\t" + inst->getSrc1()->getName();
+    }
+	if(inst->getSrc2())
+	{
+        ArmInst::addtionInfo += "\t" + inst->getSrc2()->getName();
+    }
 
     if (arg1->regId != -1) {
         // 寄存器 => 内存
@@ -211,6 +242,7 @@ void InstSelectorArm32::translate_assign(IRInst * inst)
 			iloc.store_var(REG_ALLOC_SIMPLE_SRC1_REG_NO, rs, 9);
         }
     }
+	ArmInst::addtionInfo = "";
 }
 
 /// @brief 变量定义语句，其实跟赋值语句差不多。
@@ -305,6 +337,22 @@ void InstSelectorArm32::translate_compare(	IRInst * inst,
 {
 	Value * arg1 = inst->getSrc1();
     Value * arg2 = inst->getSrc2();
+	ArmInst::addtionInfo = "";
+    ArmInst::addtionInfo = "\t@IRInst:" + operator_name;
+    if(inst->getDst())
+	{
+        ArmInst::addtionInfo += "\t" + inst->getDst()->getName();
+    }
+	if(inst->getSrc1())
+	{
+        ArmInst::addtionInfo += "\t" + inst->getSrc1()->getName();
+    }
+	if(inst->getSrc2())
+	{
+        ArmInst::addtionInfo += "\t" + inst->getSrc2()->getName();
+    }
+    // ArmInst::addtionInfo += "\n";
+
 	std::string arg1_reg_name, arg2_reg_name;
     int arg1_reg_no = arg1->regId, arg2_reg_no = arg2->regId;
 
@@ -355,6 +403,7 @@ void InstSelectorArm32::translate_compare(	IRInst * inst,
         iloc.store_var(REG_ALLOC_SIMPLE_DST_REG_NO, inst->getDst(), REG_ALLOC_SIMPLE_TMP_REG_NO);
     }
     // iloc.inst(operator_name, inst->getTrueLabelName());
+    ArmInst::addtionInfo = "";
 
 }
 
@@ -398,6 +447,25 @@ void InstSelectorArm32::translate_two_operator(IRInst * inst,
     Value * rs = inst->getDst();
     Value * arg1 = inst->getSrc1();
     Value * arg2 = inst->getSrc2();
+
+	//additon信息设置。
+   	
+    ArmInst::addtionInfo = "";
+    ArmInst::addtionInfo = "\t@IRInst:" + operator_name;
+    if(inst->getDst())
+	{
+        ArmInst::addtionInfo += "\t" + inst->getDst()->getName();
+    }
+	if(inst->getSrc1())
+	{
+        ArmInst::addtionInfo += "\t" + inst->getSrc1()->getName();
+    }
+	if(inst->getSrc2())
+	{
+        ArmInst::addtionInfo += "\t" + inst->getSrc2()->getName();
+    }
+    // ArmInst::addtionInfo += "\n";
+
 
     std::string arg1_reg_name, arg2_reg_name;
     int arg1_reg_no = arg1->regId, arg2_reg_no = arg2->regId;
@@ -458,6 +526,8 @@ void InstSelectorArm32::translate_two_operator(IRInst * inst,
         // r8 -> rs 可能用到r9
         iloc.store_var(rs_reg_no, rs, op2_reg_no);
     }
+    ArmInst::addtionInfo = "";
+
 }
 
 /// @brief 整数加法指令翻译成ARM32汇编

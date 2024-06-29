@@ -1373,6 +1373,8 @@ bool IRGenerator::ir_array_visit(ast_node * node)
         returnVal = symtab->currentFunc->newTempValue(BasicType::TYPE_POINTER);
         node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_ADD_I, returnVal, res_var->val, index));
         returnVal->set_array_info(new_array_dim);
+		//子数组
+        returnVal->array_info->isSubArray = true;
         node->val = returnVal;
         return result;
     }

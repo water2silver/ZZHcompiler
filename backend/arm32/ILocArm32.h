@@ -15,6 +15,8 @@
 
 #include "SymbolTable.h"
 
+// std::string addtionInfo;
+
 /// @brief 底层汇编指令：ARM32
 struct ArmInst {
 
@@ -58,17 +60,24 @@ struct ArmInst {
     /// @brief 指令字符串输出函数
     /// @return
     std::string outPut();
+
+public:
+	static std::string addtionInfo;
+
 };
 
 /// @brief 底层汇编序列-ARM32
 class ILocArm32 {
 
+    /// @brief ILocArm32里面的汇编指令数目。
+    static int ArmInstCount;
+
     /// @brief ARM汇编序列
     std::list<ArmInst *> code;
-
+public:
     /// @brief 符号表
     SymbolTable * symtab;
-
+private:
     /// @brief 加载立即数 ldr r0,=#100
     /// @param rs_reg_no 结果寄存器号
     /// @param num 立即数
@@ -89,6 +98,13 @@ public:
     /// @brief 构造函数
     /// @param symtab 符号表
     ILocArm32(SymbolTable * symtab);
+
+	/// @brief 返回ILocArm32中的指令数目。
+	/// @return 
+	int getArmInstCount()
+	{
+        return code.size();
+    }
 
     /// @brief 析构函数
     ~ILocArm32();

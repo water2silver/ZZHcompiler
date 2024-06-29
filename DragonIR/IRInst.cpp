@@ -51,6 +51,10 @@ Value * IRInst::getDst()
 /// @return
 Value * IRInst::getSrc1()
 {
+	if(srcValues.empty())
+	{
+        return nullptr;
+    }
     return srcValues[0];
 }
 
@@ -65,6 +69,10 @@ int IRInst::getSrc1RegId()
 /// @return
 Value * IRInst::getSrc2()
 {
+	if(srcValues.size()<2)
+	{
+        return nullptr;
+    }
     return srcValues[1];
 }
 

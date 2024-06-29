@@ -21,6 +21,8 @@ public:
     /// @brief 析构函数
     ~CodeGeneratorArm32() override;
 
+    static int globalValueCount;
+
 protected:
     /// @brief 产生汇编头部分
     void genHeader() override;

@@ -19,6 +19,8 @@
 #include "SymbolTable.h"
 #include "Value.h"
 
+int CodeGeneratorArm32::globalValueCount = 0;
+
 /// @brief 构造函数
 /// @param tab 符号表
 CodeGeneratorArm32::CodeGeneratorArm32(SymbolTable & tab) : CodeGeneratorAsm(tab)
@@ -59,15 +61,17 @@ void CodeGeneratorArm32::genDataSection()
     // 可直接操作文件指针fp进行写操作
 	
 	// 全局变量支持。
-	for(auto &inst :symtab.getGlobalVarDefInsts().getInsts())
-	{
-        auto res = inst->getDst();
-        res->createGlobalName();
-        std::string str;
-        str += res->global_name + ":\n";
-        str += "        " + std::string(".long   ") + res->getName() + "\n";
-        fprintf(fp, "%s", str.c_str());
-    }
+	// for(auto &inst :symtab.getGlobalVarDefInsts().getInsts())
+	// {
+    //     auto res = inst->getDst();
+    //     res->setGlobalName(CodeGeneratorArm32::globalValueCount);
+    //     std::string str;
+    //     str += res->global_name + ":\n";
+    //     str += "        " + std::string(".long   ") + res->getName() + "\n";
+    //     fprintf(fp, "%s", str.c_str());
+    // }
+    //     CodeGeneratorArm32::globalValueCount++;
+
 
     fprintf(fp, ".data\n");
 	for(auto & inst :symtab.getGlobalVarDefInsts().getInsts())
@@ -107,6 +111,19 @@ void CodeGeneratorArm32::genDataSection()
 /// @param func 要处理的函数
 void CodeGeneratorArm32::genCodeSection(Function * func)
 {
+	//每个函数前面都输入一下全局变量的标签。
+	// 全局变量支持。
+	for(auto &inst :symtab.getGlobalVarDefInsts().getInsts())
+	{
+	    auto res = inst->getDst();
+	    res->setGlobalName(CodeGeneratorArm32::globalValueCount);
+	    std::string str;
+	    str += res->global_name + ":\n";
+	    str += "        " + std::string(".long   ") + res->getName() + "\n";
+	    fprintf(fp, "%s", str.c_str());
+	}
+	CodeGeneratorArm32::globalValueCount++;
+
     // 寄存器分配以及栈内局部变量的站内地址重新分配
     registerAllocation(func);
 
@@ -232,7 +249,7 @@ void CodeGeneratorArm32::adjustFormalParamInsts(Function * func)
     int fp_esp = func->getMaxDep() + (int) func->getProtectedReg().size() * 4;
     for (int k = 4; k < (int) params.size(); k++) {
 
-        Value * val = params[k].val;
+        // Value * val = params[k].val;
 
         // 目前假定变量大小都是4字节
 
@@ -250,9 +267,12 @@ void CodeGeneratorArm32::adjustFormalParamInsts(Function * func)
         Value * newVal = new MemValue(BasicType::TYPE_INT);
         newVal->baseRegNo = REG_ALLOC_SIMPLE_FP_REG_NO;
         newVal->setOffset(fp_esp);
-
+		//这里的params的val是临时变量
+        // Value * val = params[k].val;
+		//这才是真正在栈里面分配了空间的值。
+        Value * real_val = func->findValue(params[k].varName);
         // 新建一个赋值指令
-        newInsts.push_back(new AssignIRInst(val, newVal));
+        newInsts.push_back(new AssignIRInst(real_val, newVal));
 #else
         val->setOffset(fp_esp);
 #endif

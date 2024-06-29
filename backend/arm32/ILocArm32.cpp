@@ -18,10 +18,14 @@
 #include "PlatformArm32.h"
 #include "SymbolTable.h"
 #include "Value.h"
+#include "CodeGeneratorArm32.h"
 
+std::string ArmInst::addtionInfo = "";
 ArmInst::ArmInst(std::string op, std::string rs, std::string s1, std::string s2, std::string extra)
     : opcode(op), result(rs), arg1(s1), arg2(s2), addition(extra), dead(false)
-{}
+{
+    addition = addtionInfo;
+}
 
 /*
     指令内容替换
@@ -81,16 +85,21 @@ std::string ArmInst::outPut()
     if (!arg2.empty()) {
         ret += "," + arg2;
     }
-
+	if((!ret.empty())&&ret[0]!='.')
+	{
+		ret.resize(22, ' ');
+	}
     // 其他附加信息输出
     if (!addition.empty()) {
-        ret += "," + addition;
+        ret +=  addition;
     }
 
     return ret;
 }
 
 #define emit(...) code.push_back(new ArmInst(__VA_ARGS__))
+
+int ILocArm32::ArmInstCount = 0;
 
 /**
  * 数字变字符串，若flag为真，则变为立即数寻址（加#）
@@ -305,7 +314,7 @@ void ILocArm32::load_var(int rs_reg_no, Value * var)
 			//
 			// 考虑数组的情况
 			// 满足条件 var 是数组，并且不能是 形参数组。
-			if(var->array_info!=nullptr && (!var->isParamArray))
+			if(var->array_info!=nullptr && (!var->isParamArray) && (!var->array_info->isSubArray))
 			{
 				emit("add", rsReg,PlatformArm32::regName[var->baseRegNo] ,"#" + std::to_string(off));
 				return;
@@ -347,7 +356,7 @@ void ILocArm32::store_var(int src_reg_no, Value * var, int tmp_reg_no)
 
     std::string srcReg = PlatformArm32::regName[src_reg_no];
     std::string tmpReg = PlatformArm32::regName[tmp_reg_no];
-    std::string baseReg = PlatformArm32::regName[var->baseRegNo];
+
 
     // -1表示非寄存器，其他表示寄存器的索引值
     int id = var->regId;
@@ -389,7 +398,7 @@ void ILocArm32::store_var(int src_reg_no, Value * var, int tmp_reg_no)
 		// {
         //     var->baseRegNo = 11;
         // }
-        tmpReg = PlatformArm32::regName[var->baseRegNo];
+        // tmpReg = PlatformArm32::regName[var->baseRegNo];
 
         // str r8,[r9]
         // str r8, [fp, # - 16]

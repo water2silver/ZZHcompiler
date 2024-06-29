@@ -21,6 +21,7 @@ class ArrayInfo{
 public:
     std::vector<int> dim;
     std::string dim_name;
+    bool isSubArray = false;
     // ArrayInfo(ast_node * node);
     ArrayInfo(std::vector<int> array_dim);
     ~ArrayInfo();
@@ -104,7 +105,12 @@ public:
 	/// 
 	void createGlobalName()
 	{
-        this->global_name = ".global_" + this->name;
+        this->global_name = ".global_0_" + this->name;
+    }
+
+	void setGlobalName(int num)
+	{
+        this->global_name = ".global_" + std::to_string(num) + "_" + this->name;
     }
 
     /// @brief 类型
@@ -258,6 +264,13 @@ public:
             return 4;
         } else if (type.type == BasicType::TYPE_FLOAT) {
             // float 4字节
+            return 4;
+        }
+		else if(type.type ==BasicType::TYPE_BOOL)
+		{
+            return 4;
+        }else if(type.type==BasicType::TYPE_POINTER)
+		{
             return 4;
         }
 
