@@ -1574,8 +1574,10 @@ bool IRGenerator::ir_negative(ast_node * node)
         Value * tmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
         node->blockInsts.addInst(new CondNotZeroIRInst(tmpValue, node->val));
         node->val = tmpValue;
-        node->blockInsts.addInst(
-            new IfIRInst(IRInstOperator::IRINST_OP_IF, node->val, node->label_true, node->label_false));
+		//似乎是垃圾操作。
+        IRInst * newIR = new IfIRInst(IRInstOperator::IRINST_OP_IF, node->val, node->label_true, node->label_false);
+        // newIR->setAddition("beq");
+        node->blockInsts.addInst(newIR);
     }
 
     return true;

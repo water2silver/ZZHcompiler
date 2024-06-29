@@ -347,6 +347,13 @@ void InstSelectorArm32::translate_compare(	IRInst * inst,
     arg2_reg_name = PlatformArm32::regName[op2_reg_no];
 
     iloc.inst("cmp", arg1_reg_name, arg2_reg_name);
+	//把Compare的结果储存起来。用于测例49-50
+	if(operator_name == "not_zero")
+	{
+        std::string tmpReg = PlatformArm32::regName[REG_ALLOC_SIMPLE_DST_REG_NO];
+        iloc.inst("moveq",tmpReg , "#0");
+        iloc.store_var(REG_ALLOC_SIMPLE_DST_REG_NO, inst->getDst(), REG_ALLOC_SIMPLE_TMP_REG_NO);
+    }
     // iloc.inst(operator_name, inst->getTrueLabelName());
 
 }
