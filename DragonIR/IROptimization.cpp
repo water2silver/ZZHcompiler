@@ -18,7 +18,7 @@
 /// @return 
 bool constantOptimization(ast_node * node)
 {
-    return false;
+    // return false;
     ast_node * src1_node = node->sons[0];
     ast_node * src2_node = node->sons[1];
 

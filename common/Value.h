@@ -22,6 +22,12 @@ public:
     std::vector<int> dim;
     std::string dim_name;
     bool isSubArray = false;
+    
+	/// @brief 表示数组是否为空。
+	bool isEmpty = false;
+
+
+
     // ArrayInfo(ast_node * node);
     ArrayInfo(std::vector<int> array_dim);
     ~ArrayInfo();
@@ -154,6 +160,12 @@ public:
     virtual ~Value()
     {
         // 如有资源清理，请这里追加代码
+    }
+
+	/// @brief 设置为常数，用于const_def节点。
+	void setConst()
+	{
+        this->_const = true;
     }
 
     /// @brief 获取名字

@@ -47,6 +47,8 @@ InstSelectorArm32::InstSelectorArm32(vector<IRInst *> & _irCode, ILocArm32 & _il
 	translator_handlers[IRInstOperator::IRINST_OP_DIV_I] = &InstSelectorArm32::translate_div_int32;
 	//取负指令
 	translator_handlers[IRInstOperator::IRINST_OP_NEGATIVE_I] = &InstSelectorArm32::translate_negative;
+	translator_handlers[IRInstOperator::IRINST_OP_POSITIVE_I] = &InstSelectorArm32::translate_positive;
+
 
 
 
@@ -87,6 +89,7 @@ void InstSelectorArm32::run()
                 iloc.label(str);
             }
             CodeGeneratorArm32::globalValueCount++;
+            // iloc.label(".ltorg");
         }
         // 逐个指令进行翻译
         if (!inst->isDead()) {
@@ -158,10 +161,20 @@ void InstSelectorArm32::translate_exit(IRInst * inst)
     auto & protectedRegStr = func->getProtectedRegStr();
 
     // 恢复栈空间
+	//针对立即数比较大的情况.
+    int maxDep = func->getMaxDep();
+	while(maxDep>1024)
+	{
+		iloc.inst("add",
+			PlatformArm32::regName[REG_ALLOC_SIMPLE_FP_REG_NO],
+			PlatformArm32::regName[REG_ALLOC_SIMPLE_FP_REG_NO],
+			iloc.toStr(1024));
+        maxDep -= 1024;
+    }
     iloc.inst("add",
               PlatformArm32::regName[REG_ALLOC_SIMPLE_FP_REG_NO],
               PlatformArm32::regName[REG_ALLOC_SIMPLE_FP_REG_NO],
-              iloc.toStr(func->getMaxDep()));
+              iloc.toStr(maxDep));
 
     iloc.inst("mov", "sp", PlatformArm32::regName[REG_ALLOC_SIMPLE_FP_REG_NO]);
 
@@ -571,6 +584,13 @@ void InstSelectorArm32::translate_call(IRInst * inst)
 void InstSelectorArm32::translate_negative(IRInst * inst)
 {
     translate_two_operator(inst, "rsb");
+}
+
+/// @brief 取负指令。
+/// @param inst 
+void InstSelectorArm32::translate_positive(IRInst * inst)
+{
+	
 }
 
 

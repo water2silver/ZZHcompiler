@@ -66,6 +66,9 @@ IRGenerator::IRGenerator(ast_node * _root, SymbolTable * _symtab) : root(_root),
     ast2ir_handlers[ast_operator_type::AST_OP_VAR_DECL] = &IRGenerator::ir_decl;
     ast2ir_handlers[ast_operator_type::AST_OP_CONST_DECL] = &IRGenerator::ir_decl;
     ast2ir_handlers[ast_operator_type::AST_OP_VAR_DEF] = &IRGenerator::ir_var_def;
+	//先垃圾操作一下，把常数的def也给到这里
+    ast2ir_handlers[ast_operator_type::AST_OP_CONST_DEF] = &IRGenerator::ir_var_def;
+
 	//对数组定义的支持
     ast2ir_handlers[ast_operator_type::AST_OP_ARRAY_DEF] = &IRGenerator::ir_array_def;
     ast2ir_handlers[ast_operator_type::AST_OP_ARRAY] = &IRGenerator::ir_array;
@@ -488,7 +491,13 @@ bool IRGenerator::ir_add(ast_node * node)
     // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
     // TODO real number add
 	// add 的结果存放到TempValue，但是函数的结果存放到VarValue
-    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    Value * resultValue;
+    if (symtab->currentFunc != nullptr) {
+        resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    }
+    else{
+        resultValue = new TempValue(BasicType::TYPE_INT);
+    }
 
     // 创建临时变量保存IR的值，以及线性IR指令
     node->blockInsts.addInst(left->blockInsts);
@@ -522,11 +531,23 @@ bool IRGenerator::ir_sub(ast_node * node)
         // 某个变量没有定值
         return false;
     }
+	//常数优化，放在遍历之后。
+    bool constantOptimizationResult = constantOptimization(node);
+	if(constantOptimizationResult)
+	{
+        return true;
+    }
 
     // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
     // TODO real number add
 
-    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    Value * resultValue;
+    if (symtab->currentFunc != nullptr) {
+        resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    }
+    else{
+        resultValue = new TempValue(BasicType::TYPE_INT);
+    }
 
     // 创建临时变量保存IR的值，以及线性IR指令
     node->blockInsts.addInst(left->blockInsts);
@@ -560,11 +581,22 @@ bool IRGenerator::ir_times(ast_node * node)
         // 某个变量没有定值
         return false;
     }
+	//常数优化，放在遍历之后。
+    bool constantOptimizationResult = constantOptimization(node);
+	if(constantOptimizationResult)
+	{
+        return true;
+    }
 
     // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
     // TODO real number add
-
-    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    Value * resultValue = nullptr;
+    if (symtab->currentFunc != nullptr) {
+        resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    }
+    else{
+        resultValue = new TempValue(BasicType::TYPE_INT);
+    }
 
     // 创建临时变量保存IR的值，以及线性IR指令
     node->blockInsts.addInst(left->blockInsts);
@@ -598,11 +630,23 @@ bool IRGenerator::ir_div(ast_node * node)
         // 某个变量没有定值
         return false;
     }
+	//常数优化，放在遍历之后。
+    bool constantOptimizationResult = constantOptimization(node);
+	if(constantOptimizationResult)
+	{
+        return true;
+    }
 
     // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
     // TODO real number add
 
-    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    Value * resultValue = nullptr;
+    if (symtab->currentFunc != nullptr) {
+        resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+    }
+    else{
+        resultValue = new TempValue(BasicType::TYPE_INT);
+    }
 
     // 创建临时变量保存IR的值，以及线性IR指令
     node->blockInsts.addInst(left->blockInsts);
@@ -1155,6 +1199,12 @@ bool IRGenerator::ir_var_def(ast_node * node)
 			{
 				//如果初始化，应为ASSIGN节点
 				ast_node * res1 = ir_visit_ast_node(son->sons[0]);
+				//设置为常数，便于计算。
+				if(node->node_type==ast_operator_type::AST_OP_CONST_DEF)
+				{
+					Value * v = symtab->currentFunc->findValue(res1->val->getName());
+					v->setConst();
+                }
 				ast_node * res2 = ir_visit_ast_node(son->sons[1]);
 				if(res2==nullptr || res1==nullptr)
 				{
@@ -1186,6 +1236,12 @@ bool IRGenerator::ir_var_def(ast_node * node)
 					result = false;
 				}
 				//
+				//设置为常数，便于计算。
+				if(node->node_type==ast_operator_type::AST_OP_CONST_DEF)
+				{
+					Value * v = symtab->findValue(res1->val->getName());
+					v->setConst();
+                }
                 symtab->globalVarDefInsts.addInst(res1->blockInsts);
                 symtab->globalVarDefInsts.addInst(res2->blockInsts);
                 symtab->globalVarDefInsts.addInst(
@@ -1238,13 +1294,47 @@ bool IRGenerator::ir_array_def(ast_node * node)
     }
 
     //三个子节点，意味着有数组的初始化工作
+	// 有比支持数组初始化更重要的工作，暂时放弃.
 	if(node->sons.size()==3)
 	{
-
-	}
+		//空节点，数组初始化为0
+		// if(node->sons[2]->node_type==ast_operator_type::AST_OP_ARRAY_EMPTY)
+		// {
+        //     val->array_info->isEmpty = true;
+        // }else
+		// {
+        //     val->array_info->isEmpty = false;
+        //     // 垃圾操作，启动！
+        //     GenshinArrayInit(val, node->sons[2]);
+        // }
+    }
     node->val = val;
 
     return result;
+}
+
+/// @brief  用于数组初始化的函数。(node的type不会是 AST_OP_ARRAY_EMPTY)
+/// @param val 
+/// @param node 
+void IRGenerator::GenshinArrayInit(Value * val, ast_node * node)
+{
+    // int currentDepth = 1;
+	for(auto son:node->sons)
+	{
+		if(son->node_type==ast_operator_type::AST_OP_INIT_VAL_LIST)
+		{
+
+		}else if(son->node_type==ast_operator_type::AST_OP_LEAF_LITERAL_UINT)
+		{
+
+		}else
+		{
+			//或者常量式子,2*3 或者其他的计算式，数组访问,a[3][2]这样的。
+            printf("Sorry, non constant array initialization is not supported at this time\n");
+        }
+    }
+
+    return;
 }
 
 // TODO 未来常数优化的起点。 
@@ -1266,6 +1356,11 @@ bool IRGenerator::ir_array(ast_node * node)
 	if(res_node1==nullptr)
 	{
         result = false;
+    }
+	//数组维度为 2*3这样的信息。
+	if(res_node1->integer_val==0 && res_node1->val->intVal!=0)
+	{
+        res_node1->integer_val = res_node1->val->intVal;
     }
     ast_node * res_node2 = ir_visit_ast_node(src_node2);
 	if(res_node2==nullptr)
@@ -1512,9 +1607,10 @@ bool IRGenerator::ir_positive(ast_node * node)
     if (result->val != nullptr) {
 
         //TODO 一元操作符的线性IR生成
-        node->blockInsts.addInst(new UnaryIRInst(IRInstOperator::IRINST_OP_POSITIVE_I, resultValue, result->val));
+        // node->blockInsts.addInst(new UnaryIRInst(IRInstOperator::IRINST_OP_POSITIVE_I, resultValue, result->val));
+        node->val = resultValue;
     }
-    node->val = resultValue;
+    node->val = result->val;
 
     return true;
 }

@@ -97,6 +97,10 @@ protected:
     /// @param inst 
     void translate_negative(IRInst * inst);
 
+	/// @brief 取负指令。
+    /// @param inst 
+    void translate_positive(IRInst * inst);
+
     /// 比较计算的指令。
 
     /// @brief ＞指令计算。

@@ -588,8 +588,14 @@ void Function::OutputCFG()
 
         } else if (inst->getOp() == IRInstOperator::IRINST_OP_GOTO) {
             std::string aimNodeName = inst->getTrueLabelName();
-            cfgManager.insertEdge(cfgNode->getName(), aimNodeName);
-        	cfgNode->addInst(inst);
+            // 测例2023-21会出现这个问题，return语句后面出现if(1){return ;}
+			//会出现两个连续的 br label，导致第二个br 块内cfgnode为nullptr
+            if(cfgNode!=nullptr)
+			{
+	            cfgManager.insertEdge(cfgNode->getName(), aimNodeName);
+				cfgNode->addInst(inst);
+			}
+        	
             cfgNode = nullptr;
         } else {
             cfgNode->addInst(inst);

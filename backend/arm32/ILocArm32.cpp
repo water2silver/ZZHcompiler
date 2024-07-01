@@ -87,7 +87,7 @@ std::string ArmInst::outPut()
     }
 	if((!ret.empty())&&ret[0]!='.')
 	{
-		ret.resize(22, ' ');
+		ret.resize(50, ' ');
 	}
     // 其他附加信息输出
     if (!addition.empty()) {

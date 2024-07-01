@@ -261,6 +261,11 @@ protected:
 	/// @brief 当前是否处于cond运算中
     bool inCondtion;
 
+    /// @brief  用于数组初始化的函数。(node的type不会是 AST_OP_ARRAY_EMPTY)
+    /// @param val 
+    /// @param node 
+    void GenshinArrayInit(Value * val, ast_node * node);
+
 private:
     /// @brief 抽象语法树的根
     ast_node * root;
