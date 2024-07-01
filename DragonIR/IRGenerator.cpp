@@ -482,7 +482,7 @@ bool IRGenerator::ir_add(ast_node * node)
         return false;
     }
 	//常数优化，放在遍历之后。
-    bool constantOptimizationResult = constantOptimization(node);
+    bool constantOptimizationResult = constantOptimization(node,symtab);
 	if(constantOptimizationResult)
 	{
         return true;
@@ -532,7 +532,7 @@ bool IRGenerator::ir_sub(ast_node * node)
         return false;
     }
 	//常数优化，放在遍历之后。
-    bool constantOptimizationResult = constantOptimization(node);
+    bool constantOptimizationResult = constantOptimization(node,symtab);
 	if(constantOptimizationResult)
 	{
         return true;
@@ -582,7 +582,7 @@ bool IRGenerator::ir_times(ast_node * node)
         return false;
     }
 	//常数优化，放在遍历之后。
-    bool constantOptimizationResult = constantOptimization(node);
+    bool constantOptimizationResult = constantOptimization(node,symtab);
 	if(constantOptimizationResult)
 	{
         return true;
@@ -631,7 +631,7 @@ bool IRGenerator::ir_div(ast_node * node)
         return false;
     }
 	//常数优化，放在遍历之后。
-    bool constantOptimizationResult = constantOptimization(node);
+    bool constantOptimizationResult = constantOptimization(node,symtab);
 	if(constantOptimizationResult)
 	{
         return true;
@@ -1199,18 +1199,21 @@ bool IRGenerator::ir_var_def(ast_node * node)
 			{
 				//如果初始化，应为ASSIGN节点
 				ast_node * res1 = ir_visit_ast_node(son->sons[0]);
+				ast_node * res2 = ir_visit_ast_node(son->sons[1]);
+
+				if(res2==nullptr || res1==nullptr)
+				{
+					result = false;
+				}
 				//设置为常数，便于计算。
 				if(node->node_type==ast_operator_type::AST_OP_CONST_DEF)
 				{
 					Value * v = symtab->currentFunc->findValue(res1->val->getName());
 					v->setConst();
+                    v->intVal = res2->val->intVal;
                 }
-				ast_node * res2 = ir_visit_ast_node(son->sons[1]);
-				if(res2==nullptr || res1==nullptr)
-				{
-					result = false;
-				}
-				//
+
+                //
 				node->blockInsts.addInst(res1->blockInsts);
 				node->blockInsts.addInst(res2->blockInsts);
 				node->blockInsts.addInst(new DeclIRInst(IRInstOperator::IRINST_OP_VAR_DEF, res1->val, res2->val));
@@ -1241,6 +1244,7 @@ bool IRGenerator::ir_var_def(ast_node * node)
 				{
 					Value * v = symtab->findValue(res1->val->getName());
 					v->setConst();
+                    v->intVal = res2->val->intVal;
                 }
                 symtab->globalVarDefInsts.addInst(res1->blockInsts);
                 symtab->globalVarDefInsts.addInst(res2->blockInsts);

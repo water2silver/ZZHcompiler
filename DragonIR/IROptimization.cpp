@@ -16,7 +16,7 @@
 /// @brief 对 + - * / mod 运算进行常数优化
 /// @param node 
 /// @return 
-bool constantOptimization(ast_node * node)
+bool constantOptimization(ast_node * node,SymbolTable * symtab)
 {
     // return false;
     ast_node * src1_node = node->sons[0];
@@ -101,6 +101,7 @@ int getConstantValue(ast_node * src_node)
         num = src_node->integer_val;
     } else if (src_node->val != nullptr && src_node->val->isConst()) {
         num = src_node->val->intVal;
+		// if()
     } else {
         printf("you should not reach here\n");
     }

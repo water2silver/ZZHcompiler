@@ -25,7 +25,7 @@
 /// @brief 对 + - * / mod 运算进行常数优化
 /// @param node 
 /// @return 
-bool constantOptimization(ast_node * node);
+bool constantOptimization(ast_node * node,SymbolTable * symtab);
 
 /// @brief 节点的两个子节点是否为常数或者常值节点
 /// @param src1_node 
