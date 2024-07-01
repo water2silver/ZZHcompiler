@@ -1595,22 +1595,33 @@ bool IRGenerator::ir_positive(ast_node * node)
 	// TODO real number print
 
     ast_node * src1_node = node->sons[0];
-
+    src1_node->inherit_label(node);
     ast_node * result = ir_visit_ast_node(src1_node);
     if (!result) {
         // 解析错误
         return false;
     }
-    Value * resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
-    node->blockInsts.addInst(result->blockInsts);
-
+	node->blockInsts.addInst(result->blockInsts);
+	node->inherit_label(src1_node);
+    
     if (result->val != nullptr) {
-
-        //TODO 一元操作符的线性IR生成
+        // 一元操作符的线性IR生成,汇编貌似没有严格的取正操作，所以，不加入这条IR
         // node->blockInsts.addInst(new UnaryIRInst(IRInstOperator::IRINST_OP_POSITIVE_I, resultValue, result->val));
-        node->val = resultValue;
+    	node->val = result->val;
     }
-    node->val = result->val;
+
+	if(node->parent->node_type==ast_operator_type::AST_OP_COND
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND)
+	{
+        Value * tmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
+        node->blockInsts.addInst(new CondNotZeroIRInst(tmpValue, node->val));
+        node->val = tmpValue;
+		//似乎是垃圾操作。
+        IRInst * newIR = new IfIRInst(IRInstOperator::IRINST_OP_IF, node->val, node->label_true, node->label_false);
+        // newIR->setAddition("beq");
+        node->blockInsts.addInst(newIR);
+    }
 
     return true;
 }
