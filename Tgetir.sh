@@ -14,7 +14,7 @@ fi
 name=$1
 
 # 构建你要执行的命令
-command="./commonclasstestcases/IRCompiler/Linux-x86_64/Ubuntu-20.04/IRCompiler  -S -I -o  result/std-${name}.ir tests/${name}.c"
+command="./commonclasstestcases/IRCompiler/Linux-x86_64/Ubuntu-22.04/IRCompiler  -S -I -o  result/std-${name}.ir tests/${name}.c"
 # ./commonclasstestcases/IRCompiler/Linux-x86_64/Ubuntu-20.04/IRCompiler 
 # -S -I -o 000_if.ir ./reference/if.c
 # 执行命令

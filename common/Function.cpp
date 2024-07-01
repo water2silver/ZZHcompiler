@@ -598,7 +598,10 @@ void Function::OutputCFG()
         	
             cfgNode = nullptr;
         } else {
-            cfgNode->addInst(inst);
+			// if(cfgNode!=nullptr)
+			{
+	            cfgNode->addInst(inst);
+			}
         }
     }
 

@@ -383,6 +383,19 @@ bool IRGenerator::ir_function_call(ast_node * node)
     // 函数调用结果保存到node中，用于外部使用
     node->val = resultVal;
 
+	//当function_call的返回值作为 cond 节点的值。
+	if(node->parent->node_type==ast_operator_type::AST_OP_COND
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND)
+	{
+        Value * tmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
+        node->blockInsts.addInst(new CondNotZeroIRInst(tmpValue, node->val));
+        node->val = tmpValue;
+		//似乎是垃圾操作。
+        IRInst * newIR = new IfIRInst(IRInstOperator::IRINST_OP_IF, node->val, node->label_true, node->label_false);
+        node->blockInsts.addInst(newIR);
+    }
+
     return true;
 }
 
@@ -735,11 +748,23 @@ bool IRGenerator::ir_less_than(ast_node * node)
     node->blockInsts.addInst(left->blockInsts);
     node->blockInsts.addInst(right->blockInsts);
     node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_LESS_THAN_I, resultValue, left->val, right->val));
-    // node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF,resultValue,node->label_true,node->label_false));
-    auto inst = new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_true, node->label_false);
-    inst->setAddition("blt");
-    node->blockInsts.addInst(inst);
 	node->val = resultValue;
+    
+	// node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF,resultValue,node->label_true,node->label_false));
+	if(node->parent->node_type==ast_operator_type::AST_OP_COND
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND)
+	{		
+		auto inst = new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_true, node->label_false);
+		inst->setAddition("blt");
+		node->blockInsts.addInst(inst);
+		// node->val = resultValue;
+    }
+
+	// auto inst = new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_true, node->label_false);
+    // inst->setAddition("blt");
+    // node->blockInsts.addInst(inst);
+	// node->val = resultValue;
 
     return true;
 }
@@ -777,10 +802,16 @@ bool IRGenerator::ir_greater_than(ast_node * node)
     node->blockInsts.addInst(left->blockInsts);
     node->blockInsts.addInst(right->blockInsts);
     node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_GREATER_THAN_I, resultValue, left->val, right->val));
-    auto inst = new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_true, node->label_false);
-    inst->setAddition("bgt");
-    node->blockInsts.addInst(inst);
+    
     node->val = resultValue;
+	if(node->parent->node_type==ast_operator_type::AST_OP_COND
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND)
+	{
+		auto inst = new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_true, node->label_false);
+    	inst->setAddition("bgt");
+    	node->blockInsts.addInst(inst);
+	}
 
     return true;
 }
@@ -819,11 +850,17 @@ bool IRGenerator::ir_less_equal(ast_node * node)
     node->blockInsts.addInst(right->blockInsts);
     node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_LESS_EQUAL_I, resultValue, left->val, right->val));
     // node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF,resultValue,node->label_true,node->label_false));
-	auto inst = new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_true, node->label_false);
-    inst->setAddition("ble");
-    node->blockInsts.addInst(inst);
+	
 	node->val = resultValue;
 
+	if(node->parent->node_type==ast_operator_type::AST_OP_COND
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND)
+	{
+		auto inst = new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_true, node->label_false);
+		inst->setAddition("ble");
+		node->blockInsts.addInst(inst);	
+	}
     return true;
 }
 
@@ -860,12 +897,17 @@ bool IRGenerator::ir_greater_equal(ast_node * node)
     node->blockInsts.addInst(left->blockInsts);
     node->blockInsts.addInst(right->blockInsts);
     node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_GREATER_EQUAL_I, resultValue, left->val, right->val));
-    // node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF,resultValue,node->label_true,node->label_false));
-	auto inst = new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_true, node->label_false);
-    inst->setAddition("bge");
-    node->blockInsts.addInst(inst);
+
 	node->val = resultValue;
 
+	if(node->parent->node_type==ast_operator_type::AST_OP_COND
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND)
+	{
+		auto inst = new IfIRInst(IRInstOperator::IRINST_OP_IF, resultValue, node->label_true, node->label_false);
+		inst->setAddition("bge");
+		node->blockInsts.addInst(inst);
+	}
     return true;
 }
 
@@ -1078,7 +1120,15 @@ bool IRGenerator::ir_if(ast_node * node)
     //这部分内容可能冗余了
 	// node->blockInsts.addInst(new IfIRInst(IRInstOperator::IRINST_OP_IF,label_true,label_false));
 
-	//true 部分
+    // 只有 if(cond);的情况
+    if (node->sons.size() == 1) {
+        node->blockInsts.addInst(label_true);
+        node->blockInsts.addInst(label_false);
+        node->blockInsts.addInst(label_end);
+        return result;
+    }
+
+    //true 部分
 	ast_node * res_true = ir_visit_ast_node(true_node);
 	if(res_true==nullptr)
 	{
@@ -1705,7 +1755,12 @@ bool IRGenerator::ir_not(ast_node * node)
 
     ast_node * src1_node = node->sons[0];
     src1_node->inherit_label(node);
-    src1_node->swap_true_false_label();
+	if(node->parent->node_type==ast_operator_type::AST_OP_COND
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND)
+	{
+	    src1_node->swap_true_false_label();
+	}
 
     ast_node * result = ir_visit_ast_node(src1_node);
 	// 倒反天罡！
@@ -1739,6 +1794,22 @@ bool IRGenerator::ir_not(ast_node * node)
         node->val = tmpValue;
         node->blockInsts.addInst(
             new IfIRInst(IRInstOperator::IRINST_OP_IF, node->val, node->label_true, node->label_false));
+    }else if(result->node_type==ast_operator_type::AST_OP_LEAF_LITERAL_UINT
+	 	   ||result->node_type==ast_operator_type::AST_OP_LEAF_VAR_ID
+		   ||result->node_type==ast_operator_type::AST_OP_FUNC_CALL
+		   ||result->node_type==ast_operator_type::AST_OP_ARRAY_VISIT)
+	{
+		//这种划分合理吗？
+        Value * resValue;
+        if (symtab->currentFunc == nullptr) {
+            resValue = new TempValue(BasicType::TYPE_BOOL);
+        }else 
+		{
+            resValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
+        }
+        IRInst * inst = new BinaryIRInst(IRInstOperator::IRINST_OP_EQUAL_I, resValue,src1_node->val, new ConstValue(0));
+        node->blockInsts.addInst(inst);
+        node->val = resValue;
     }
     return true;
 }

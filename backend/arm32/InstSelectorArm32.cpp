@@ -408,15 +408,43 @@ void InstSelectorArm32::translate_compare(	IRInst * inst,
     arg2_reg_name = PlatformArm32::regName[op2_reg_no];
 
     iloc.inst("cmp", arg1_reg_name, arg2_reg_name);
+
+	std::string dstReg = PlatformArm32::regName[REG_ALLOC_SIMPLE_DST_REG_NO];
 	//把Compare的结果储存起来。用于测例49-50
 	if(operator_name == "not_zero")
 	{
-        std::string tmpReg = PlatformArm32::regName[REG_ALLOC_SIMPLE_DST_REG_NO];
-        iloc.inst("moveq",tmpReg , "#0");
+        iloc.inst("moveq",dstReg , "#0");
+        iloc.inst("movne",dstReg , "#1");
+
         iloc.store_var(REG_ALLOC_SIMPLE_DST_REG_NO, inst->getDst(), REG_ALLOC_SIMPLE_TMP_REG_NO);
-    }
-    // iloc.inst(operator_name, inst->getTrueLabelName());
-    ArmInst::addtionInfo = "";
+    }else if(operator_name=="blt")
+	{
+        iloc.inst("movlt", dstReg, "#1");
+        iloc.inst("movge", dstReg, "#0");
+        iloc.store_var(REG_ALLOC_SIMPLE_DST_REG_NO, inst->getDst(), REG_ALLOC_SIMPLE_TMP_REG_NO);
+    }else if(operator_name=="bgt")
+	{
+		iloc.inst("movgt", dstReg, "#1");
+        iloc.inst("movle", dstReg, "#0");
+        iloc.store_var(REG_ALLOC_SIMPLE_DST_REG_NO, inst->getDst(), REG_ALLOC_SIMPLE_TMP_REG_NO);
+    } else if (operator_name == "ble")
+	{
+		iloc.inst("movle", dstReg, "#1");
+        iloc.inst("movgt", dstReg, "#0");
+        iloc.store_var(REG_ALLOC_SIMPLE_DST_REG_NO, inst->getDst(), REG_ALLOC_SIMPLE_TMP_REG_NO);
+	}else if (operator_name == "bge")
+	{
+		iloc.inst("movge", dstReg, "#1");
+        iloc.inst("movlt", dstReg, "#0");
+        iloc.store_var(REG_ALLOC_SIMPLE_DST_REG_NO, inst->getDst(), REG_ALLOC_SIMPLE_TMP_REG_NO);
+	}else if(operator_name=="beq")
+	{
+		iloc.inst("moveq", dstReg, "#1");
+        iloc.inst("movne", dstReg, "#0");
+        iloc.store_var(REG_ALLOC_SIMPLE_DST_REG_NO, inst->getDst(), REG_ALLOC_SIMPLE_TMP_REG_NO);
+	}
+	// iloc.inst(operator_name, inst->getTrueLabelName());
+	ArmInst::addtionInfo = "";
 
 }
 
