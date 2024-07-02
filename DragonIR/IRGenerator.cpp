@@ -1927,7 +1927,10 @@ bool IRGenerator::ir_leaf_node_var_id(ast_node * node)
 	{
 		//如果是变量定义。
 		if(node->parent->node_type==ast_operator_type::AST_OP_VAR_DEF||
-		   (node->parent->node_type == ast_operator_type::AST_OP_ASSIGN && node->parent->parent->node_type==ast_operator_type::AST_OP_VAR_DEF)
+		   node->parent->node_type==ast_operator_type::AST_OP_ARRAY_DEF||
+		   (node->parent->node_type == ast_operator_type::AST_OP_ASSIGN && node->parent->parent->node_type==ast_operator_type::AST_OP_VAR_DEF)||
+		   (node->parent->node_type == ast_operator_type::AST_OP_ASSIGN && node->parent->parent->node_type==ast_operator_type::AST_OP_ARRAY_DEF)
+
 		)
 		{
 			val = symtab->currentFunc->findValueWithDepth(node->name,symtab->getBlockDepth());
