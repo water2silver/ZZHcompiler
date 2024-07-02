@@ -47,7 +47,10 @@ int ArrayInfo::getArraySize()
 	{
         res *= dim[i];
     }
-    return res == 1 ? 0 : res;
+
+    return res;
+	//应该不会有 size = 0的数组吧。
+    // return res == 1 ? 0 : res;
 }
 
 void Value::set_array_info(std::vector<int> array_dim)

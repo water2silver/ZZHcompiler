@@ -1,0 +1,2 @@
+function/127_scope5.s: Assembler messages:
+function/127_scope5.s:17: Error: invalid literal constant: pool needs to be closer

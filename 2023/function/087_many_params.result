@@ -1,0 +1,4 @@
+function/087_many_params.s: Assembler messages:
+function/087_many_params.s:243: Error: invalid literal constant: pool needs to be closer
+function/087_many_params.s:247: Error: invalid literal constant: pool needs to be closer
+function/087_many_params.s:331: Error: invalid literal constant: pool needs to be closer

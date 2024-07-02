@@ -1,0 +1,7 @@
+function/084_long_array2.s: Assembler messages:
+function/084_long_array2.s:314: Error: invalid constant (4064) after fixup
+function/084_long_array2.s:341: Error: invalid constant (4064) after fixup
+function/084_long_array2.s:368: Error: invalid constant (4064) after fixup
+function/084_long_array2.s:395: Error: invalid constant (4064) after fixup
+function/084_long_array2.s:416: Error: invalid constant (4064) after fixup
+function/084_long_array2.s:449: Error: invalid constant (4064) after fixup

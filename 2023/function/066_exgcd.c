@@ -14,8 +14,10 @@ int exgcd(int a,int b,int x[],int y[]) {
 } 
 
 int main() {
-	int a = 7, b = 15, x[1] = {1}, y[1] = {1};
-	exgcd(a, b, x, y);
+	int a = 7, b = 15, x[1] , y[1] ;
+    x[0] = 1;
+    y[0] = 1;
+    exgcd(a, b, x, y);
 	x[0] = (x[0] % b + b) % b;
 	putint(x[0]);
 	return 0;

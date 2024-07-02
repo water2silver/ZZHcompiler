@@ -1,0 +1,8 @@
+function/085_long_code.s: Assembler messages:
+function/085_long_code.s:686: Error: invalid literal constant: pool needs to be closer
+function/085_long_code.s:804: Error: invalid literal constant: pool needs to be closer
+function/085_long_code.s:806: Error: invalid literal constant: pool needs to be closer
+function/085_long_code.s:809: Error: invalid literal constant: pool needs to be closer
+function/085_long_code.s:811: Error: invalid literal constant: pool needs to be closer
+function/085_long_code.s:821: Error: invalid literal constant: pool needs to be closer
+function/085_long_code.s:823: Error: invalid literal constant: pool needs to be closer
