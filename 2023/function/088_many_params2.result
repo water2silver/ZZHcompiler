@@ -1,12 +1,2 @@
-function/088_many_params2.s: Assembler messages:
-function/088_many_params2.s:315: Error: invalid constant (3fe0) after fixup
-function/088_many_params2.s:342: Error: invalid constant (3fe0) after fixup
-function/088_many_params2.s:369: Error: invalid constant (3fe0) after fixup
-function/088_many_params2.s:396: Error: invalid constant (3fe0) after fixup
-function/088_many_params2.s:496: Error: invalid constant (3fe0) after fixup
-function/088_many_params2.s:524: Error: invalid constant (3fe0) after fixup
-function/088_many_params2.s:546: Error: invalid constant (3fe0) after fixup
-function/088_many_params2.s:569: Error: invalid constant (3fe0) after fixup
-function/088_many_params2.s:597: Error: invalid constant (3fe0) after fixup
-function/088_many_params2.s:626: Error: invalid constant (3fe0) after fixup
-function/088_many_params2.s:674: Error: invalid constant (3fe0) after fixup
+qemu: uncaught target signal 11 (Segmentation fault) - core dumped
+139

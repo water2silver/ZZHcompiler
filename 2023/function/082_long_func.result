@@ -852,3 +852,4 @@ function/082_long_func.s:9470: Error: invalid literal constant: pool needs to be
 function/082_long_func.s:9472: Error: invalid literal constant: pool needs to be closer
 function/082_long_func.s:9475: Error: invalid literal constant: pool needs to be closer
 function/082_long_func.s:9478: Error: invalid literal constant: pool needs to be closer
+function/082_long_func.s:9481: Error: invalid literal constant: pool needs to be closer

@@ -85,7 +85,7 @@ std::string ArmInst::outPut()
     if (!arg2.empty()) {
         ret += "," + arg2;
     }
-	if((!ret.empty())&&ret[0]!='.')
+	if((!ret.empty())&&ret[0]!='.'&&ret.size()<50)
 	{
 		ret.resize(50, ' ');
 	}
@@ -168,6 +168,7 @@ void ILocArm32::load_imm(int rs_reg_no, int num)
     } else {
         // ldr r8,=0xfff0
         load_label(rs_reg_no, toStr(num, false));
+        label(".ltorg");
     }
 }
 
@@ -316,9 +317,10 @@ void ILocArm32::load_var(int rs_reg_no, Value * var)
 			// 满足条件 var 是数组，并且不能是 形参数组。
 			if(var->array_info!=nullptr && (!var->isParamArray) && (!var->array_info->isSubArray))
 			{
-				emit("add", rsReg,PlatformArm32::regName[var->baseRegNo] ,"#" + std::to_string(off));
-				return;
-			}
+				// emit("add", rsReg,PlatformArm32::regName[var->baseRegNo] ,"#" + std::to_string(off));
+                lea_var(rs_reg_no, var);
+                return;
+            }
 
             // 对于栈内分配的局部数组，可直接在栈指针上进行移动与运算
             // 但对于形参，其保存的是调用函数栈的数组的地址，需要读取出来

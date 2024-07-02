@@ -3,7 +3,7 @@ int L;
 int N;
 
 
-int add(float a0[],float a1[], float a2[],float b0[],float b1[],float b2[],float c0[],float c1[],float c2[])
+int add(int a0[],int a1[], int a2[],int b0[],int b1[],int b2[],int c0[],int c1[],int c2[])
 {
     int i;
     i=0;
@@ -24,7 +24,7 @@ int main()
     N=3;
     M=3;
     L=3;
-    float a0[3], a1[3], a2[3], b0[3], b1[3], b2[3], c0[6], c1[3], c2[3];
+    int a0[3], a1[3], a2[3], b0[3], b1[3], b2[3], c0[6], c1[3], c2[3];
     int i;
     i=0;
     while(i<M)

@@ -553,10 +553,6 @@ void InstSelectorArm32::translate_two_operator(IRInst * inst,
     if (rs->regId != -1) {
         rs_reg_no = rs->regId;
     }
-	// else if (rs->isTemp()) {
-    //     // 临时变量
-    //     rs->regId = rs_reg_no;
-    // }
 
     std::string rs_reg_name = PlatformArm32::regName[rs_reg_no];
 

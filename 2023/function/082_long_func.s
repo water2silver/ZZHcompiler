@@ -9929,6 +9929,9 @@ main:
 	push {r10,fp,lr}                                  
 	sub sp,sp,#136                                    
 	add fp,sp,#0                                      
+	mov r4,#0                                         	@IRInst:assign		0
+	str r4,[fp]                                       	@IRInst:assign		0
+	b .L825                                           
 	mov r4,#0                                         	@IRInst:mul	%t1528	0	4
 	mov r5,#4                                         	@IRInst:mul	%t1528	0	4
 	mul r6,r4,r5                                      	@IRInst:mul	%t1528	0	4

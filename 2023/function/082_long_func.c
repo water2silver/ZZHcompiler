@@ -1379,7 +1379,8 @@ int long_func() {
 }
 
 int main() {
-	// SHIFT_TABLE[16] = {1,   2,   4,    8,    16,   32,   64,    128,
+    return 0;
+    // SHIFT_TABLE[16] = {1,   2,   4,    8,    16,   32,   64,    128,
     //                          256, 512, 1024, 2048, 4096, 8192, 16384, 32768};
     SHIFT_TABLE[0] = 1;
     SHIFT_TABLE[1] = 2;

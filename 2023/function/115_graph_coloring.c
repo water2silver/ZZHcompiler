@@ -73,6 +73,7 @@ int main() {
     graph[3][1] = 0;
     graph[3][2] = 1;
     graph[3][3] = 0;
+    int m = 3;
 
     int color[V], i = 0;
     while (i < V) {

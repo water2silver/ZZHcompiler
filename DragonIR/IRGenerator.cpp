@@ -711,6 +711,18 @@ bool IRGenerator::ir_mod(ast_node * node)
     node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_SUB_I, resultValue, left->val, mulValue));
 
     node->val = resultValue;
+	if(node->parent->node_type==ast_operator_type::AST_OP_COND
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND)
+	{
+        Value * tmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
+        node->blockInsts.addInst(new CondNotZeroIRInst(tmpValue, node->val));
+        node->val = tmpValue;
+		//似乎是垃圾操作。
+        IRInst * newIR = new IfIRInst(IRInstOperator::IRINST_OP_IF, node->val, node->label_true, node->label_false);
+        // newIR->setAddition("beq");
+        node->blockInsts.addInst(newIR);
+    }
 
     return true;
 }
@@ -1602,7 +1614,7 @@ bool IRGenerator::ir_array_visit(ast_node * node)
         node->val = tmpValue;
     }
 
-	if( (node->parent->sons.size()==1&&node->parent->node_type==ast_operator_type::AST_OP_COND ) 
+	if( node->parent->node_type==ast_operator_type::AST_OP_COND 
 	|| (node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND 
 	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR
 	|| node->parent->node_type==ast_operator_type::AST_OP_NEGATIVE

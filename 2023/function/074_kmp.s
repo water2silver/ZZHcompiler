@@ -478,12 +478,14 @@ main:
 	bl read_str                                       
 	ldr r9,=32772                                     	@IRInst:assign	%t80	r0
 	str r0,[fp,r9]                                    	@IRInst:assign	%t80	r0
-	add r0,fp,#16388                                  	@IRInst:assign	r0	src
+	ldr r0,=16388                                     	@IRInst:assign	r0	src
+	add r0,fp,r0                                      	@IRInst:assign	r0	src
 	bl read_str                                       
 	ldr r9,=32776                                     	@IRInst:assign	%t81	r0
 	str r0,[fp,r9]                                    	@IRInst:assign	%t81	r0
 	add r0,fp,#4                                      	@IRInst:assign	r0	dst
-	add r1,fp,#16388                                  	@IRInst:assign	r1	src
+	ldr r1,=16388                                     	@IRInst:assign	r1	src
+	add r1,fp,r1                                      	@IRInst:assign	r1	src
 	bl KMP                                            
 	ldr r9,=32780                                     	@IRInst:assign	%t82	r0
 	str r0,[fp,r9]                                    	@IRInst:assign	%t82	r0

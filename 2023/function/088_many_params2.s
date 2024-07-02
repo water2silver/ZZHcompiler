@@ -312,7 +312,8 @@ main:
 	mul r6,r4,r5                                      	@IRInst:mul	%t65	%t64	4
 	ldr r5,=28948                                     	@IRInst:mul	%t65	%t64	4
 	str r6,[fp,r5]                                    	@IRInst:mul	%t65	%t64	4
-	add r4,fp,#16352                                  	@IRInst:add	%t66	b	%t65
+	ldr r4,=16352                                     	@IRInst:add	%t66	b	%t65
+	add r4,fp,r4                                      	@IRInst:add	%t66	b	%t65
 	ldr r5,=28948                                     	@IRInst:add	%t66	b	%t65
 	ldr r5,[fp,r5]                                    	@IRInst:add	%t66	b	%t65
 	add r6,r4,r5                                      	@IRInst:add	%t66	b	%t65
@@ -339,7 +340,8 @@ main:
 	mul r6,r4,r5                                      	@IRInst:mul	%t69	%t68	4
 	ldr r5,=28964                                     	@IRInst:mul	%t69	%t68	4
 	str r6,[fp,r5]                                    	@IRInst:mul	%t69	%t68	4
-	add r4,fp,#16352                                  	@IRInst:add	%t70	b	%t69
+	ldr r4,=16352                                     	@IRInst:add	%t70	b	%t69
+	add r4,fp,r4                                      	@IRInst:add	%t70	b	%t69
 	ldr r5,=28964                                     	@IRInst:add	%t70	b	%t69
 	ldr r5,[fp,r5]                                    	@IRInst:add	%t70	b	%t69
 	add r6,r4,r5                                      	@IRInst:add	%t70	b	%t69
@@ -366,7 +368,8 @@ main:
 	mul r6,r4,r5                                      	@IRInst:mul	%t73	%t72	4
 	ldr r5,=28980                                     	@IRInst:mul	%t73	%t72	4
 	str r6,[fp,r5]                                    	@IRInst:mul	%t73	%t72	4
-	add r4,fp,#16352                                  	@IRInst:add	%t74	b	%t73
+	ldr r4,=16352                                     	@IRInst:add	%t74	b	%t73
+	add r4,fp,r4                                      	@IRInst:add	%t74	b	%t73
 	ldr r5,=28980                                     	@IRInst:add	%t74	b	%t73
 	ldr r5,[fp,r5]                                    	@IRInst:add	%t74	b	%t73
 	add r6,r4,r5                                      	@IRInst:add	%t74	b	%t73
@@ -393,7 +396,8 @@ main:
 	mul r6,r4,r5                                      	@IRInst:mul	%t77	%t76	4
 	ldr r5,=28996                                     	@IRInst:mul	%t77	%t76	4
 	str r6,[fp,r5]                                    	@IRInst:mul	%t77	%t76	4
-	add r4,fp,#16352                                  	@IRInst:add	%t78	b	%t77
+	ldr r4,=16352                                     	@IRInst:add	%t78	b	%t77
+	add r4,fp,r4                                      	@IRInst:add	%t78	b	%t77
 	ldr r5,=28996                                     	@IRInst:add	%t78	b	%t77
 	ldr r5,[fp,r5]                                    	@IRInst:add	%t78	b	%t77
 	add r6,r4,r5                                      	@IRInst:add	%t78	b	%t77
@@ -493,7 +497,8 @@ main:
 	mul r6,r4,r5                                      	@IRInst:mul	%t95	%t94	4
 	ldr r5,=29332                                     	@IRInst:mul	%t95	%t94	4
 	str r6,[fp,r5]                                    	@IRInst:mul	%t95	%t94	4
-	add r4,fp,#16352                                  	@IRInst:add	%t96	b	%t95
+	ldr r4,=16352                                     	@IRInst:add	%t96	b	%t95
+	add r4,fp,r4                                      	@IRInst:add	%t96	b	%t95
 	ldr r5,=29332                                     	@IRInst:add	%t96	b	%t95
 	ldr r5,[fp,r5]                                    	@IRInst:add	%t96	b	%t95
 	add r6,r4,r5                                      	@IRInst:add	%t96	b	%t95
@@ -521,7 +526,8 @@ main:
 	mul r6,r4,r5                                      	@IRInst:mul	%t100	%t99	4
 	ldr r5,=29352                                     	@IRInst:mul	%t100	%t99	4
 	str r6,[fp,r5]                                    	@IRInst:mul	%t100	%t99	4
-	add r4,fp,#16352                                  	@IRInst:add	%t101	b	%t100
+	ldr r4,=16352                                     	@IRInst:add	%t101	b	%t100
+	add r4,fp,r4                                      	@IRInst:add	%t101	b	%t100
 	ldr r5,=29352                                     	@IRInst:add	%t101	b	%t100
 	ldr r5,[fp,r5]                                    	@IRInst:add	%t101	b	%t100
 	add r6,r4,r5                                      	@IRInst:add	%t101	b	%t100
@@ -543,7 +549,8 @@ main:
 	mul r6,r4,r5                                      	@IRInst:mul	%t104	%t103	4
 	ldr r5,=29368                                     	@IRInst:mul	%t104	%t103	4
 	str r6,[fp,r5]                                    	@IRInst:mul	%t104	%t103	4
-	add r4,fp,#16352                                  	@IRInst:add	%t105	b	%t104
+	ldr r4,=16352                                     	@IRInst:add	%t105	b	%t104
+	add r4,fp,r4                                      	@IRInst:add	%t105	b	%t104
 	ldr r5,=29368                                     	@IRInst:add	%t105	b	%t104
 	ldr r5,[fp,r5]                                    	@IRInst:add	%t105	b	%t104
 	add r6,r4,r5                                      	@IRInst:add	%t105	b	%t104
@@ -566,7 +573,8 @@ main:
 	mul r6,r4,r5                                      	@IRInst:mul	%t108	%t107	4
 	ldr r5,=29616                                     	@IRInst:mul	%t108	%t107	4
 	str r6,[fp,r5]                                    	@IRInst:mul	%t108	%t107	4
-	add r4,fp,#16352                                  	@IRInst:add	%t109	b	%t108
+	ldr r4,=16352                                     	@IRInst:add	%t109	b	%t108
+	add r4,fp,r4                                      	@IRInst:add	%t109	b	%t108
 	ldr r5,=29616                                     	@IRInst:add	%t109	b	%t108
 	ldr r5,[fp,r5]                                    	@IRInst:add	%t109	b	%t108
 	add r6,r4,r5                                      	@IRInst:add	%t109	b	%t108
@@ -594,7 +602,8 @@ main:
 	mul r6,r4,r5                                      	@IRInst:mul	%t113	%t112	4
 	ldr r5,=29636                                     	@IRInst:mul	%t113	%t112	4
 	str r6,[fp,r5]                                    	@IRInst:mul	%t113	%t112	4
-	add r4,fp,#16352                                  	@IRInst:add	%t114	b	%t113
+	ldr r4,=16352                                     	@IRInst:add	%t114	b	%t113
+	add r4,fp,r4                                      	@IRInst:add	%t114	b	%t113
 	ldr r5,=29636                                     	@IRInst:add	%t114	b	%t113
 	ldr r5,[fp,r5]                                    	@IRInst:add	%t114	b	%t113
 	add r6,r4,r5                                      	@IRInst:add	%t114	b	%t113
@@ -623,7 +632,8 @@ main:
 	str r4,[sp,#16]                                   	@IRInst:assign	%m134	%t115
 	ldr r0,=29024                                     	@IRInst:assign	r0	%t84
 	ldr r0,[fp,r0]                                    	@IRInst:assign	r0	%t84
-	add r1,fp,#16352                                  	@IRInst:assign	r1	b
+	ldr r1,=16352                                     	@IRInst:assign	r1	b
+	add r1,fp,r1                                      	@IRInst:assign	r1	b
 	ldr r2,=29044                                     	@IRInst:assign	r2	%t89
 	ldr r2,[fp,r2]                                    	@IRInst:assign	r2	%t89
 	ldr r3,=29056                                     	@IRInst:assign	r3	%t92
@@ -671,7 +681,8 @@ main:
 	mul r6,r4,r5                                      	@IRInst:mul	%t121	%t120	4
 	ldr r5,=29668                                     	@IRInst:mul	%t121	%t120	4
 	str r6,[fp,r5]                                    	@IRInst:mul	%t121	%t120	4
-	add r4,fp,#16352                                  	@IRInst:add	%t122	b	%t121
+	ldr r4,=16352                                     	@IRInst:add	%t122	b	%t121
+	add r4,fp,r4                                      	@IRInst:add	%t122	b	%t121
 	ldr r5,=29668                                     	@IRInst:add	%t122	b	%t121
 	ldr r5,[fp,r5]                                    	@IRInst:add	%t122	b	%t121
 	add r6,r4,r5                                      	@IRInst:add	%t122	b	%t121

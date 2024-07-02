@@ -374,8 +374,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 45
-#define YY_END_OF_BUFFER 46
+#define YY_NUM_RULES 46
+#define YY_END_OF_BUFFER 47
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -385,18 +385,18 @@ struct yy_trans_info
 	};
 static const flex_int16_t yy_accept[108] =
     {   0,
-        0,    0,    0,    0,    0,    0,    0,    0,   46,   44,
-       42,   43,   43,   39,   27,   44,   21,   22,   25,   24,
-       32,   23,   26,    6,    5,   29,   35,   28,   36,   18,
-       19,   20,   18,   18,   18,   18,   18,   18,   18,   18,
-       30,   44,   31,    3,    3,    3,   45,   42,   43,   34,
-       40,    1,    0,    6,    0,    5,   37,   33,   38,   18,
-       18,   18,   18,   18,   18,   11,   18,   18,   18,   18,
-       41,    3,    3,    2,    0,    4,    7,   18,   18,   18,
-       18,   10,   18,   18,   18,   18,   18,   18,   12,   18,
-       18,   15,   18,   17,   14,   18,   18,   18,   13,   18,
+        0,    0,    0,    0,    0,    0,    0,    0,   47,   45,
+       43,   44,   44,   40,   28,   45,   22,   23,   26,   25,
+       33,   24,   27,    7,    6,   30,   36,   29,   37,   19,
+       20,   21,   19,   19,   19,   19,   19,   19,   19,   19,
+       31,   45,   32,    3,    3,    3,   46,   43,   44,   35,
+       41,    1,    5,    7,    0,    6,   38,   34,   39,   19,
+       19,   19,   19,   19,   19,   12,   19,   19,   19,   19,
+       42,    3,    3,    2,    0,    4,    8,   19,   19,   19,
+       19,   11,   19,   19,   19,   19,   19,   19,   13,   19,
+       19,   16,   19,   18,   15,   19,   19,   19,   14,   19,
 
-       18,    9,   18,   18,   16,    8,    0
+       19,   10,   19,   19,   17,    9,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -545,11 +545,11 @@ static const flex_int16_t yy_chk[290] =
     } ;
 
 /* Table of booleans, true if rule could match eol. */
-static const flex_int32_t yy_rule_can_match_eol[46] =
+static const flex_int32_t yy_rule_can_match_eol[47] =
     {   0,
 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 1, 0, 0,     };
+    0, 0, 0, 0, 1, 0, 0,     };
 
 static yy_state_type yy_last_accepting_state;
 static char *yy_last_accepting_cpos;
@@ -919,7 +919,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 72 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+#line 71 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{
+
+			}
+	YY_BREAK
+case 6:
+YY_RULE_SETUP
+#line 75 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
 {
                 // 词法识别无符号整数，注意对于负数，则需要识别为负号和无符号数两个Token
                 yylval.integer_num.val = (uint32_t)strtol(yytext, (char **)NULL, 10);
@@ -927,9 +934,9 @@ YY_RULE_SETUP
                 return T_DIGIT;
             }
 	YY_BREAK
-case 6:
+case 7:
 YY_RULE_SETUP
-#line 79 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+#line 82 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
 {
 				// 词法识别八进制无符号整数
 				yylval.integer_num.val = (uint32_t)strtol(yytext, (char **)NULL, 8);
@@ -937,9 +944,9 @@ YY_RULE_SETUP
                 return T_DIGIT;
         	}
 	YY_BREAK
-case 7:
+case 8:
 YY_RULE_SETUP
-#line 86 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+#line 89 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
 {
 				// 词法识别十六进制无符号整数
 				yylval.integer_num.val = (uint32_t)strtol(yytext, (char **)NULL, 16);
@@ -947,236 +954,236 @@ YY_RULE_SETUP
                 return T_DIGIT;
             }
 	YY_BREAK
-case 8:
+case 9:
 YY_RULE_SETUP
-#line 93 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+#line 96 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
 {
                 // function作为关键字，作为特殊ID被预留
                 return T_FUNC;
             }
 	YY_BREAK
-case 9:
+case 10:
 YY_RULE_SETUP
-#line 97 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+#line 100 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
 {
                 // return关键字
                 return T_RETURN;
             }
 	YY_BREAK
-case 10:
+case 11:
 YY_RULE_SETUP
-#line 101 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+#line 104 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
 {
 				// int
 				return T_INT;
 }
 	YY_BREAK
-case 11:
+case 12:
 YY_RULE_SETUP
-#line 105 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+#line 108 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
 {
 				// if
 				return T_IF;
 }
 	YY_BREAK
-case 12:
+case 13:
 YY_RULE_SETUP
-#line 109 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+#line 112 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
 {
 				//else
 				return T_ELSE;
 }
 	YY_BREAK
-case 13:
+case 14:
 YY_RULE_SETUP
-#line 113 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+#line 116 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
 {
 				//while
 				return T_WHILE;
 }
 	YY_BREAK
-case 14:
+case 15:
 YY_RULE_SETUP
-#line 117 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+#line 120 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
 {
 				//const
 				return T_CONST;
 }
 	YY_BREAK
-case 15:
+case 16:
 YY_RULE_SETUP
-#line 121 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+#line 124 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
 {
 				//const
 				return T_VOID;
 }
 	YY_BREAK
-case 16:
+case 17:
 YY_RULE_SETUP
-#line 125 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+#line 128 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
 {
 				//continue
 				return T_CONTINUE;
 }
 	YY_BREAK
-case 17:
+case 18:
 YY_RULE_SETUP
-#line 129 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+#line 132 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
 {
 				//continue
 				return T_BREAK;
 }
 	YY_BREAK
-case 18:
+case 19:
 YY_RULE_SETUP
-#line 133 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+#line 136 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
 {
                 yylval.var_id.id = strdup(yytext);
                 yylval.var_id.lineno = yylineno;
                 return T_ID;
             }
 	YY_BREAK
-case 19:
-YY_RULE_SETUP
-#line 138 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return '[';}
-	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 139 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return ']';}
+#line 141 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return '[';}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 141 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return '(';}
+#line 142 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return ']';}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 142 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return ')';}
+#line 144 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return '(';}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 144 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return T_SUB;}
+#line 145 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return ')';}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 145 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return T_ADD;}
+#line 147 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return T_SUB;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 147 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return T_TIMES;}
+#line 148 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return T_ADD;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 148 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return T_DIV;}
+#line 150 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return T_TIMES;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 149 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return T_MOD;}
+#line 151 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return T_DIV;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 151 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return '=';}
+#line 152 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return T_MOD;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 152 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return ';';}
+#line 154 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return '=';}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 154 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return '{';}
+#line 155 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return ';';}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 155 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return '}'; }
+#line 157 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return '{';}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 157 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return ','; }
+#line 158 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return '}'; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 159 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return T_EQUAL;}
+#line 160 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return ','; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 160 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return T_NOT_EQUAL;}
+#line 162 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return T_EQUAL;}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 161 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return T_LESS_THAN;}
+#line 163 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return T_NOT_EQUAL;}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 162 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return T_GREATER_THEN;}
+#line 164 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return T_LESS_THAN;}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 163 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return T_LESS_EQUAL;}
+#line 165 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return T_GREATER_THEN;}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 164 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return T_GREATER_EQUAL;}
+#line 166 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return T_LESS_EQUAL;}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 165 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return T_NOT;}
+#line 167 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return T_GREATER_EQUAL;}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 166 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return T_LOGICAL_AND;}
+#line 168 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return T_NOT;}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 167 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-{return T_LOGICAL_OR;}
+#line 169 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return T_LOGICAL_AND;}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 169 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
-;
+#line 170 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+{return T_LOGICAL_OR;}
 	YY_BREAK
 case 43:
-/* rule 43 can match eol */
 YY_RULE_SETUP
-#line 171 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+#line 172 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
 ;
 	YY_BREAK
 case 44:
+/* rule 44 can match eol */
 YY_RULE_SETUP
-#line 173 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+#line 174 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+;
+	YY_BREAK
+case 45:
+YY_RULE_SETUP
+#line 176 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
 {
                 printf("Line %d: Invalid char %s\n", yylineno, yytext);
                 // 词法识别错误
                 return 257;
             }
 	YY_BREAK
-case 45:
+case 46:
 YY_RULE_SETUP
-#line 178 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+#line 181 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 1180 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorFlex.cpp"
+#line 1187 "/home/zhao/calculator/frontend/flexbison/autogenerated/CalculatorFlex.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(HEX):
 case YY_STATE_EOF(OCT):
@@ -2196,6 +2203,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 178 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
+#line 181 "/home/zhao/calculator/frontend/flexbison/Calculator.l"
 
 

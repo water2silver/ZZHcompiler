@@ -40,11 +40,11 @@ define i32 @set_d(i32 %t11) {
 define i32 @main() {
 	declare i32 %l12
 	declare i32 %l21 ; variable: c
-	declare i32 %l40 ; variable: i0
-	declare i32 %l41 ; variable: i1
-	declare i32 %l42 ; variable: i2
-	declare i32 %l43 ; variable: i3
-	declare i32 %l44 ; variable: i4
+	declare i32 %l42 ; variable: i0
+	declare i32 %l43 ; variable: i1
+	declare i32 %l44 ; variable: i2
+	declare i32 %l45 ; variable: i3
+	declare i32 %l46 ; variable: i4
 	declare i32 %t13
 	declare i1 %t14
 	declare i32 %t15
@@ -71,28 +71,32 @@ define i32 @main() {
 	declare i1 %t37
 	declare i1 %t38
 	declare i1 %t39
-	declare i32 %t45
-	declare i1 %t46
+	declare i32 %t40
+	declare i1 %t41
 	declare i32 %t47
 	declare i1 %t48
 	declare i32 %t49
 	declare i1 %t50
 	declare i32 %t51
 	declare i1 %t52
-	declare i1 %t53
+	declare i32 %t53
 	declare i1 %t54
 	declare i1 %t55
 	declare i1 %t56
-	declare i32 %t57
+	declare i1 %t57
 	declare i1 %t58
-	declare i1 %t59
+	declare i32 %t59
 	declare i1 %t60
 	declare i1 %t61
-	declare i32 %t62
+	declare i1 %t62
 	declare i1 %t63
 	declare i1 %t64
-	declare i1 %t65
+	declare i32 %t65
 	declare i1 %t66
+	declare i1 %t67
+	declare i1 %t68
+	declare i1 %t69
+	declare i1 %t70
 .L7:
 	entry
 	@a = 2
@@ -187,83 +191,87 @@ define i32 @main() {
 	call void @putch(i32 69)
 .L38:
 .L39:
-	%t39 = icmp eq -1, 0
-	bc %t39, label .L40, label .L41
+	%t39 = icmp eq 0, 0
+	%t40 = neg %t39
+	%t41 = icmp eq -1, %t40
+	bc %t41, label .L40, label .L41
 .L40:
 	call void @putch(i32 70)
 .L41:
 .L42:
 	call void @putch(i32 10)
-	%l40 = 0
-	%l41 = 1
-	%l42 = 2
-	%l43 = 3
-	%l44 = 4
+	%l42 = 0
+	%l43 = 1
+	%l44 = 2
+	%l45 = 3
+	%l46 = 4
 .L43:
-	%t45 = %l40
-	%t46 = icmp ne %t45, 0
-	bc %t46, label .L46, label .L45
-.L46:
-	%t47 = %l41
+	%t47 = %l42
 	%t48 = icmp ne %t47, 0
-	bc %t48, label .L44, label .L45
+	bc %t48, label .L46, label .L45
+.L46:
+	%t49 = %l43
+	%t50 = icmp ne %t49, 0
+	bc %t50, label .L44, label .L45
 .L44:
 	call void @putch(i32 32)
 	br label .L43
 .L45:
-	%t49 = %l40
-	%t50 = icmp ne %t49, 0
-	bc %t50, label .L47, label .L50
-.L50:
-	%t51 = %l41
+	%t51 = %l42
 	%t52 = icmp ne %t51, 0
-	bc %t52, label .L47, label .L48
+	bc %t52, label .L47, label .L50
+.L50:
+	%t53 = %l43
+	%t54 = icmp ne %t53, 0
+	bc %t54, label .L47, label .L48
 .L47:
 	call void @putch(i32 67)
 .L48:
 .L49:
-	%t53 = icmp ge %l40, %l41
-	bc %t53, label .L51, label .L54
+	%t55 = icmp ge %l42, %l43
+	bc %t55, label .L51, label .L54
 .L54:
-	%t54 = icmp le %l41, %l40
-	bc %t54, label .L51, label .L52
+	%t56 = icmp le %l43, %l42
+	bc %t56, label .L51, label .L52
 .L51:
 	call void @putch(i32 72)
 .L52:
 .L53:
-	%t55 = icmp ge %l42, %l41
-	bc %t55, label .L58, label .L56
+	%t57 = icmp ge %l44, %l43
+	bc %t57, label .L58, label .L56
 .L58:
-	%t56 = icmp eq %l44, %l43
-	bc %t56, label .L56, label .L55
+	%t58 = icmp eq %l46, %l45
+	bc %t58, label .L56, label .L55
 .L55:
 	call void @putch(i32 73)
 .L56:
 .L57:
-	%t57 = %l41
-	%t58 = icmp ne %t57, 0
-	%t59 = icmp eq %l40, %t58
-	bc %t59, label .L63, label .L62
+	%t59 = %l43
+	%t60 = icmp ne %t59, 0
+	%t61 = icmp eq %t60, 0
+	%t62 = icmp eq %l42, %t61
+	bc %t62, label .L63, label .L62
 .L63:
-	%t60 = icmp lt %l43, %l43
-	bc %t60, label .L59, label .L62
+	%t63 = icmp lt %l45, %l45
+	bc %t63, label .L59, label .L62
 .L62:
-	%t61 = icmp ge %l44, %l44
-	bc %t61, label .L59, label .L60
+	%t64 = icmp ge %l46, %l46
+	bc %t64, label .L59, label .L60
 .L59:
 	call void @putch(i32 74)
 .L60:
 .L61:
-	%t62 = %l41
-	%t63 = icmp ne %t62, 0
-	%t64 = icmp eq %l40, %t63
-	bc %t64, label .L64, label .L67
+	%t65 = %l43
+	%t66 = icmp ne %t65, 0
+	%t67 = icmp eq %t66, 0
+	%t68 = icmp eq %l42, %t67
+	bc %t68, label .L64, label .L67
 .L67:
-	%t65 = icmp lt %l43, %l43
-	bc %t65, label .L68, label .L65
+	%t69 = icmp lt %l45, %l45
+	bc %t69, label .L68, label .L65
 .L68:
-	%t66 = icmp ge %l44, %l44
-	bc %t66, label .L64, label .L65
+	%t70 = icmp ge %l46, %l46
+	bc %t70, label .L64, label .L65
 .L64:
 	call void @putch(i32 75)
 .L65:

@@ -851,7 +851,9 @@ eval:
 	bl next_token                                     
 	str r0,[fp,#2080]                                 	@IRInst:assign	%t117	r0
 .L75:
-	add r0,fp,#1028                                   	@IRInst:assign	r0	ops
+	ldr r0,=1028                                      	@IRInst:assign	r0	ops
+.ltorg	@IRInst:assign	r0	ops
+	add r0,fp,r0                                      	@IRInst:assign	r0	ops
 	bl stack_size                                     
 	str r0,[fp,#2084]                                 	@IRInst:assign	%t118	r0
 	ldr r4,[fp,#2084]                                 	@IRInst:not_zero	%t119	%t118	0
@@ -863,7 +865,9 @@ eval:
 	beq .L77                                          
 	b .L78                                            
 .L78:
-	add r0,fp,#1028                                   	@IRInst:assign	r0	ops
+	ldr r0,=1028                                      	@IRInst:assign	r0	ops
+.ltorg	@IRInst:assign	r0	ops
+	add r0,fp,r0                                      	@IRInst:assign	r0	ops
 	bl stack_peek                                     
 	str r0,[fp,#2092]                                 	@IRInst:assign	%t120	r0
 	ldr r0,[fp,#2092]                                 	@IRInst:assign	r0	%t120
@@ -881,7 +885,9 @@ eval:
 	bge .L76                                          
 	b .L77                                            
 .L76:
-	add r0,fp,#1028                                   	@IRInst:assign	r0	ops
+	ldr r0,=1028                                      	@IRInst:assign	r0	ops
+.ltorg	@IRInst:assign	r0	ops
+	add r0,fp,r0                                      	@IRInst:assign	r0	ops
 	bl stack_pop                                      
 	str r0,[fp,#2112]                                 	@IRInst:assign	%t125	r0
 	ldr r4,[fp,#2112]                                 	@IRInst:assign	cur_op	%t125
@@ -906,7 +912,9 @@ eval:
 	bl stack_push                                     
 	b .L75                                            
 .L77:
-	add r0,fp,#1028                                   	@IRInst:assign	r0	ops
+	ldr r0,=1028                                      	@IRInst:assign	r0	ops
+.ltorg	@IRInst:assign	r0	ops
+	add r0,fp,r0                                      	@IRInst:assign	r0	ops
 	ldr r1,[fp,#2068]                                 	@IRInst:assign	r1	op
 	bl stack_push                                     
 	ldr r4,.global_11_cur_token                       	@IRInst:beq	%t131	cur_token	TOKEN_NUM
@@ -937,7 +945,9 @@ eval:
 	bl next_token                                     
 	str r0,[fp,#2148]                                 	@IRInst:assign	%t134	r0
 .L82:
-	add r0,fp,#1028                                   	@IRInst:assign	r0	ops
+	ldr r0,=1028                                      	@IRInst:assign	r0	ops
+.ltorg	@IRInst:assign	r0	ops
+	add r0,fp,r0                                      	@IRInst:assign	r0	ops
 	bl stack_size                                     
 	str r0,[fp,#2152]                                 	@IRInst:assign	%t135	r0
 	ldr r4,[fp,#2152]                                 	@IRInst:not_zero	%t136	%t135	0
@@ -949,7 +959,9 @@ eval:
 	beq .L84                                          
 	b .L83                                            
 .L83:
-	add r0,fp,#1028                                   	@IRInst:assign	r0	ops
+	ldr r0,=1028                                      	@IRInst:assign	r0	ops
+.ltorg	@IRInst:assign	r0	ops
+	add r0,fp,r0                                      	@IRInst:assign	r0	ops
 	bl stack_pop                                      
 	str r0,[fp,#2164]                                 	@IRInst:assign	%t138	r0
 	ldr r4,[fp,#2164]                                 	@IRInst:assign	cur_op	%t138

@@ -1,7 +1,2 @@
-function/069_expr_eval.s: Assembler messages:
-function/069_expr_eval.s:854: Error: invalid constant (404) after fixup
-function/069_expr_eval.s:866: Error: invalid constant (404) after fixup
-function/069_expr_eval.s:884: Error: invalid constant (404) after fixup
-function/069_expr_eval.s:909: Error: invalid constant (404) after fixup
-function/069_expr_eval.s:940: Error: invalid constant (404) after fixup
-function/069_expr_eval.s:952: Error: invalid constant (404) after fixup
+qemu: uncaught target signal 11 (Segmentation fault) - core dumped
+139
