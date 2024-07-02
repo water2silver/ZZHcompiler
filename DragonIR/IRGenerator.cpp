@@ -284,8 +284,14 @@ bool IRGenerator::ir_function_formal_params(ast_node * node)
             ast_node * tmp = son->sons[1];
 			while(!tmp->sons.empty())
 			{
-				array_dim.push_back(tmp->sons[0]->integer_val);
-				tmp = tmp->sons[1];
+                int val = tmp->sons[0]->integer_val;
+                // 适用于 const int N = num;的情况
+                ast_node * res_node = ir_visit_ast_node(tmp->sons[0]);
+                if (val == 0 && res_node->val != nullptr && res_node->val->isConst()) {
+                    val = tmp->sons[0]->val->intVal;
+                }
+                array_dim.push_back(val);
+                tmp = tmp->sons[1];
 			}
             array_dim[0] = 0;
             var->set_array_info(array_dim);
