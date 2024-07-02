@@ -168,7 +168,7 @@ void ILocArm32::load_imm(int rs_reg_no, int num)
     } else {
         // ldr r8,=0xfff0
         load_label(rs_reg_no, toStr(num, false));
-        label(".ltorg");
+        // label(".ltorg");
     }
 }
 
@@ -455,7 +455,8 @@ void ILocArm32::allocStack(Function * func, int tmp_reg_no)
     } else {
         // ldr r8,=257
         load_imm(tmp_reg_no, off);
-
+		//似乎只能在这里加？
+        label(".ltorg");
         // sub sp,sp,r8
         emit("sub", "sp", "sp", PlatformArm32::regName[tmp_reg_no]);
     }

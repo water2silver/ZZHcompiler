@@ -1,6 +1,0 @@
-function/123_json.s: Assembler messages:
-function/123_json.s:240: Error: invalid literal constant: pool needs to be closer
-function/123_json.s:2195: Error: invalid constant (46c) after fixup
-function/123_json.s:2236: Error: invalid constant (46c) after fixup
-function/123_json.s:2277: Error: invalid constant (46c) after fixup
-function/123_json.s:2318: Error: invalid constant (46c) after fixup
