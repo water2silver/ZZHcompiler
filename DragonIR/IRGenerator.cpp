@@ -1266,7 +1266,9 @@ bool IRGenerator::ir_var_def(ast_node * node)
                 //
 				node->blockInsts.addInst(res1->blockInsts);
 				node->blockInsts.addInst(res2->blockInsts);
-				node->blockInsts.addInst(new DeclIRInst(IRInstOperator::IRINST_OP_VAR_DEF, res1->val, res2->val));
+				// node->blockInsts.addInst(new DeclIRInst(IRInstOperator::IRINST_OP_VAR_DEF, res1->val, res2->val));
+				node->blockInsts.addInst(new AssignIRInst(res1->val, res2->val));
+
 			}
 		}else //函数外的全局变量
 		{
@@ -1928,8 +1930,8 @@ bool IRGenerator::ir_leaf_node_var_id(ast_node * node)
 		//如果是变量定义。
 		if(node->parent->node_type==ast_operator_type::AST_OP_VAR_DEF||
 		   node->parent->node_type==ast_operator_type::AST_OP_ARRAY_DEF||
-		   (node->parent->node_type == ast_operator_type::AST_OP_ASSIGN && node->parent->parent->node_type==ast_operator_type::AST_OP_VAR_DEF)||
-		   (node->parent->node_type == ast_operator_type::AST_OP_ASSIGN && node->parent->parent->node_type==ast_operator_type::AST_OP_ARRAY_DEF)
+		   (node->parent->node_type == ast_operator_type::AST_OP_ASSIGN && node==node->parent->sons[0] &&node->parent->parent->node_type==ast_operator_type::AST_OP_VAR_DEF)||
+		   (node->parent->node_type == ast_operator_type::AST_OP_ASSIGN && node==node->parent->sons[0] &&node->parent->parent->node_type==ast_operator_type::AST_OP_ARRAY_DEF)
 
 		)
 		{

@@ -23,6 +23,9 @@ exgcd:
 	ldr r4,[fp,#8]                                    	@IRInst:beq	%t9	b	0
 	mov r5,#0                                         	@IRInst:beq	%t9	b	0
 	cmp r4,r5                                         	@IRInst:beq	%t9	b	0
+	moveq r6,#1                                       	@IRInst:beq	%t9	b	0
+	movne r6,#0                                       	@IRInst:beq	%t9	b	0
+	str r6,[fp,#20]                                   	@IRInst:beq	%t9	b	0
 	beq .L3                                           
 	b .L4                                             
 .L3:
@@ -71,8 +74,8 @@ exgcd:
 	ldr r3,[fp,#16]                                   	@IRInst:assign	r3	y
 	bl exgcd                                          
 	str r0,[fp,#56]                                   	@IRInst:assign	%t18	r0
-	ldr r4,[fp,#56]                                   
-	str r4,[fp,#40]                                   
+	ldr r4,[fp,#56]                                   	@IRInst:assign	r	%t18
+	str r4,[fp,#40]                                   	@IRInst:assign	r	%t18
 	mov r4,#0                                         	@IRInst:mul	%t20	0	4
 	mov r5,#4                                         	@IRInst:mul	%t20	0	4
 	mul r6,r4,r5                                      	@IRInst:mul	%t20	0	4
@@ -84,8 +87,8 @@ exgcd:
 	ldr r4,[fp,#68]                                   	@IRInst:assign	%t22	%t21
 	ldr r4,[r4]                                       	@IRInst:assign	%t22	%t21
 	str r4,[fp,#72]                                   	@IRInst:assign	%t22	%t21
-	ldr r4,[fp,#72]                                   
-	str r4,[fp,#60]                                   
+	ldr r4,[fp,#72]                                   	@IRInst:assign	t	%t22
+	str r4,[fp,#60]                                   	@IRInst:assign	t	%t22
 	mov r4,#0                                         	@IRInst:mul	%t25	0	4
 	mov r5,#4                                         	@IRInst:mul	%t25	0	4
 	mul r6,r4,r5                                      	@IRInst:mul	%t25	0	4
@@ -159,10 +162,10 @@ main:
 	push {r10,fp,lr}                                  
 	sub sp,sp,#76                                     
 	add fp,sp,#0                                      
-	mov r4,#7                                         
-	str r4,[fp,#4]                                    
-	mov r4,#15                                        
-	str r4,[fp,#8]                                    
+	mov r4,#7                                         	@IRInst:assign	a	7
+	str r4,[fp,#4]                                    	@IRInst:assign	a	7
+	mov r4,#15                                        	@IRInst:assign	b	15
+	str r4,[fp,#8]                                    	@IRInst:assign	b	15
 	ldr r0,[fp,#4]                                    	@IRInst:assign	r0	a
 	ldr r1,[fp,#8]                                    	@IRInst:assign	r1	b
 	add r2,fp,#12                                     	@IRInst:assign	r2	x

@@ -7,10 +7,17 @@ void merge_sort(int l, int r)
         return;
 
     int mid = (l + r) / 2;
+    // int mid;
+    // mid = (l + r) / 2;
+
     merge_sort(l, mid);
     merge_sort(mid, r);
 
     int i = l, j = mid, k = l;
+    // int i, j, k;
+    // i = l;
+    // j = mid;
+    // k = l;
     while (i < mid && j < r) {
         if (buf[0][i] < buf[0][j]) {
             buf[1][k] = buf[0][i];

@@ -56,12 +56,18 @@ isdigit:
 	ldr r4,[fp,#4]                                    	@IRInst:bge	%t12	x	48
 	mov r5,#48                                        	@IRInst:bge	%t12	x	48
 	cmp r4,r5                                         	@IRInst:bge	%t12	x	48
+	movge r6,#1                                       	@IRInst:bge	%t12	x	48
+	movlt r6,#0                                       	@IRInst:bge	%t12	x	48
+	str r6,[fp,#8]                                    	@IRInst:bge	%t12	x	48
 	bge .L6                                           
 	b .L4                                             
 .L6:
 	ldr r4,[fp,#4]                                    	@IRInst:ble	%t13	x	57
 	mov r5,#57                                        	@IRInst:ble	%t13	x	57
 	cmp r4,r5                                         	@IRInst:ble	%t13	x	57
+	movle r6,#1                                       	@IRInst:ble	%t13	x	57
+	movgt r6,#0                                       	@IRInst:ble	%t13	x	57
+	str r6,[fp,#12]                                   	@IRInst:ble	%t13	x	57
 	ble .L3                                           
 	b .L4                                             
 .L3:
@@ -106,12 +112,15 @@ power:
 	add fp,sp,#0                                      
 	str r0,[fp,#4]                                    	@IRInst:assign	b	r0
 	str r1,[fp,#8]                                    	@IRInst:assign	a	r1
-	mov r4,#1                                         
-	str r4,[fp,#12]                                   
+	mov r4,#1                                         	@IRInst:assign	result	1
+	str r4,[fp,#12]                                   	@IRInst:assign	result	1
 .L9:
 	ldr r4,[fp,#8]                                    	@IRInst:beq	%t20	a	0
 	mov r5,#0                                         	@IRInst:beq	%t20	a	0
 	cmp r4,r5                                         	@IRInst:beq	%t20	a	0
+	moveq r6,#1                                       	@IRInst:beq	%t20	a	0
+	movne r6,#0                                       	@IRInst:beq	%t20	a	0
+	str r6,[fp,#16]                                   	@IRInst:beq	%t20	a	0
 	beq .L11                                          
 	b .L10                                            
 .L10:
@@ -166,20 +175,26 @@ getstr:
 	str r0,[fp,#4]                                    	@IRInst:assign	get	r0
 	bl getch                                          
 	str r0,[fp,#12]                                   	@IRInst:assign	%t27	r0
-	ldr r4,[fp,#12]                                   
-	str r4,[fp,#8]                                    
-	mov r4,#0                                         
-	str r4,[fp,#16]                                   
+	ldr r4,[fp,#12]                                   	@IRInst:assign	x	%t27
+	str r4,[fp,#8]                                    	@IRInst:assign	x	%t27
+	mov r4,#0                                         	@IRInst:assign	length	0
+	str r4,[fp,#16]                                   	@IRInst:assign	length	0
 .L14:
 	ldr r4,[fp,#8]                                    	@IRInst:beq	%t29	x	13
 	mov r5,#13                                        	@IRInst:beq	%t29	x	13
 	cmp r4,r5                                         	@IRInst:beq	%t29	x	13
+	moveq r6,#1                                       	@IRInst:beq	%t29	x	13
+	movne r6,#0                                       	@IRInst:beq	%t29	x	13
+	str r6,[fp,#20]                                   	@IRInst:beq	%t29	x	13
 	beq .L16                                          
 	b .L17                                            
 .L17:
 	ldr r4,[fp,#8]                                    	@IRInst:beq	%t30	x	10
 	mov r5,#10                                        	@IRInst:beq	%t30	x	10
 	cmp r4,r5                                         	@IRInst:beq	%t30	x	10
+	moveq r6,#1                                       	@IRInst:beq	%t30	x	10
+	movne r6,#0                                       	@IRInst:beq	%t30	x	10
+	str r6,[fp,#24]                                   	@IRInst:beq	%t30	x	10
 	beq .L16                                          
 	b .L15                                            
 .L15:
@@ -591,6 +606,9 @@ find:
 	ldr r4,[r4]                                       	@IRInst:beq	%t82	chat	0
 	mov r5,#0                                         	@IRInst:beq	%t82	chat	0
 	cmp r4,r5                                         	@IRInst:beq	%t82	chat	0
+	moveq r6,#1                                       	@IRInst:beq	%t82	chat	0
+	movne r6,#0                                       	@IRInst:beq	%t82	chat	0
+	str r6,[fp,#32]                                   	@IRInst:beq	%t82	chat	0
 	beq .L30                                          
 	b .L31                                            
 .L30:
@@ -643,13 +661,16 @@ main:
 	ldr r0,.global_9_get                              	@IRInst:assign	r0	get
 	bl getstr                                         
 	str r0,[fp,#8]                                    	@IRInst:assign	%t85	r0
-	ldr r4,[fp,#8]                                    
-	str r4,[fp,#4]                                    
+	ldr r4,[fp,#8]                                    	@IRInst:assign	lengets	%t85
+	str r4,[fp,#4]                                    	@IRInst:assign	lengets	%t85
 .L35:
 	ldr r4,.global_9_i                                	@IRInst:blt	%t86	i	lengets
 	ldr r4,[r4]                                       	@IRInst:blt	%t86	i	lengets
 	ldr r5,[fp,#4]                                    	@IRInst:blt	%t86	i	lengets
 	cmp r4,r5                                         	@IRInst:blt	%t86	i	lengets
+	movlt r6,#1                                       	@IRInst:blt	%t86	i	lengets
+	movge r6,#0                                       	@IRInst:blt	%t86	i	lengets
+	str r6,[fp,#12]                                   	@IRInst:blt	%t86	i	lengets
 	blt .L36                                          
 	b .L37                                            
 .L36:
@@ -671,6 +692,9 @@ main:
 	ldr r4,[fp,#28]                                   	@IRInst:beq	%t91	%t90	1
 	mov r5,#1                                         	@IRInst:beq	%t91	%t90	1
 	cmp r4,r5                                         	@IRInst:beq	%t91	%t90	1
+	moveq r6,#1                                       	@IRInst:beq	%t91	%t90	1
+	movne r6,#0                                       	@IRInst:beq	%t91	%t90	1
+	str r6,[fp,#32]                                   	@IRInst:beq	%t91	%t90	1
 	beq .L38                                          
 	b .L39                                            
 .L38:
@@ -723,6 +747,9 @@ main:
 	ldr r4,[fp,#68]                                   	@IRInst:beq	%t101	%t100	40
 	mov r5,#40                                        	@IRInst:beq	%t101	%t100	40
 	cmp r4,r5                                         	@IRInst:beq	%t101	%t100	40
+	moveq r6,#1                                       	@IRInst:beq	%t101	%t100	40
+	movne r6,#0                                       	@IRInst:beq	%t101	%t100	40
+	str r6,[fp,#72]                                   	@IRInst:beq	%t101	%t100	40
 	beq .L41                                          
 	b .L42                                            
 .L41:
@@ -745,6 +772,9 @@ main:
 	ldr r4,[fp,#84]                                   	@IRInst:beq	%t105	%t104	94
 	mov r5,#94                                        	@IRInst:beq	%t105	%t104	94
 	cmp r4,r5                                         	@IRInst:beq	%t105	%t104	94
+	moveq r6,#1                                       	@IRInst:beq	%t105	%t104	94
+	movne r6,#0                                       	@IRInst:beq	%t105	%t104	94
+	str r6,[fp,#88]                                   	@IRInst:beq	%t105	%t104	94
 	beq .L44                                          
 	b .L45                                            
 .L44:
@@ -767,6 +797,9 @@ main:
 	ldr r4,[fp,#100]                                  	@IRInst:beq	%t109	%t108	41
 	mov r5,#41                                        	@IRInst:beq	%t109	%t108	41
 	cmp r4,r5                                         	@IRInst:beq	%t109	%t108	41
+	moveq r6,#1                                       	@IRInst:beq	%t109	%t108	41
+	movne r6,#0                                       	@IRInst:beq	%t109	%t108	41
+	str r6,[fp,#104]                                  	@IRInst:beq	%t109	%t108	41
 	beq .L47                                          
 	b .L48                                            
 .L47:
@@ -780,6 +813,9 @@ main:
 	ldr r4,[r4]                                       	@IRInst:beq	%t111	c	40
 	mov r5,#40                                        	@IRInst:beq	%t111	c	40
 	cmp r4,r5                                         	@IRInst:beq	%t111	c	40
+	moveq r6,#1                                       	@IRInst:beq	%t111	c	40
+	movne r6,#0                                       	@IRInst:beq	%t111	c	40
+	str r6,[fp,#112]                                  	@IRInst:beq	%t111	c	40
 	beq .L52                                          
 	b .L51                                            
 .L51:
@@ -844,6 +880,9 @@ main:
 	ldr r4,[fp,#152]                                  	@IRInst:beq	%t122	%t121	43
 	mov r5,#43                                        	@IRInst:beq	%t122	%t121	43
 	cmp r4,r5                                         	@IRInst:beq	%t122	%t121	43
+	moveq r6,#1                                       	@IRInst:beq	%t122	%t121	43
+	movne r6,#0                                       	@IRInst:beq	%t122	%t121	43
+	str r6,[fp,#156]                                  	@IRInst:beq	%t122	%t121	43
 	beq .L53                                          
 	b .L54                                            
 .L53:
@@ -863,6 +902,9 @@ main:
 	ldr r4,[fp,#168]                                  	@IRInst:beq	%t126	%t125	43
 	mov r5,#43                                        	@IRInst:beq	%t126	%t125	43
 	cmp r4,r5                                         	@IRInst:beq	%t126	%t125	43
+	moveq r6,#1                                       	@IRInst:beq	%t126	%t125	43
+	movne r6,#0                                       	@IRInst:beq	%t126	%t125	43
+	str r6,[fp,#172]                                  	@IRInst:beq	%t126	%t125	43
 	beq .L57                                          
 	b .L63                                            
 .L63:
@@ -881,6 +923,9 @@ main:
 	ldr r4,[fp,#184]                                  	@IRInst:beq	%t130	%t129	45
 	mov r5,#45                                        	@IRInst:beq	%t130	%t129	45
 	cmp r4,r5                                         	@IRInst:beq	%t130	%t129	45
+	moveq r6,#1                                       	@IRInst:beq	%t130	%t129	45
+	movne r6,#0                                       	@IRInst:beq	%t130	%t129	45
+	str r6,[fp,#188]                                  	@IRInst:beq	%t130	%t129	45
 	beq .L57                                          
 	b .L62                                            
 .L62:
@@ -899,6 +944,9 @@ main:
 	ldr r4,[fp,#200]                                  	@IRInst:beq	%t134	%t133	42
 	mov r5,#42                                        	@IRInst:beq	%t134	%t133	42
 	cmp r4,r5                                         	@IRInst:beq	%t134	%t133	42
+	moveq r6,#1                                       	@IRInst:beq	%t134	%t133	42
+	movne r6,#0                                       	@IRInst:beq	%t134	%t133	42
+	str r6,[fp,#204]                                  	@IRInst:beq	%t134	%t133	42
 	beq .L57                                          
 	b .L61                                            
 .L61:
@@ -917,6 +965,9 @@ main:
 	ldr r4,[fp,#216]                                  	@IRInst:beq	%t138	%t137	47
 	mov r5,#47                                        	@IRInst:beq	%t138	%t137	47
 	cmp r4,r5                                         	@IRInst:beq	%t138	%t137	47
+	moveq r6,#1                                       	@IRInst:beq	%t138	%t137	47
+	movne r6,#0                                       	@IRInst:beq	%t138	%t137	47
+	str r6,[fp,#220]                                  	@IRInst:beq	%t138	%t137	47
 	beq .L57                                          
 	b .L60                                            
 .L60:
@@ -935,6 +986,9 @@ main:
 	ldr r4,[fp,#232]                                  	@IRInst:beq	%t142	%t141	37
 	mov r5,#37                                        	@IRInst:beq	%t142	%t141	37
 	cmp r4,r5                                         	@IRInst:beq	%t142	%t141	37
+	moveq r6,#1                                       	@IRInst:beq	%t142	%t141	37
+	movne r6,#0                                       	@IRInst:beq	%t142	%t141	37
+	str r6,[fp,#236]                                  	@IRInst:beq	%t142	%t141	37
 	beq .L57                                          
 	b .L59                                            
 .L59:
@@ -953,6 +1007,9 @@ main:
 	ldr r4,[fp,#248]                                  	@IRInst:beq	%t146	%t145	94
 	mov r5,#94                                        	@IRInst:beq	%t146	%t145	94
 	cmp r4,r5                                         	@IRInst:beq	%t146	%t145	94
+	moveq r6,#1                                       	@IRInst:beq	%t146	%t145	94
+	movne r6,#0                                       	@IRInst:beq	%t146	%t145	94
+	str r6,[fp,#252]                                  	@IRInst:beq	%t146	%t145	94
 	beq .L57                                          
 	b .L58                                            
 .L57:
@@ -961,6 +1018,9 @@ main:
 	ldr r4,[fp,#256]                                  	@IRInst:beq	%t148	%t147	0
 	mov r5,#0                                         	@IRInst:beq	%t148	%t147	0
 	cmp r4,r5                                         	@IRInst:beq	%t148	%t147	0
+	moveq r6,#1                                       	@IRInst:beq	%t148	%t147	0
+	movne r6,#0                                       	@IRInst:beq	%t148	%t147	0
+	str r6,[fp,#260]                                  	@IRInst:beq	%t148	%t147	0
 	beq .L64                                          
 	b .L65                                            
 .L64:
@@ -988,6 +1048,9 @@ main:
 	ldr r4,[fp,#272]                                  	@IRInst:beq	%t152	%t151	45
 	mov r5,#45                                        	@IRInst:beq	%t152	%t151	45
 	cmp r4,r5                                         	@IRInst:beq	%t152	%t151	45
+	moveq r6,#1                                       	@IRInst:beq	%t152	%t151	45
+	movne r6,#0                                       	@IRInst:beq	%t152	%t151	45
+	str r6,[fp,#276]                                  	@IRInst:beq	%t152	%t151	45
 	beq .L67                                          
 	b .L68                                            
 .L67:
@@ -1007,6 +1070,9 @@ main:
 	ldr r4,[fp,#288]                                  	@IRInst:beq	%t156	%t155	43
 	mov r5,#43                                        	@IRInst:beq	%t156	%t155	43
 	cmp r4,r5                                         	@IRInst:beq	%t156	%t155	43
+	moveq r6,#1                                       	@IRInst:beq	%t156	%t155	43
+	movne r6,#0                                       	@IRInst:beq	%t156	%t155	43
+	str r6,[fp,#292]                                  	@IRInst:beq	%t156	%t155	43
 	beq .L71                                          
 	b .L77                                            
 .L77:
@@ -1025,6 +1091,9 @@ main:
 	ldr r4,[fp,#304]                                  	@IRInst:beq	%t160	%t159	45
 	mov r5,#45                                        	@IRInst:beq	%t160	%t159	45
 	cmp r4,r5                                         	@IRInst:beq	%t160	%t159	45
+	moveq r6,#1                                       	@IRInst:beq	%t160	%t159	45
+	movne r6,#0                                       	@IRInst:beq	%t160	%t159	45
+	str r6,[fp,#308]                                  	@IRInst:beq	%t160	%t159	45
 	beq .L71                                          
 	b .L76                                            
 .L76:
@@ -1043,6 +1112,9 @@ main:
 	ldr r4,[fp,#320]                                  	@IRInst:beq	%t164	%t163	42
 	mov r5,#42                                        	@IRInst:beq	%t164	%t163	42
 	cmp r4,r5                                         	@IRInst:beq	%t164	%t163	42
+	moveq r6,#1                                       	@IRInst:beq	%t164	%t163	42
+	movne r6,#0                                       	@IRInst:beq	%t164	%t163	42
+	str r6,[fp,#324]                                  	@IRInst:beq	%t164	%t163	42
 	beq .L71                                          
 	b .L75                                            
 .L75:
@@ -1061,6 +1133,9 @@ main:
 	ldr r4,[fp,#336]                                  	@IRInst:beq	%t168	%t167	47
 	mov r5,#47                                        	@IRInst:beq	%t168	%t167	47
 	cmp r4,r5                                         	@IRInst:beq	%t168	%t167	47
+	moveq r6,#1                                       	@IRInst:beq	%t168	%t167	47
+	movne r6,#0                                       	@IRInst:beq	%t168	%t167	47
+	str r6,[fp,#340]                                  	@IRInst:beq	%t168	%t167	47
 	beq .L71                                          
 	b .L74                                            
 .L74:
@@ -1079,6 +1154,9 @@ main:
 	ldr r4,[fp,#352]                                  	@IRInst:beq	%t172	%t171	37
 	mov r5,#37                                        	@IRInst:beq	%t172	%t171	37
 	cmp r4,r5                                         	@IRInst:beq	%t172	%t171	37
+	moveq r6,#1                                       	@IRInst:beq	%t172	%t171	37
+	movne r6,#0                                       	@IRInst:beq	%t172	%t171	37
+	str r6,[fp,#356]                                  	@IRInst:beq	%t172	%t171	37
 	beq .L71                                          
 	b .L73                                            
 .L73:
@@ -1097,6 +1175,9 @@ main:
 	ldr r4,[fp,#368]                                  	@IRInst:beq	%t176	%t175	94
 	mov r5,#94                                        	@IRInst:beq	%t176	%t175	94
 	cmp r4,r5                                         	@IRInst:beq	%t176	%t175	94
+	moveq r6,#1                                       	@IRInst:beq	%t176	%t175	94
+	movne r6,#0                                       	@IRInst:beq	%t176	%t175	94
+	str r6,[fp,#372]                                  	@IRInst:beq	%t176	%t175	94
 	beq .L71                                          
 	b .L72                                            
 .L71:
@@ -1105,6 +1186,9 @@ main:
 	ldr r4,[fp,#376]                                  	@IRInst:beq	%t178	%t177	0
 	mov r5,#0                                         	@IRInst:beq	%t178	%t177	0
 	cmp r4,r5                                         	@IRInst:beq	%t178	%t177	0
+	moveq r6,#1                                       	@IRInst:beq	%t178	%t177	0
+	movne r6,#0                                       	@IRInst:beq	%t178	%t177	0
+	str r6,[fp,#380]                                  	@IRInst:beq	%t178	%t177	0
 	beq .L78                                          
 	b .L79                                            
 .L78:
@@ -1132,6 +1216,9 @@ main:
 	ldr r4,[fp,#392]                                  	@IRInst:beq	%t182	%t181	42
 	mov r5,#42                                        	@IRInst:beq	%t182	%t181	42
 	cmp r4,r5                                         	@IRInst:beq	%t182	%t181	42
+	moveq r6,#1                                       	@IRInst:beq	%t182	%t181	42
+	movne r6,#0                                       	@IRInst:beq	%t182	%t181	42
+	str r6,[fp,#396]                                  	@IRInst:beq	%t182	%t181	42
 	beq .L81                                          
 	b .L82                                            
 .L81:
@@ -1151,6 +1238,9 @@ main:
 	ldr r4,[fp,#408]                                  	@IRInst:beq	%t186	%t185	42
 	mov r5,#42                                        	@IRInst:beq	%t186	%t185	42
 	cmp r4,r5                                         	@IRInst:beq	%t186	%t185	42
+	moveq r6,#1                                       	@IRInst:beq	%t186	%t185	42
+	movne r6,#0                                       	@IRInst:beq	%t186	%t185	42
+	str r6,[fp,#412]                                  	@IRInst:beq	%t186	%t185	42
 	beq .L85                                          
 	b .L89                                            
 .L89:
@@ -1169,6 +1259,9 @@ main:
 	ldr r4,[fp,#424]                                  	@IRInst:beq	%t190	%t189	47
 	mov r5,#47                                        	@IRInst:beq	%t190	%t189	47
 	cmp r4,r5                                         	@IRInst:beq	%t190	%t189	47
+	moveq r6,#1                                       	@IRInst:beq	%t190	%t189	47
+	movne r6,#0                                       	@IRInst:beq	%t190	%t189	47
+	str r6,[fp,#428]                                  	@IRInst:beq	%t190	%t189	47
 	beq .L85                                          
 	b .L88                                            
 .L88:
@@ -1187,6 +1280,9 @@ main:
 	ldr r4,[fp,#440]                                  	@IRInst:beq	%t194	%t193	37
 	mov r5,#37                                        	@IRInst:beq	%t194	%t193	37
 	cmp r4,r5                                         	@IRInst:beq	%t194	%t193	37
+	moveq r6,#1                                       	@IRInst:beq	%t194	%t193	37
+	movne r6,#0                                       	@IRInst:beq	%t194	%t193	37
+	str r6,[fp,#444]                                  	@IRInst:beq	%t194	%t193	37
 	beq .L85                                          
 	b .L87                                            
 .L87:
@@ -1205,6 +1301,9 @@ main:
 	ldr r4,[fp,#456]                                  	@IRInst:beq	%t198	%t197	94
 	mov r5,#94                                        	@IRInst:beq	%t198	%t197	94
 	cmp r4,r5                                         	@IRInst:beq	%t198	%t197	94
+	moveq r6,#1                                       	@IRInst:beq	%t198	%t197	94
+	movne r6,#0                                       	@IRInst:beq	%t198	%t197	94
+	str r6,[fp,#460]                                  	@IRInst:beq	%t198	%t197	94
 	beq .L85                                          
 	b .L86                                            
 .L85:
@@ -1213,6 +1312,9 @@ main:
 	ldr r4,[fp,#464]                                  	@IRInst:beq	%t200	%t199	0
 	mov r5,#0                                         	@IRInst:beq	%t200	%t199	0
 	cmp r4,r5                                         	@IRInst:beq	%t200	%t199	0
+	moveq r6,#1                                       	@IRInst:beq	%t200	%t199	0
+	movne r6,#0                                       	@IRInst:beq	%t200	%t199	0
+	str r6,[fp,#468]                                  	@IRInst:beq	%t200	%t199	0
 	beq .L90                                          
 	b .L91                                            
 .L90:
@@ -1240,6 +1342,9 @@ main:
 	ldr r4,[fp,#480]                                  	@IRInst:beq	%t204	%t203	47
 	mov r5,#47                                        	@IRInst:beq	%t204	%t203	47
 	cmp r4,r5                                         	@IRInst:beq	%t204	%t203	47
+	moveq r6,#1                                       	@IRInst:beq	%t204	%t203	47
+	movne r6,#0                                       	@IRInst:beq	%t204	%t203	47
+	str r6,[fp,#484]                                  	@IRInst:beq	%t204	%t203	47
 	beq .L93                                          
 	b .L94                                            
 .L93:
@@ -1259,6 +1364,9 @@ main:
 	ldr r4,[fp,#496]                                  	@IRInst:beq	%t208	%t207	42
 	mov r5,#42                                        	@IRInst:beq	%t208	%t207	42
 	cmp r4,r5                                         	@IRInst:beq	%t208	%t207	42
+	moveq r6,#1                                       	@IRInst:beq	%t208	%t207	42
+	movne r6,#0                                       	@IRInst:beq	%t208	%t207	42
+	str r6,[fp,#500]                                  	@IRInst:beq	%t208	%t207	42
 	beq .L97                                          
 	b .L101                                           
 .L101:
@@ -1277,6 +1385,9 @@ main:
 	ldr r4,[fp,#512]                                  	@IRInst:beq	%t212	%t211	47
 	mov r5,#47                                        	@IRInst:beq	%t212	%t211	47
 	cmp r4,r5                                         	@IRInst:beq	%t212	%t211	47
+	moveq r6,#1                                       	@IRInst:beq	%t212	%t211	47
+	movne r6,#0                                       	@IRInst:beq	%t212	%t211	47
+	str r6,[fp,#516]                                  	@IRInst:beq	%t212	%t211	47
 	beq .L97                                          
 	b .L100                                           
 .L100:
@@ -1295,6 +1406,9 @@ main:
 	ldr r4,[fp,#528]                                  	@IRInst:beq	%t216	%t215	37
 	mov r5,#37                                        	@IRInst:beq	%t216	%t215	37
 	cmp r4,r5                                         	@IRInst:beq	%t216	%t215	37
+	moveq r6,#1                                       	@IRInst:beq	%t216	%t215	37
+	movne r6,#0                                       	@IRInst:beq	%t216	%t215	37
+	str r6,[fp,#532]                                  	@IRInst:beq	%t216	%t215	37
 	beq .L97                                          
 	b .L99                                            
 .L99:
@@ -1313,6 +1427,9 @@ main:
 	ldr r4,[fp,#544]                                  	@IRInst:beq	%t220	%t219	94
 	mov r5,#94                                        	@IRInst:beq	%t220	%t219	94
 	cmp r4,r5                                         	@IRInst:beq	%t220	%t219	94
+	moveq r6,#1                                       	@IRInst:beq	%t220	%t219	94
+	movne r6,#0                                       	@IRInst:beq	%t220	%t219	94
+	str r6,[fp,#548]                                  	@IRInst:beq	%t220	%t219	94
 	beq .L97                                          
 	b .L98                                            
 .L97:
@@ -1321,6 +1438,9 @@ main:
 	ldr r4,[fp,#552]                                  	@IRInst:beq	%t222	%t221	0
 	mov r5,#0                                         	@IRInst:beq	%t222	%t221	0
 	cmp r4,r5                                         	@IRInst:beq	%t222	%t221	0
+	moveq r6,#1                                       	@IRInst:beq	%t222	%t221	0
+	movne r6,#0                                       	@IRInst:beq	%t222	%t221	0
+	str r6,[fp,#556]                                  	@IRInst:beq	%t222	%t221	0
 	beq .L102                                         
 	b .L103                                           
 .L102:
@@ -1348,6 +1468,9 @@ main:
 	ldr r4,[fp,#568]                                  	@IRInst:beq	%t226	%t225	37
 	mov r5,#37                                        	@IRInst:beq	%t226	%t225	37
 	cmp r4,r5                                         	@IRInst:beq	%t226	%t225	37
+	moveq r6,#1                                       	@IRInst:beq	%t226	%t225	37
+	movne r6,#0                                       	@IRInst:beq	%t226	%t225	37
+	str r6,[fp,#572]                                  	@IRInst:beq	%t226	%t225	37
 	beq .L105                                         
 	b .L106                                           
 .L105:
@@ -1367,6 +1490,9 @@ main:
 	ldr r4,[fp,#584]                                  	@IRInst:beq	%t230	%t229	42
 	mov r5,#42                                        	@IRInst:beq	%t230	%t229	42
 	cmp r4,r5                                         	@IRInst:beq	%t230	%t229	42
+	moveq r6,#1                                       	@IRInst:beq	%t230	%t229	42
+	movne r6,#0                                       	@IRInst:beq	%t230	%t229	42
+	str r6,[fp,#588]                                  	@IRInst:beq	%t230	%t229	42
 	beq .L109                                         
 	b .L113                                           
 .L113:
@@ -1385,6 +1511,9 @@ main:
 	ldr r4,[fp,#600]                                  	@IRInst:beq	%t234	%t233	47
 	mov r5,#47                                        	@IRInst:beq	%t234	%t233	47
 	cmp r4,r5                                         	@IRInst:beq	%t234	%t233	47
+	moveq r6,#1                                       	@IRInst:beq	%t234	%t233	47
+	movne r6,#0                                       	@IRInst:beq	%t234	%t233	47
+	str r6,[fp,#604]                                  	@IRInst:beq	%t234	%t233	47
 	beq .L109                                         
 	b .L112                                           
 .L112:
@@ -1403,6 +1532,9 @@ main:
 	ldr r4,[fp,#616]                                  	@IRInst:beq	%t238	%t237	37
 	mov r5,#37                                        	@IRInst:beq	%t238	%t237	37
 	cmp r4,r5                                         	@IRInst:beq	%t238	%t237	37
+	moveq r6,#1                                       	@IRInst:beq	%t238	%t237	37
+	movne r6,#0                                       	@IRInst:beq	%t238	%t237	37
+	str r6,[fp,#620]                                  	@IRInst:beq	%t238	%t237	37
 	beq .L109                                         
 	b .L111                                           
 .L111:
@@ -1415,122 +1547,6 @@ main:
 	ldr r5,[fp,#624]                                  	@IRInst:add	%t240	chas	%t239
 	add r6,r4,r5                                      	@IRInst:add	%t240	chas	%t239
 	str r6,[fp,#628]                                  	@IRInst:add	%t240	chas	%t239
-	ldr r4,[fp,#628]                                  	@IRInst:assign	%t241	%t240
-	ldr r4,[r4]                                       	@IRInst:assign	%t241	%t240
-	str r4,[fp,#632]                                  	@IRInst:assign	%t241	%t240
-	ldr r4,[fp,#632]                                  	@IRInst:beq	%t242	%t241	94
-	mov r5,#94                                        	@IRInst:beq	%t242	%t241	94
-	cmp r4,r5                                         	@IRInst:beq	%t242	%t241	94
-	beq .L109                                         
-	b .L110                                           
-.L109:
-	bl find                                           
-	str r0,[fp,#640]                                  	@IRInst:assign	%t243	r0
-	ldr r4,[fp,#640]                                  	@IRInst:beq	%t244	%t243	0
-	mov r5,#0                                         	@IRInst:beq	%t244	%t243	0
-	cmp r4,r5                                         	@IRInst:beq	%t244	%t243	0
-	beq .L114                                         
-	b .L115                                           
-.L114:
-	b .L110                                           
-.L115:
-.L116:
-	b .L108                                           
-.L110:
-	mov r0,#37                                        	@IRInst:assign	r0	37
-	bl chapush                                        
-.L106:
-.L107:
-	ldr r4,.global_9_ii                               	@IRInst:mul	%t245	ii	4
-	ldr r4,[r4]                                       	@IRInst:mul	%t245	ii	4
-	mov r5,#4                                         	@IRInst:mul	%t245	ii	4
-	mul r6,r4,r5                                      	@IRInst:mul	%t245	ii	4
-	str r6,[fp,#648]                                  	@IRInst:mul	%t245	ii	4
-	ldr r4,.global_9_get2                             	@IRInst:add	%t246	get2	%t245
-	ldr r5,[fp,#648]                                  	@IRInst:add	%t246	get2	%t245
-	add r6,r4,r5                                      	@IRInst:add	%t246	get2	%t245
-	str r6,[fp,#652]                                  	@IRInst:add	%t246	get2	%t245
-	ldr r5,[fp,#652]                                  	@IRInst:assign	%t246	32
-	mov r4,#32                                        	@IRInst:assign	%t246	32
-	str r4,[r5]                                       	@IRInst:assign	%t246	32
-	ldr r4,.global_9_ii                               	@IRInst:add	%t247	ii	1
-	ldr r4,[r4]                                       	@IRInst:add	%t247	ii	1
-	mov r5,#1                                         	@IRInst:add	%t247	ii	1
-	add r6,r4,r5                                      	@IRInst:add	%t247	ii	1
-	str r6,[fp,#656]                                  	@IRInst:add	%t247	ii	1
-	ldr r4,[fp,#656]                                  	@IRInst:assign	ii	%t247
-	ldr r9,.global_9_ii                               	@IRInst:assign	ii	%t247
-	str r4,[r9]                                       	@IRInst:assign	ii	%t247
-.L40:
-	ldr r4,.global_9_i                                	@IRInst:add	%t248	i	1
-	ldr r4,[r4]                                       	@IRInst:add	%t248	i	1
-	mov r5,#1                                         	@IRInst:add	%t248	i	1
-	add r6,r4,r5                                      	@IRInst:add	%t248	i	1
-	str r6,[fp,#660]                                  	@IRInst:add	%t248	i	1
-	ldr r4,[fp,#660]                                  	@IRInst:assign	i	%t248
-	ldr r9,.global_9_i                                	@IRInst:assign	i	%t248
-	str r4,[r9]                                       	@IRInst:assign	i	%t248
-	b .L35                                            
-.L37:
-.L117:
-	ldr r4,.global_9_chat                             	@IRInst:bgt	%t249	chat	0
-	ldr r4,[r4]                                       	@IRInst:bgt	%t249	chat	0
-	mov r5,#0                                         	@IRInst:bgt	%t249	chat	0
-	cmp r4,r5                                         	@IRInst:bgt	%t249	chat	0
-	bgt .L118                                         
-	b .L119                                           
-.L118:
-	bl chapop                                         
-	str r0,[fp,#672]                                  	@IRInst:assign	%t251	r0
-	ldr r4,[fp,#672]                                  
-	str r4,[fp,#668]                                  
-	ldr r4,.global_9_ii                               	@IRInst:mul	%t252	ii	4
-	ldr r4,[r4]                                       	@IRInst:mul	%t252	ii	4
-	mov r5,#4                                         	@IRInst:mul	%t252	ii	4
-	mul r6,r4,r5                                      	@IRInst:mul	%t252	ii	4
-	str r6,[fp,#676]                                  	@IRInst:mul	%t252	ii	4
-	ldr r4,.global_9_get2                             	@IRInst:add	%t253	get2	%t252
-	ldr r5,[fp,#676]                                  	@IRInst:add	%t253	get2	%t252
-	add r6,r4,r5                                      	@IRInst:add	%t253	get2	%t252
-	str r6,[fp,#680]                                  	@IRInst:add	%t253	get2	%t252
-	ldr r5,[fp,#680]                                  	@IRInst:assign	%t253	32
-	mov r4,#32                                        	@IRInst:assign	%t253	32
-	str r4,[r5]                                       	@IRInst:assign	%t253	32
-	ldr r4,.global_9_ii                               	@IRInst:add	%t255	ii	1
-	ldr r4,[r4]                                       	@IRInst:add	%t255	ii	1
-	mov r5,#1                                         	@IRInst:add	%t255	ii	1
-	add r6,r4,r5                                      	@IRInst:add	%t255	ii	1
-	str r6,[fp,#688]                                  	@IRInst:add	%t255	ii	1
-	ldr r4,[fp,#688]                                  	@IRInst:mul	%t254	%t255	4
-	mov r5,#4                                         	@IRInst:mul	%t254	%t255	4
-	mul r6,r4,r5                                      	@IRInst:mul	%t254	%t255	4
-	str r6,[fp,#684]                                  	@IRInst:mul	%t254	%t255	4
-	ldr r4,.global_9_get2                             	@IRInst:add	%t256	get2	%t254
-	ldr r5,[fp,#684]                                  	@IRInst:add	%t256	get2	%t254
-	add r6,r4,r5                                      	@IRInst:add	%t256	get2	%t254
-	str r6,[fp,#692]                                  	@IRInst:add	%t256	get2	%t254
-	ldr r5,[fp,#692]                                  	@IRInst:assign	%t256	c
-	ldr r4,[fp,#668]                                  	@IRInst:assign	%t256	c
-	str r4,[r5]                                       	@IRInst:assign	%t256	c
-	ldr r4,.global_9_ii                               	@IRInst:add	%t257	ii	2
-	ldr r4,[r4]                                       	@IRInst:add	%t257	ii	2
-	mov r5,#2                                         	@IRInst:add	%t257	ii	2
-	add r6,r4,r5                                      	@IRInst:add	%t257	ii	2
-	str r6,[fp,#696]                                  	@IRInst:add	%t257	ii	2
-	ldr r4,[fp,#696]                                  	@IRInst:assign	ii	%t257
-	ldr r9,.global_9_ii                               	@IRInst:assign	ii	%t257
-	str r4,[r9]                                       	@IRInst:assign	ii	%t257
-	b .L117                                           
-.L119:
-	ldr r4,.global_9_ii                               	@IRInst:mul	%t258	ii	4
-	ldr r4,[r4]                                       	@IRInst:mul	%t258	ii	4
-	mov r5,#4                                         	@IRInst:mul	%t258	ii	4
-	mul r6,r4,r5                                      	@IRInst:mul	%t258	ii	4
-	str r6,[fp,#700]                                  	@IRInst:mul	%t258	ii	4
-	ldr r4,.global_9_get2                             	@IRInst:add	%t259	get2	%t258
-	ldr r5,[fp,#700]                                  	@IRInst:add	%t259	get2	%t258
-	add r6,r4,r5                                      	@IRInst:add	%t259	get2	%t258
-	str r6,[fp,#704]                                  	@IRInst:add	%t259	get2	%t258
 .global_10_ints:
         .long   ints
 .global_10_intt:
@@ -1549,6 +1565,131 @@ main:
         .long   get
 .global_10_get2:
         .long   get2
+	ldr r4,[fp,#628]                                  	@IRInst:assign	%t241	%t240
+	ldr r4,[r4]                                       	@IRInst:assign	%t241	%t240
+	str r4,[fp,#632]                                  	@IRInst:assign	%t241	%t240
+	ldr r4,[fp,#632]                                  	@IRInst:beq	%t242	%t241	94
+	mov r5,#94                                        	@IRInst:beq	%t242	%t241	94
+	cmp r4,r5                                         	@IRInst:beq	%t242	%t241	94
+	moveq r6,#1                                       	@IRInst:beq	%t242	%t241	94
+	movne r6,#0                                       	@IRInst:beq	%t242	%t241	94
+	str r6,[fp,#636]                                  	@IRInst:beq	%t242	%t241	94
+	beq .L109                                         
+	b .L110                                           
+.L109:
+	bl find                                           
+	str r0,[fp,#640]                                  	@IRInst:assign	%t243	r0
+	ldr r4,[fp,#640]                                  	@IRInst:beq	%t244	%t243	0
+	mov r5,#0                                         	@IRInst:beq	%t244	%t243	0
+	cmp r4,r5                                         	@IRInst:beq	%t244	%t243	0
+	moveq r6,#1                                       	@IRInst:beq	%t244	%t243	0
+	movne r6,#0                                       	@IRInst:beq	%t244	%t243	0
+	str r6,[fp,#644]                                  	@IRInst:beq	%t244	%t243	0
+	beq .L114                                         
+	b .L115                                           
+.L114:
+	b .L110                                           
+.L115:
+.L116:
+	b .L108                                           
+.L110:
+	mov r0,#37                                        	@IRInst:assign	r0	37
+	bl chapush                                        
+.L106:
+.L107:
+	ldr r4,.global_10_ii                              	@IRInst:mul	%t245	ii	4
+	ldr r4,[r4]                                       	@IRInst:mul	%t245	ii	4
+	mov r5,#4                                         	@IRInst:mul	%t245	ii	4
+	mul r6,r4,r5                                      	@IRInst:mul	%t245	ii	4
+	str r6,[fp,#648]                                  	@IRInst:mul	%t245	ii	4
+	ldr r4,.global_10_get2                            	@IRInst:add	%t246	get2	%t245
+	ldr r5,[fp,#648]                                  	@IRInst:add	%t246	get2	%t245
+	add r6,r4,r5                                      	@IRInst:add	%t246	get2	%t245
+	str r6,[fp,#652]                                  	@IRInst:add	%t246	get2	%t245
+	ldr r5,[fp,#652]                                  	@IRInst:assign	%t246	32
+	mov r4,#32                                        	@IRInst:assign	%t246	32
+	str r4,[r5]                                       	@IRInst:assign	%t246	32
+	ldr r4,.global_10_ii                              	@IRInst:add	%t247	ii	1
+	ldr r4,[r4]                                       	@IRInst:add	%t247	ii	1
+	mov r5,#1                                         	@IRInst:add	%t247	ii	1
+	add r6,r4,r5                                      	@IRInst:add	%t247	ii	1
+	str r6,[fp,#656]                                  	@IRInst:add	%t247	ii	1
+	ldr r4,[fp,#656]                                  	@IRInst:assign	ii	%t247
+	ldr r9,.global_10_ii                              	@IRInst:assign	ii	%t247
+	str r4,[r9]                                       	@IRInst:assign	ii	%t247
+.L40:
+	ldr r4,.global_10_i                               	@IRInst:add	%t248	i	1
+	ldr r4,[r4]                                       	@IRInst:add	%t248	i	1
+	mov r5,#1                                         	@IRInst:add	%t248	i	1
+	add r6,r4,r5                                      	@IRInst:add	%t248	i	1
+	str r6,[fp,#660]                                  	@IRInst:add	%t248	i	1
+	ldr r4,[fp,#660]                                  	@IRInst:assign	i	%t248
+	ldr r9,.global_10_i                               	@IRInst:assign	i	%t248
+	str r4,[r9]                                       	@IRInst:assign	i	%t248
+	b .L35                                            
+.L37:
+.L117:
+	ldr r4,.global_10_chat                            	@IRInst:bgt	%t249	chat	0
+	ldr r4,[r4]                                       	@IRInst:bgt	%t249	chat	0
+	mov r5,#0                                         	@IRInst:bgt	%t249	chat	0
+	cmp r4,r5                                         	@IRInst:bgt	%t249	chat	0
+	movgt r6,#1                                       	@IRInst:bgt	%t249	chat	0
+	movle r6,#0                                       	@IRInst:bgt	%t249	chat	0
+	str r6,[fp,#664]                                  	@IRInst:bgt	%t249	chat	0
+	bgt .L118                                         
+	b .L119                                           
+.L118:
+	bl chapop                                         
+	str r0,[fp,#672]                                  	@IRInst:assign	%t251	r0
+	ldr r4,[fp,#672]                                  	@IRInst:assign	c	%t251
+	str r4,[fp,#668]                                  	@IRInst:assign	c	%t251
+	ldr r4,.global_10_ii                              	@IRInst:mul	%t252	ii	4
+	ldr r4,[r4]                                       	@IRInst:mul	%t252	ii	4
+	mov r5,#4                                         	@IRInst:mul	%t252	ii	4
+	mul r6,r4,r5                                      	@IRInst:mul	%t252	ii	4
+	str r6,[fp,#676]                                  	@IRInst:mul	%t252	ii	4
+	ldr r4,.global_10_get2                            	@IRInst:add	%t253	get2	%t252
+	ldr r5,[fp,#676]                                  	@IRInst:add	%t253	get2	%t252
+	add r6,r4,r5                                      	@IRInst:add	%t253	get2	%t252
+	str r6,[fp,#680]                                  	@IRInst:add	%t253	get2	%t252
+	ldr r5,[fp,#680]                                  	@IRInst:assign	%t253	32
+	mov r4,#32                                        	@IRInst:assign	%t253	32
+	str r4,[r5]                                       	@IRInst:assign	%t253	32
+	ldr r4,.global_10_ii                              	@IRInst:add	%t255	ii	1
+	ldr r4,[r4]                                       	@IRInst:add	%t255	ii	1
+	mov r5,#1                                         	@IRInst:add	%t255	ii	1
+	add r6,r4,r5                                      	@IRInst:add	%t255	ii	1
+	str r6,[fp,#688]                                  	@IRInst:add	%t255	ii	1
+	ldr r4,[fp,#688]                                  	@IRInst:mul	%t254	%t255	4
+	mov r5,#4                                         	@IRInst:mul	%t254	%t255	4
+	mul r6,r4,r5                                      	@IRInst:mul	%t254	%t255	4
+	str r6,[fp,#684]                                  	@IRInst:mul	%t254	%t255	4
+	ldr r4,.global_10_get2                            	@IRInst:add	%t256	get2	%t254
+	ldr r5,[fp,#684]                                  	@IRInst:add	%t256	get2	%t254
+	add r6,r4,r5                                      	@IRInst:add	%t256	get2	%t254
+	str r6,[fp,#692]                                  	@IRInst:add	%t256	get2	%t254
+	ldr r5,[fp,#692]                                  	@IRInst:assign	%t256	c
+	ldr r4,[fp,#668]                                  	@IRInst:assign	%t256	c
+	str r4,[r5]                                       	@IRInst:assign	%t256	c
+	ldr r4,.global_10_ii                              	@IRInst:add	%t257	ii	2
+	ldr r4,[r4]                                       	@IRInst:add	%t257	ii	2
+	mov r5,#2                                         	@IRInst:add	%t257	ii	2
+	add r6,r4,r5                                      	@IRInst:add	%t257	ii	2
+	str r6,[fp,#696]                                  	@IRInst:add	%t257	ii	2
+	ldr r4,[fp,#696]                                  	@IRInst:assign	ii	%t257
+	ldr r9,.global_10_ii                              	@IRInst:assign	ii	%t257
+	str r4,[r9]                                       	@IRInst:assign	ii	%t257
+	b .L117                                           
+.L119:
+	ldr r4,.global_10_ii                              	@IRInst:mul	%t258	ii	4
+	ldr r4,[r4]                                       	@IRInst:mul	%t258	ii	4
+	mov r5,#4                                         	@IRInst:mul	%t258	ii	4
+	mul r6,r4,r5                                      	@IRInst:mul	%t258	ii	4
+	str r6,[fp,#700]                                  	@IRInst:mul	%t258	ii	4
+	ldr r4,.global_10_get2                            	@IRInst:add	%t259	get2	%t258
+	ldr r5,[fp,#700]                                  	@IRInst:add	%t259	get2	%t258
+	add r6,r4,r5                                      	@IRInst:add	%t259	get2	%t258
+	str r6,[fp,#704]                                  	@IRInst:add	%t259	get2	%t258
 	ldr r5,[fp,#704]                                  	@IRInst:assign	%t259	64
 	mov r4,#64                                        	@IRInst:assign	%t259	64
 	str r4,[r5]                                       	@IRInst:assign	%t259	64
@@ -1571,6 +1712,9 @@ main:
 	ldr r4,[fp,#716]                                  	@IRInst:beq	%t263	%t262	64
 	mov r5,#64                                        	@IRInst:beq	%t263	%t262	64
 	cmp r4,r5                                         	@IRInst:beq	%t263	%t262	64
+	moveq r6,#1                                       	@IRInst:beq	%t263	%t262	64
+	movne r6,#0                                       	@IRInst:beq	%t263	%t262	64
+	str r6,[fp,#720]                                  	@IRInst:beq	%t263	%t262	64
 	beq .L122                                         
 	b .L121                                           
 .L121:
@@ -1589,6 +1733,9 @@ main:
 	ldr r4,[fp,#732]                                  	@IRInst:beq	%t267	%t266	43
 	mov r5,#43                                        	@IRInst:beq	%t267	%t266	43
 	cmp r4,r5                                         	@IRInst:beq	%t267	%t266	43
+	moveq r6,#1                                       	@IRInst:beq	%t267	%t266	43
+	movne r6,#0                                       	@IRInst:beq	%t267	%t266	43
+	str r6,[fp,#736]                                  	@IRInst:beq	%t267	%t266	43
 	beq .L123                                         
 	b .L130                                           
 .L130:
@@ -1607,6 +1754,9 @@ main:
 	ldr r4,[fp,#748]                                  	@IRInst:beq	%t271	%t270	45
 	mov r5,#45                                        	@IRInst:beq	%t271	%t270	45
 	cmp r4,r5                                         	@IRInst:beq	%t271	%t270	45
+	moveq r6,#1                                       	@IRInst:beq	%t271	%t270	45
+	movne r6,#0                                       	@IRInst:beq	%t271	%t270	45
+	str r6,[fp,#752]                                  	@IRInst:beq	%t271	%t270	45
 	beq .L123                                         
 	b .L129                                           
 .L129:
@@ -1625,6 +1775,9 @@ main:
 	ldr r4,[fp,#764]                                  	@IRInst:beq	%t275	%t274	42
 	mov r5,#42                                        	@IRInst:beq	%t275	%t274	42
 	cmp r4,r5                                         	@IRInst:beq	%t275	%t274	42
+	moveq r6,#1                                       	@IRInst:beq	%t275	%t274	42
+	movne r6,#0                                       	@IRInst:beq	%t275	%t274	42
+	str r6,[fp,#768]                                  	@IRInst:beq	%t275	%t274	42
 	beq .L123                                         
 	b .L128                                           
 .L128:
@@ -1643,6 +1796,9 @@ main:
 	ldr r4,[fp,#780]                                  	@IRInst:beq	%t279	%t278	47
 	mov r5,#47                                        	@IRInst:beq	%t279	%t278	47
 	cmp r4,r5                                         	@IRInst:beq	%t279	%t278	47
+	moveq r6,#1                                       	@IRInst:beq	%t279	%t278	47
+	movne r6,#0                                       	@IRInst:beq	%t279	%t278	47
+	str r6,[fp,#784]                                  	@IRInst:beq	%t279	%t278	47
 	beq .L123                                         
 	b .L127                                           
 .L127:
@@ -1661,6 +1817,9 @@ main:
 	ldr r4,[fp,#796]                                  	@IRInst:beq	%t283	%t282	37
 	mov r5,#37                                        	@IRInst:beq	%t283	%t282	37
 	cmp r4,r5                                         	@IRInst:beq	%t283	%t282	37
+	moveq r6,#1                                       	@IRInst:beq	%t283	%t282	37
+	movne r6,#0                                       	@IRInst:beq	%t283	%t282	37
+	str r6,[fp,#800]                                  	@IRInst:beq	%t283	%t282	37
 	beq .L123                                         
 	b .L126                                           
 .L126:
@@ -1679,17 +1838,20 @@ main:
 	ldr r4,[fp,#812]                                  	@IRInst:beq	%t287	%t286	94
 	mov r5,#94                                        	@IRInst:beq	%t287	%t286	94
 	cmp r4,r5                                         	@IRInst:beq	%t287	%t286	94
+	moveq r6,#1                                       	@IRInst:beq	%t287	%t286	94
+	movne r6,#0                                       	@IRInst:beq	%t287	%t286	94
+	str r6,[fp,#816]                                  	@IRInst:beq	%t287	%t286	94
 	beq .L123                                         
 	b .L124                                           
 .L123:
 	bl intpop                                         
 	str r0,[fp,#824]                                  	@IRInst:assign	%t289	r0
-	ldr r4,[fp,#824]                                  
-	str r4,[fp,#820]                                  
+	ldr r4,[fp,#824]                                  	@IRInst:assign	a	%t289
+	str r4,[fp,#820]                                  	@IRInst:assign	a	%t289
 	bl intpop                                         
 	str r0,[fp,#832]                                  	@IRInst:assign	%t291	r0
-	ldr r4,[fp,#832]                                  
-	str r4,[fp,#828]                                  
+	ldr r4,[fp,#832]                                  	@IRInst:assign	b	%t291
+	str r4,[fp,#828]                                  	@IRInst:assign	b	%t291
 	ldr r4,.global_10_i                               	@IRInst:mul	%t293	i	4
 	ldr r4,[r4]                                       	@IRInst:mul	%t293	i	4
 	mov r5,#4                                         	@IRInst:mul	%t293	i	4
@@ -1705,6 +1867,9 @@ main:
 	ldr r4,[fp,#848]                                  	@IRInst:beq	%t296	%t295	43
 	mov r5,#43                                        	@IRInst:beq	%t296	%t295	43
 	cmp r4,r5                                         	@IRInst:beq	%t296	%t295	43
+	moveq r6,#1                                       	@IRInst:beq	%t296	%t295	43
+	movne r6,#0                                       	@IRInst:beq	%t296	%t295	43
+	str r6,[fp,#852]                                  	@IRInst:beq	%t296	%t295	43
 	beq .L131                                         
 	b .L132                                           
 .L131:
@@ -1731,6 +1896,9 @@ main:
 	ldr r4,[fp,#868]                                  	@IRInst:beq	%t301	%t300	45
 	mov r5,#45                                        	@IRInst:beq	%t301	%t300	45
 	cmp r4,r5                                         	@IRInst:beq	%t301	%t300	45
+	moveq r6,#1                                       	@IRInst:beq	%t301	%t300	45
+	movne r6,#0                                       	@IRInst:beq	%t301	%t300	45
+	str r6,[fp,#872]                                  	@IRInst:beq	%t301	%t300	45
 	beq .L134                                         
 	b .L135                                           
 .L134:
@@ -1757,6 +1925,9 @@ main:
 	ldr r4,[fp,#888]                                  	@IRInst:beq	%t306	%t305	42
 	mov r5,#42                                        	@IRInst:beq	%t306	%t305	42
 	cmp r4,r5                                         	@IRInst:beq	%t306	%t305	42
+	moveq r6,#1                                       	@IRInst:beq	%t306	%t305	42
+	movne r6,#0                                       	@IRInst:beq	%t306	%t305	42
+	str r6,[fp,#892]                                  	@IRInst:beq	%t306	%t305	42
 	beq .L137                                         
 	b .L138                                           
 .L137:
@@ -1783,6 +1954,9 @@ main:
 	ldr r4,[fp,#908]                                  	@IRInst:beq	%t311	%t310	47
 	mov r5,#47                                        	@IRInst:beq	%t311	%t310	47
 	cmp r4,r5                                         	@IRInst:beq	%t311	%t310	47
+	moveq r6,#1                                       	@IRInst:beq	%t311	%t310	47
+	movne r6,#0                                       	@IRInst:beq	%t311	%t310	47
+	str r6,[fp,#912]                                  	@IRInst:beq	%t311	%t310	47
 	beq .L140                                         
 	b .L141                                           
 .L140:
@@ -1809,6 +1983,9 @@ main:
 	ldr r4,[fp,#928]                                  	@IRInst:beq	%t316	%t315	37
 	mov r5,#37                                        	@IRInst:beq	%t316	%t315	37
 	cmp r4,r5                                         	@IRInst:beq	%t316	%t315	37
+	moveq r6,#1                                       	@IRInst:beq	%t316	%t315	37
+	movne r6,#0                                       	@IRInst:beq	%t316	%t315	37
+	str r6,[fp,#932]                                  	@IRInst:beq	%t316	%t315	37
 	beq .L143                                         
 	b .L144                                           
 .L143:
@@ -1843,6 +2020,9 @@ main:
 	ldr r4,[fp,#956]                                  	@IRInst:beq	%t323	%t322	94
 	mov r5,#94                                        	@IRInst:beq	%t323	%t322	94
 	cmp r4,r5                                         	@IRInst:beq	%t323	%t322	94
+	moveq r6,#1                                       	@IRInst:beq	%t323	%t322	94
+	movne r6,#0                                       	@IRInst:beq	%t323	%t322	94
+	str r6,[fp,#960]                                  	@IRInst:beq	%t323	%t322	94
 	beq .L146                                         
 	b .L147                                           
 .L146:
@@ -1873,6 +2053,9 @@ main:
 	ldr r4,[fp,#976]                                  	@IRInst:beq	%t328	%t327	32
 	mov r5,#32                                        	@IRInst:beq	%t328	%t327	32
 	cmp r4,r5                                         	@IRInst:beq	%t328	%t327	32
+	moveq r6,#1                                       	@IRInst:beq	%t328	%t327	32
+	movne r6,#0                                       	@IRInst:beq	%t328	%t327	32
+	str r6,[fp,#980]                                  	@IRInst:beq	%t328	%t327	32
 	beq .L150                                         
 	b .L149                                           
 .L149:
@@ -1918,6 +2101,9 @@ main:
 	ldr r4,[fp,#1012]                                 	@IRInst:beq	%t337	%t336	32
 	mov r5,#32                                        	@IRInst:beq	%t337	%t336	32
 	cmp r4,r5                                         	@IRInst:beq	%t337	%t336	32
+	moveq r6,#1                                       	@IRInst:beq	%t337	%t336	32
+	movne r6,#0                                       	@IRInst:beq	%t337	%t336	32
+	str r6,[fp,#1016]                                 	@IRInst:beq	%t337	%t336	32
 	beq .L154                                         
 	b .L153                                           
 .L153:

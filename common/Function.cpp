@@ -378,7 +378,10 @@ void Function::insertValue(Value * val)
 {
     varsMap.emplace(val->name, val);
     varsVector.push_back(val);
-    this->varsStack.insert(val, symtab->getBlockDepth());
+	//函数参数的depth也应该是1
+    // int depth = symtab->getBlockDepth() == 0 ? 1 : symtab->getBlockDepth();
+    int depth = symtab->getBlockDepth();
+    this->varsStack.insert(val, depth);
 }
 /// @brief  删除varsStack当前depth的变量
 /// @param depth 

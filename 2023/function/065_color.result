@@ -1,7 +1,0 @@
-function/065_color.s: Assembler messages:
-function/065_color.s:12: Warning: .space repeat count is zero, ignored
-function/065_color.s:648: Error: bad arguments to instruction -- `ldr r5'
-function/065_color.s:658: Error: bad arguments to instruction -- `ldr r5'
-function/065_color.s:668: Error: bad arguments to instruction -- `ldr r5'
-function/065_color.s:678: Error: bad arguments to instruction -- `ldr r5'
-function/065_color.s:688: Error: bad arguments to instruction -- `ldr r5'

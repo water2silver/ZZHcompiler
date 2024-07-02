@@ -1,2 +1,2 @@
 function/064_calculator.s: Assembler messages:
-function/064_calculator.s:634: Error: invalid literal constant: pool needs to be closer
+function/064_calculator.s:652: Error: invalid literal constant: pool needs to be closer

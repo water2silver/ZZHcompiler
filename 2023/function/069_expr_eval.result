@@ -1,7 +1,7 @@
 function/069_expr_eval.s: Assembler messages:
-function/069_expr_eval.s:729: Error: invalid constant (404) after fixup
-function/069_expr_eval.s:733: Error: invalid constant (404) after fixup
-function/069_expr_eval.s:748: Error: invalid constant (404) after fixup
-function/069_expr_eval.s:773: Error: invalid constant (404) after fixup
-function/069_expr_eval.s:801: Error: invalid constant (404) after fixup
-function/069_expr_eval.s:805: Error: invalid constant (404) after fixup
+function/069_expr_eval.s:854: Error: invalid constant (404) after fixup
+function/069_expr_eval.s:866: Error: invalid constant (404) after fixup
+function/069_expr_eval.s:884: Error: invalid constant (404) after fixup
+function/069_expr_eval.s:909: Error: invalid constant (404) after fixup
+function/069_expr_eval.s:940: Error: invalid constant (404) after fixup
+function/069_expr_eval.s:952: Error: invalid constant (404) after fixup

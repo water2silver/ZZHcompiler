@@ -405,7 +405,9 @@ void DeclIRInst::toString(std::string & str)
         //str = std::string("declare ") + std::string("i32 %l") + dstValue->getName();
     }else
 	{
-        std::string tmp = srcValues[0]->name;
+        // std::string tmp = srcValues[0]->name;
+        std::string tmp = srcValues[0]->toString();
+
         // str = std::string("declare ") + std::string("i32 %l") + dstValue->getName() + "\r";
         str += dstValue->label_name + " = " + tmp;
     }
