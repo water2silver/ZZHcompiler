@@ -504,25 +504,38 @@ bool IRGenerator::ir_add(ast_node * node)
     bool constantOptimizationResult = constantOptimization(node,symtab);
 	if(constantOptimizationResult)
 	{
-        return true;
-    }
 
-    // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
-    // TODO real number add
-	// add 的结果存放到TempValue，但是函数的结果存放到VarValue
-    Value * resultValue;
-    if (symtab->currentFunc != nullptr) {
-        resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
-    }
-    else{
-        resultValue = new TempValue(BasicType::TYPE_INT);
-    }
+    }else
+	{
+		// 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
+		// TODO real number add
+		// add 的结果存放到TempValue，但是函数的结果存放到VarValue
+		Value * resultValue;
+		if (symtab->currentFunc != nullptr) {
+			resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+		}
+		else{
+			resultValue = new TempValue(BasicType::TYPE_INT);
+		}
 
-    // 创建临时变量保存IR的值，以及线性IR指令
-    node->blockInsts.addInst(left->blockInsts);
-    node->blockInsts.addInst(right->blockInsts);
-    node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_ADD_I, resultValue, left->val, right->val));
-    node->val = resultValue;
+		// 创建临时变量保存IR的值，以及线性IR指令
+		node->blockInsts.addInst(left->blockInsts);
+		node->blockInsts.addInst(right->blockInsts);
+		node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_ADD_I, resultValue, left->val, right->val));
+		node->val = resultValue;
+	}
+
+	if(node->parent->node_type==ast_operator_type::AST_OP_COND
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND)
+	{
+        Value * tmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
+        node->blockInsts.addInst(new CondNotZeroIRInst(tmpValue, node->val));
+        node->val = tmpValue;
+		//似乎是垃圾操作。
+        IRInst * newIR = new IfIRInst(IRInstOperator::IRINST_OP_IF, node->val, node->label_true, node->label_false);
+        node->blockInsts.addInst(newIR);
+    }
 
     return true;
 }
@@ -554,26 +567,38 @@ bool IRGenerator::ir_sub(ast_node * node)
     bool constantOptimizationResult = constantOptimization(node,symtab);
 	if(constantOptimizationResult)
 	{
-        return true;
+
+    }else
+	{
+		// 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
+		// TODO real number add
+
+		Value * resultValue;
+		if (symtab->currentFunc != nullptr) {
+			resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+		}
+		else{
+			resultValue = new TempValue(BasicType::TYPE_INT);
+		}
+		// 创建临时变量保存IR的值，以及线性IR指令
+		node->blockInsts.addInst(left->blockInsts);
+		node->blockInsts.addInst(right->blockInsts);
+		node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_SUB_I, resultValue, left->val, right->val));
+		node->val = resultValue;
+	}
+
+	if(node->parent->node_type==ast_operator_type::AST_OP_COND
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND)
+	{
+        Value * tmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
+        node->blockInsts.addInst(new CondNotZeroIRInst(tmpValue, node->val));
+        node->val = tmpValue;
+		//似乎是垃圾操作。
+        IRInst * newIR = new IfIRInst(IRInstOperator::IRINST_OP_IF, node->val, node->label_true, node->label_false);
+        node->blockInsts.addInst(newIR);
     }
-
-    // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
-    // TODO real number add
-
-    Value * resultValue;
-    if (symtab->currentFunc != nullptr) {
-        resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
-    }
-    else{
-        resultValue = new TempValue(BasicType::TYPE_INT);
-    }
-
-    // 创建临时变量保存IR的值，以及线性IR指令
-    node->blockInsts.addInst(left->blockInsts);
-    node->blockInsts.addInst(right->blockInsts);
-    node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_SUB_I, resultValue, left->val, right->val));
-    node->val = resultValue;
-
+    
     return true;
 }
 
@@ -604,24 +629,38 @@ bool IRGenerator::ir_times(ast_node * node)
     bool constantOptimizationResult = constantOptimization(node,symtab);
 	if(constantOptimizationResult)
 	{
-        return true;
-    }
 
-    // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
-    // TODO real number add
-    Value * resultValue = nullptr;
-    if (symtab->currentFunc != nullptr) {
-        resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
-    }
-    else{
-        resultValue = new TempValue(BasicType::TYPE_INT);
-    }
+    }else
+	{
+		// 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
+		// TODO real number add
+		Value * resultValue = nullptr;
+		if (symtab->currentFunc != nullptr) {
+			resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+		}
+		else{
+			resultValue = new TempValue(BasicType::TYPE_INT);
+		}
 
-    // 创建临时变量保存IR的值，以及线性IR指令
-    node->blockInsts.addInst(left->blockInsts);
-    node->blockInsts.addInst(right->blockInsts);
-    node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_TIMES_I, resultValue, left->val, right->val));
-    node->val = resultValue;
+		// 创建临时变量保存IR的值，以及线性IR指令
+		node->blockInsts.addInst(left->blockInsts);
+		node->blockInsts.addInst(right->blockInsts);
+		node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_TIMES_I, resultValue, left->val, right->val));
+		node->val = resultValue;
+	}
+
+
+	if(node->parent->node_type==ast_operator_type::AST_OP_COND
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND)
+	{
+        Value * tmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
+        node->blockInsts.addInst(new CondNotZeroIRInst(tmpValue, node->val));
+        node->val = tmpValue;
+		//似乎是垃圾操作。
+        IRInst * newIR = new IfIRInst(IRInstOperator::IRINST_OP_IF, node->val, node->label_true, node->label_false);
+        node->blockInsts.addInst(newIR);
+    }
 
     return true;
 }
@@ -653,25 +692,38 @@ bool IRGenerator::ir_div(ast_node * node)
     bool constantOptimizationResult = constantOptimization(node,symtab);
 	if(constantOptimizationResult)
 	{
-        return true;
-    }
 
-    // 这里只处理整型的数据，如需支持实数，则需要针对类型进行处理
-    // TODO real number add
+    }else
+	{
 
-    Value * resultValue = nullptr;
-    if (symtab->currentFunc != nullptr) {
-        resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
-    }
-    else{
-        resultValue = new TempValue(BasicType::TYPE_INT);
-    }
+		Value * resultValue = nullptr;
+		if (symtab->currentFunc != nullptr) {
+			resultValue = symtab->currentFunc->newTempValue(BasicType::TYPE_INT);
+		}
+		else{
+			resultValue = new TempValue(BasicType::TYPE_INT);
+		}
 
-    // 创建临时变量保存IR的值，以及线性IR指令
-    node->blockInsts.addInst(left->blockInsts);
-    node->blockInsts.addInst(right->blockInsts);
-    node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_DIV_I, resultValue, left->val, right->val));
-    node->val = resultValue;
+		// 创建临时变量保存IR的值，以及线性IR指令
+		node->blockInsts.addInst(left->blockInsts);
+		node->blockInsts.addInst(right->blockInsts);
+		node->blockInsts.addInst(new BinaryIRInst(IRInstOperator::IRINST_OP_DIV_I, resultValue, left->val, right->val));
+		node->val = resultValue;
+	}
+
+
+
+	if(node->parent->node_type==ast_operator_type::AST_OP_COND
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_OR
+	|| node->parent->node_type==ast_operator_type::AST_OP_LOGICAL_AND)
+	{
+        Value * tmpValue = symtab->currentFunc->newTempValue(BasicType::TYPE_BOOL);
+        node->blockInsts.addInst(new CondNotZeroIRInst(tmpValue, node->val));
+        node->val = tmpValue;
+		//似乎是垃圾操作。
+        IRInst * newIR = new IfIRInst(IRInstOperator::IRINST_OP_IF, node->val, node->label_true, node->label_false);
+        node->blockInsts.addInst(newIR);
+    }
 
     return true;
 }
