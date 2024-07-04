@@ -187,6 +187,9 @@ public:
         this->additon = info;
     }
 
+    /// @brief 这是function的第几条指令。
+    int instCount;
+
 protected:
     /// @brief IR指令操作码
     enum IRInstOperator op;

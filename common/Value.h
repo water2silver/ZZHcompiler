@@ -131,6 +131,12 @@ public:
     /// @brief 寄存器编号，-1表示没有分配寄存器
     int32_t regId = -1;
 
+	/// @brief 根据线性扫描分配的寄存器。
+    int32_t regLinerScaner = -1;
+
+    /// @brief 这个变量的值是否已经被放入寄存器。
+    bool isInReg = false;
+
     /// @brief 变量在栈内的偏移量，对于全局变量默认为0，临时变量没有意义
     int32_t offset = 0;
 

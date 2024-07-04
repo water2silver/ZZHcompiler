@@ -269,14 +269,26 @@ void InstSelectorArm32::translate_var_def(IRInst * inst)
     Value * rs = inst->getDst();
     Value * arg1 = inst->getSrc1();
 
-    if (arg1->regId != -1) {
+    if (arg1->regLinerScaner != -1) {
+		//分配了寄存器，但是值还没有被load进来。
+		if(arg1->isInReg==false)
+		{
+            iloc.load_var(arg1->regLinerScaner, arg1);
+            arg1->isInReg = true;
+        }
         // 寄存器 => 内存
         // 寄存器 => 寄存器
 
         // r8 -> rs 可能用到r9
         iloc.store_var(arg1->regId, rs, 9);
 
-    } else if (rs->regId != -1) {
+    } else if (rs->regLinerScaner != -1) {
+		//分配了寄存器，但是值还没有被load进来。
+		if(rs->isInReg==false)
+		{
+            iloc.load_var(rs->regLinerScaner, rs);
+            arg1->isInReg = true;
+        }
         // 内存变量 => 寄存器
 
         iloc.load_var(rs->regId, arg1);
@@ -373,18 +385,26 @@ void InstSelectorArm32::translate_compare(	IRInst * inst,
     if (arg1_reg_no == -1) {
         // arg1 -> r8
         iloc.load_var(op1_reg_no, arg1);
-    } else if (arg1_reg_no != op1_reg_no) {
-        // 已分配的操作数1的寄存器和操作数2的缺省寄存器一致，这样会使得操作数2的值设置到一个寄存器上
-        // 缺省寄存器  2    3
-        // 实际寄存器  3    -1   有问题
-        // 实际寄存器  3    3    有问题
-        // 实际寄存器  3    4    无问题
-        if ((arg1_reg_no == op2_reg_no) && ((arg2_reg_no == -1) || (arg2_reg_no == op2_reg_no))) {
-            iloc.mov_reg(op1_reg_no, arg1_reg_no);
-        } else {
-            op1_reg_no = arg1_reg_no;
-        }
-    }
+    }else
+	{
+		if(arg1->isInReg==false)
+		{
+			iloc.load_var(arg1->regLinerScaner, arg1);
+            arg1->isInReg = true;
+		}
+	}
+	//  else if (arg1_reg_no != op1_reg_no) {
+    //     // 已分配的操作数1的寄存器和操作数2的缺省寄存器一致，这样会使得操作数2的值设置到一个寄存器上
+    //     // 缺省寄存器  2    3
+    //     // 实际寄存器  3    -1   有问题
+    //     // 实际寄存器  3    3    有问题
+    //     // 实际寄存器  3    4    无问题
+    //     if ((arg1_reg_no == op2_reg_no) && ((arg2_reg_no == -1) || (arg2_reg_no == op2_reg_no))) {
+    //         iloc.mov_reg(op1_reg_no, arg1_reg_no);
+    //     } else {
+    //         op1_reg_no = arg1_reg_no;
+    //     }
+    // }
 
     arg1_reg_name = PlatformArm32::regName[op1_reg_no];
 
@@ -392,56 +412,72 @@ void InstSelectorArm32::translate_compare(	IRInst * inst,
     if (arg2_reg_no == -1) {
         // arg1 -> r8
         iloc.load_var(op2_reg_no, arg2);
-    } else if (arg2_reg_no != op2_reg_no) {
-        // 已分配的操作数2的寄存器和操作数1的缺省寄存器一致，这样会使得操作数2的值设置到一个寄存器上
-        // 缺省寄存器  2    3
-        // 实际寄存器  -1   2   有问题
-        // 实际寄存器  2    2    有问题
-        // 实际寄存器  4    2    无问题
-        if ((arg2_reg_no == op1_reg_no) && ((arg1_reg_no == -1) || (arg1_reg_no == op1_reg_no))) {
-            iloc.mov_reg(op2_reg_no, arg2_reg_no);
-        } else {
-            op2_reg_no = arg2_reg_no;
-        }
-    }
+    }else
+	{
+		if(arg2->isInReg==false)
+		{
+			iloc.load_var(arg2->regLinerScaner, arg2);
+            arg2->isInReg = true;
+		}
+	}
+	//  else if (arg2_reg_no != op2_reg_no) {
+    //     // 已分配的操作数2的寄存器和操作数1的缺省寄存器一致，这样会使得操作数2的值设置到一个寄存器上
+    //     // 缺省寄存器  2    3
+    //     // 实际寄存器  -1   2   有问题
+    //     // 实际寄存器  2    2    有问题
+    //     // 实际寄存器  4    2    无问题
+    //     if ((arg2_reg_no == op1_reg_no) && ((arg1_reg_no == -1) || (arg1_reg_no == op1_reg_no))) {
+    //         iloc.mov_reg(op2_reg_no, arg2_reg_no);
+    //     } else {
+    //         op2_reg_no = arg2_reg_no;
+    //     }
+    // }
 
     arg2_reg_name = PlatformArm32::regName[op2_reg_no];
 
     iloc.inst("cmp", arg1_reg_name, arg2_reg_name);
-
-	std::string dstReg = PlatformArm32::regName[REG_ALLOC_SIMPLE_DST_REG_NO];
-	//把Compare的结果储存起来。用于测例49-50
+	// if(inst->getDst())
+    std::string dstReg;
+    int dst;
+    if (inst->getDst()->regLinerScaner != -1) {
+        dstReg = PlatformArm32::regName[inst->getDst()->regLinerScaner];
+        dst = inst->getDst()->regLinerScaner;
+    } else {
+        dstReg = PlatformArm32::regName[REG_ALLOC_SIMPLE_DST_REG_NO];
+        dst = REG_ALLOC_SIMPLE_DST_REG_NO;
+    }
+    //把Compare的结果储存起来。用于测例49-50
 	if(operator_name == "not_zero")
 	{
         iloc.inst("moveq",dstReg , "#0");
         iloc.inst("movne",dstReg , "#1");
 
-        iloc.store_var(REG_ALLOC_SIMPLE_DST_REG_NO, inst->getDst(), REG_ALLOC_SIMPLE_TMP_REG_NO);
+        iloc.store_var(dst, inst->getDst(), REG_ALLOC_SIMPLE_TMP_REG_NO);
     }else if(operator_name=="blt")
 	{
         iloc.inst("movlt", dstReg, "#1");
         iloc.inst("movge", dstReg, "#0");
-        iloc.store_var(REG_ALLOC_SIMPLE_DST_REG_NO, inst->getDst(), REG_ALLOC_SIMPLE_TMP_REG_NO);
+        iloc.store_var(dst, inst->getDst(), REG_ALLOC_SIMPLE_TMP_REG_NO);
     }else if(operator_name=="bgt")
 	{
 		iloc.inst("movgt", dstReg, "#1");
         iloc.inst("movle", dstReg, "#0");
-        iloc.store_var(REG_ALLOC_SIMPLE_DST_REG_NO, inst->getDst(), REG_ALLOC_SIMPLE_TMP_REG_NO);
+        iloc.store_var(dst, inst->getDst(), REG_ALLOC_SIMPLE_TMP_REG_NO);
     } else if (operator_name == "ble")
 	{
 		iloc.inst("movle", dstReg, "#1");
         iloc.inst("movgt", dstReg, "#0");
-        iloc.store_var(REG_ALLOC_SIMPLE_DST_REG_NO, inst->getDst(), REG_ALLOC_SIMPLE_TMP_REG_NO);
+        iloc.store_var(dst, inst->getDst(), REG_ALLOC_SIMPLE_TMP_REG_NO);
 	}else if (operator_name == "bge")
 	{
 		iloc.inst("movge", dstReg, "#1");
         iloc.inst("movlt", dstReg, "#0");
-        iloc.store_var(REG_ALLOC_SIMPLE_DST_REG_NO, inst->getDst(), REG_ALLOC_SIMPLE_TMP_REG_NO);
+        iloc.store_var(dst, inst->getDst(), REG_ALLOC_SIMPLE_TMP_REG_NO);
 	}else if(operator_name=="beq")
 	{
 		iloc.inst("moveq", dstReg, "#1");
         iloc.inst("movne", dstReg, "#0");
-        iloc.store_var(REG_ALLOC_SIMPLE_DST_REG_NO, inst->getDst(), REG_ALLOC_SIMPLE_TMP_REG_NO);
+        iloc.store_var(dst, inst->getDst(), REG_ALLOC_SIMPLE_TMP_REG_NO);
 	}
 	// iloc.inst(operator_name, inst->getTrueLabelName());
 	ArmInst::addtionInfo = "";
@@ -515,18 +551,27 @@ void InstSelectorArm32::translate_two_operator(IRInst * inst,
     if (arg1_reg_no == -1) {
         // arg1 -> r8
         iloc.load_var(op1_reg_no, arg1);
-    } else if (arg1_reg_no != op1_reg_no) {
-        // 已分配的操作数1的寄存器和操作数2的缺省寄存器一致，这样会使得操作数2的值设置到一个寄存器上
-        // 缺省寄存器  2    3
-        // 实际寄存器  3    -1   有问题
-        // 实际寄存器  3    3    有问题
-        // 实际寄存器  3    4    无问题
-        if ((arg1_reg_no == op2_reg_no) && ((arg2_reg_no == -1) || (arg2_reg_no == op2_reg_no))) {
-            iloc.mov_reg(op1_reg_no, arg1_reg_no);
-        } else {
-            op1_reg_no = arg1_reg_no;
-        }
-    }
+    }else
+	{
+		//使用线性扫描的结果。
+		if(arg1->isInReg==false)
+		{
+			iloc.load_var(arg1->regLinerScaner, arg1);
+            arg1->isInReg = true;
+		}
+	}
+	//  else if (arg1_reg_no != op1_reg_no) {
+    //     // 已分配的操作数1的寄存器和操作数2的缺省寄存器一致，这样会使得操作数2的值设置到一个寄存器上
+    //     // 缺省寄存器  2    3
+    //     // 实际寄存器  3    -1   有问题
+    //     // 实际寄存器  3    3    有问题
+    //     // 实际寄存器  3    4    无问题
+    //     if ((arg1_reg_no == op2_reg_no) && ((arg2_reg_no == -1) || (arg2_reg_no == op2_reg_no))) {
+    //         iloc.mov_reg(op1_reg_no, arg1_reg_no);
+    //     } else {
+    //         op1_reg_no = arg1_reg_no;
+    //     }
+    // }
 
     arg1_reg_name = PlatformArm32::regName[op1_reg_no];
 
@@ -534,18 +579,26 @@ void InstSelectorArm32::translate_two_operator(IRInst * inst,
     if (arg2_reg_no == -1) {
         // arg1 -> r8
         iloc.load_var(op2_reg_no, arg2);
-    } else if (arg2_reg_no != op2_reg_no) {
-        // 已分配的操作数2的寄存器和操作数1的缺省寄存器一致，这样会使得操作数2的值设置到一个寄存器上
-        // 缺省寄存器  2    3
-        // 实际寄存器  -1   2   有问题
-        // 实际寄存器  2    2    有问题
-        // 实际寄存器  4    2    无问题
-        if ((arg2_reg_no == op1_reg_no) && ((arg1_reg_no == -1) || (arg1_reg_no == op1_reg_no))) {
-            iloc.mov_reg(op2_reg_no, arg2_reg_no);
-        } else {
-            op2_reg_no = arg2_reg_no;
-        }
-    }
+    }else
+	{
+		if(arg2->isInReg==false)
+		{
+			iloc.load_var(arg2->regLinerScaner, arg2);
+            arg2->isInReg = true;
+		}
+	}
+	//  else if (arg2_reg_no != op2_reg_no) {
+    //     // 已分配的操作数2的寄存器和操作数1的缺省寄存器一致，这样会使得操作数2的值设置到一个寄存器上
+    //     // 缺省寄存器  2    3
+    //     // 实际寄存器  -1   2   有问题
+    //     // 实际寄存器  2    2    有问题
+    //     // 实际寄存器  4    2    无问题
+    //     if ((arg2_reg_no == op1_reg_no) && ((arg1_reg_no == -1) || (arg1_reg_no == op1_reg_no))) {
+    //         iloc.mov_reg(op2_reg_no, arg2_reg_no);
+    //     } else {
+    //         op2_reg_no = arg2_reg_no;
+    //     }
+    // }
 
     arg2_reg_name = PlatformArm32::regName[op2_reg_no];
 

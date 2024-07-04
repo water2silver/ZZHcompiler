@@ -179,6 +179,8 @@ void CodeGeneratorArm32::registerAllocation(Function * func)
     if (func->getExistFuncCall()) {
         protectedRegNo.push_back(REG_ALLOC_SIMPLE_LX_REG_NO);
     }
+	// 线性扫描从哪开始呢。
+
 
     // 函数形参要求前四个寄存器分配，后面的参数采用栈传递
     // 针对后面的栈传递参数，一种处理方式为增加赋值操作，内存赋值给形参，形参再次分配空间
@@ -187,6 +189,10 @@ void CodeGeneratorArm32::registerAllocation(Function * func)
 
     // 调整函数调用指令，主要是前四个寄存器传值，后面用栈传递
     adjustFuncCallInsts(func);
+	// 从这里开始线性扫描？
+	//初始化寄存器分配类。
+    regAlloc = new RegAlloction(&symtab, func);
+    regAlloc->run();
 }
 
 /// @brief 寄存器分配前对函数内的指令进行调整，以便方便寄存器分配
@@ -413,4 +419,171 @@ void CodeGeneratorArm32::stackAlloc(Function * func)
     // 设置函数的最大栈帧深度，在加上实参内存传值的空间
     // 请注意若支持浮点数，则必须保持栈内空间8字节对齐
     func->setMaxDep(sp_esp);
+}
+
+/// @brief 进行线性扫描执行的主要函数。
+void RegAlloction::run()
+{
+	// 指令编号。
+    orderInst();
+
+	//获得活跃区间。
+    getIntervals();
+
+	//寄存器分配。
+    alloction();
+}
+/// @brief 给func内部的指令序列进行编号。
+void RegAlloction::orderInst()
+{	
+	//最简单的遍历function的Insts进行编号。
+    int count = 0;
+	for(auto inst:this->func->getInterCode().getInsts())
+	{
+        inst->instCount = count;
+        count++;
+    }
+}
+
+/// @brief 计算变量的活跃区间。
+void RegAlloction::getIntervals()
+{
+	for(auto inst:this->func->getInterCode().getInsts())
+	{
+        if (inst->getDst() != nullptr&&isScanValue(inst->getDst()))
+		{
+            Value * val = inst->getDst();
+            createOrUpdateInterval(val,inst->instCount);
+        }
+		if(inst->getSrc1()!=nullptr&&isScanValue(inst->getSrc1()))
+		{
+			Value * val = inst->getSrc1();
+            createOrUpdateInterval(val,inst->instCount);
+		}
+		if(inst->getSrc2()!=nullptr&&isScanValue(inst->getSrc2()))
+		{
+			Value * val = inst->getSrc2();
+            createOrUpdateInterval(val,inst->instCount);
+		}
+
+    }
+	//
+	for(auto v : intervalVector)
+	{
+        intervalQueue.push(v);
+    }
+}
+
+/// @brief 根据当前val与map，决定创建新的interval还是对现有的interval进行更新。
+/// @param val 
+void RegAlloction::createOrUpdateInterval(Value * val,int order)
+{
+	//不存在对应的interval
+	if(valueIntervalMap.count(val)==0)
+	{
+        valueInterval * interval = new valueInterval(order, val);
+        valueIntervalMap.emplace(val, interval);
+        intervalVector.push_back(interval);
+    } else {
+        //对应的interval已经存在。
+        valueIntervalMap[val]->update(order);
+    }
+}
+
+/// @brief 检查当前的val是否为需要进行线性扫描的value.
+/// @param val 
+/// @return true为真，false表示val为空，或者不需要对其进行线性扫描。
+bool RegAlloction::isScanValue(Value * val)
+{
+    int result = true;
+	//val 为空，不进行线性扫描。
+	if(val==nullptr)
+	{
+        result = false;
+    }
+	//val为常数，不进行线性扫描
+	if(val->isConst())
+	{
+        result = false;
+    }
+    //val 为global 不进行线性扫描。
+	if(val->_global)
+	{
+        result = false;
+    }
+	//val 为数组 不进行线性扫描
+	if(val->array_info!=nullptr)
+	{
+        result = false;
+    }
+    return result;
+}
+
+/// @brief 根据interval的结果进行寄存器分配。
+void RegAlloction::alloction()
+{
+	while(!intervalQueue.empty())
+	{
+        auto interval = intervalQueue.top();
+        intervalQueue.pop();
+		//淘汰旧的active interval
+        ExpireOldIntervals(interval);
+
+        //分配寄存器
+		if(haveFreeReg())
+		{
+            int aimReg = getFreeReg();
+            interval->val->regLinerScaner = aimReg;
+			//把这个interval加入activeVector
+            addIntervalToActive(interval);
+
+        }else
+		{
+			//spill
+            valueInterval * lastInterval = activeVector.back();
+			if(lastInterval->end<interval->end)
+			{
+                interval->val->regLinerScaner = -1;
+            }else
+			{
+                interval->val->regLinerScaner = lastInterval->val->regLinerScaner;
+                lastInterval->val->regLinerScaner = -1;
+                activeVector.pop_back();
+                addIntervalToActive(interval);
+            }
+        }
+    }
+}
+
+/// 根据当前打算加入的interval淘汰已经被激活的interval。
+void RegAlloction::ExpireOldIntervals(valueInterval * interval)
+{
+	if(activeVector.empty())
+	{
+        return;
+    }
+	auto it = std::lower_bound(activeVector.begin(), activeVector.end(), interval, [](valueInterval* lhs, valueInterval* rhs) {
+		return lhs->end < rhs->start;
+    });
+    for (auto ii = activeVector.begin(); ii != it; ii++) {
+        int reg = (*ii)->val->regLinerScaner;
+		if(reg<4||reg>7)
+		{
+            printf("error reg number = %d\n", reg);
+        }
+        freeReg.push(reg);
+    }
+
+    activeVector.erase(activeVector.begin(), it);
+}
+
+/// @brief 把当前的interval插入到activeVector中。
+/// @param interval 
+void RegAlloction::addIntervalToActive(valueInterval * interval)
+{
+	auto pos = std::lower_bound(activeVector.begin(), activeVector.end(), interval, [](valueInterval* lhs, valueInterval* rhs) {
+        return lhs->end < rhs->end;
+    });
+
+    activeVector.insert(pos, interval);
 }
