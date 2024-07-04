@@ -27,6 +27,9 @@ CodeGeneratorArm32::CodeGeneratorArm32(SymbolTable & tab) : CodeGeneratorAsm(tab
 {
     for (int k = 0; k < PlatformArm32::maxRegNum; k++) {
         RegVal[k] = new IntRegValue(PlatformArm32::regName[k], k);
+        //
+        RegVal[k]->regLinerScaner = k;
+        RegVal[k]->_isReg = true;
     }
 }
 
@@ -244,7 +247,7 @@ void CodeGeneratorArm32::adjustFormalParamInsts(Function * func)
         // Value * val = params[k].val;
 		//这才是真正在栈里面分配了空间的值。
         Value * real_val = func->findValue(params[k].varName);
-
+        // RegVal[k]->_isReg = true;
         // 产生赋值指令,R#n寄存器赋值到对应的变量上，放到放到Entry指令的后面
         // 注意R#n寄存器需要事先分配几个Value
         newInsts.push_back(new AssignIRInst(real_val, RegVal[k]));
@@ -361,10 +364,10 @@ void CodeGeneratorArm32::adjustFuncCallInsts(Function * func)
             Value * resultVal = callInst->getDst();
             if (resultVal) {
 
-                if (resultVal->isTemp() && resultVal->regId == -1 && resultVal->baseRegNo == -1) {
+                if (resultVal->isTemp() && resultVal->regLinerScaner == -1 && resultVal->baseRegNo == -1) {
 
                     // 该临时变量既没有寄存器分配，也没有设置基址寄存器，直接设置为寄存器即可
-                    resultVal->regId = 0;
+                    resultVal->regLinerScaner = 0;
                 } else {
 
                     // 新建一个赋值操作
@@ -513,6 +516,14 @@ bool RegAlloction::isScanValue(Value * val)
     }
 	//val 为数组 不进行线性扫描
 	if(val->array_info!=nullptr)
+	{
+        result = false;
+    }
+	if(val->type.type!=BasicType::TYPE_INT)
+	{
+        result = false;
+    }
+	if(val->_isReg)
 	{
         result = false;
     }

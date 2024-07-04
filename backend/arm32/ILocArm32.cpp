@@ -85,9 +85,9 @@ std::string ArmInst::outPut()
     if (!arg2.empty()) {
         ret += "," + arg2;
     }
-	if((!ret.empty())&&ret[0]!='.'&&ret.size()<50)
+	if((!ret.empty())&&ret[0]!='.'&&ret.size()<30)
 	{
-		ret.resize(50, ' ');
+		ret.resize(30, ' ');
 	}
     // 其他附加信息输出
     if (!addition.empty()) {
@@ -280,12 +280,12 @@ void ILocArm32::load_var(int rs_reg_no, Value * var)
         // 不是常量
 		
 
-        if (var->regId != -1) {
+        if (var->regLinerScaner != -1) {
 
             // 寄存器变量
 
             // 获取寄存器名字
-            std::string regName = PlatformArm32::regName[var->regId];
+            std::string regName = PlatformArm32::regName[var->regLinerScaner];
 
             if (regName != rsReg) {
 
@@ -361,7 +361,7 @@ void ILocArm32::store_var(int src_reg_no, Value * var, int tmp_reg_no)
 
 
     // -1表示非寄存器，其他表示寄存器的索引值
-    int id = var->regId;
+    int id = var->regLinerScaner;
 
     if (id != -1) {
         // 寄存器变量

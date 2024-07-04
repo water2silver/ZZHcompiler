@@ -92,6 +92,9 @@ public:
     /// @brief 是否是全局变量。
     bool _global = false;
 
+    /// @brief 是否为寄存器变量。
+    bool _isReg = false;
+
     /// @brief 是否是函数内的被传递进来的数组。
     bool isParamArray = false;
 
@@ -442,6 +445,7 @@ public:
     {
         name = reg_name;
         regId = reg_no;
+        // _isReg = true;
     }
 
     /// @brief 析构函数

@@ -34,8 +34,19 @@ class InstSelectorArm32 {
 
     /// @brief 形参列表
     std::vector<Value *> realArgs;
+	
+    /// @brief 寄存器与Value的映射。
+    map<int, Value *> regValueMap;
 
 protected:
+    /// @brief 检查这个寄存器是不是参与我们分配的reg
+    /// @param num
+    /// @return 如果是，返回true
+    bool isAlloctionReg(int num)
+    {
+        return (num >= 4) && (num <= 7);
+    }
+
     /// @brief 指令翻译成ARM32汇编
     /// @param inst IR指令
     void translate(IRInst * inst);

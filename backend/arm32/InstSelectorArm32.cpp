@@ -67,6 +67,11 @@ InstSelectorArm32::InstSelectorArm32(vector<IRInst *> & _irCode, ILocArm32 & _il
 	//branchIRInst
 	translator_handlers[IRInstOperator::IRINST_OP_GOTO] = &InstSelectorArm32::translate_branch;
 
+	//建立映射关系
+    for (int i = 4; i < 8;i++)
+	{
+        regValueMap.emplace(4, nullptr);
+    }
 }
 
 /// @brief 指令选择执行
@@ -209,18 +214,100 @@ void InstSelectorArm32::translate_assign(IRInst * inst)
 	{
         ArmInst::addtionInfo += "\t" + inst->getSrc2()->getName();
     }
+	//
+	if(rs->regLinerScaner!=-1&&arg1->regLinerScaner!=-1)
+	{
+		//会存在这种情况
 
-    if (arg1->regId != -1) {
+		//把右值放到regLinerScaer中
+		if(arg1->isInReg==false)
+		{
+            //变量所期望分配的寄存器已经其他变量占用了，需要把原有的变量移除这个寄存器。
+            if (isAlloctionReg(arg1->regLinerScaner)&&regValueMap[arg1->regLinerScaner] != nullptr) {
+                
+				regValueMap[arg1->regLinerScaner]->isInReg = false;
+                regValueMap[arg1->regLinerScaner] = arg1;
+                arg1->isInReg = true;
+            }
+
+            if(arg1->type.type==BasicType::TYPE_POINTER)
+			{
+				std::string name = PlatformArm32::regName[arg1->regLinerScaner];
+				iloc.load_var(arg1->regLinerScaner, arg1);
+				iloc.inst("ldr", name, "["+ name +"]");
+			}else
+			{
+				iloc.load_var(arg1->regLinerScaner, arg1);
+			}
+        }
+		//把左值放到regLinerScaner中
+		if(rs->isInReg==false)
+		{
+			if (isAlloctionReg(rs->regLinerScaner)&&regValueMap[rs->regLinerScaner] != nullptr) {
+                regValueMap[rs->regLinerScaner]->isInReg = false;
+                regValueMap[rs->regLinerScaner] = rs;
+                rs->isInReg = true;
+            }
+			iloc.load_var(rs->regLinerScaner, rs);
+			if(rs->type.type ==BasicType::TYPE_POINTER)
+			{
+                printf("tpye should not be pointer!\n");
+            }
+            // rs->isInReg = true;
+        }
+        iloc.mov_reg(rs->regLinerScaner, arg1->regLinerScaner);
+
+        // printf("------------\n");
+    } else if (arg1->regLinerScaner != -1) {
+        if(arg1->isInReg==false)
+		{
+			if (isAlloctionReg(arg1->regLinerScaner)&&regValueMap[arg1->regLinerScaner] != nullptr) {
+                regValueMap[arg1->regLinerScaner]->isInReg = false;
+                regValueMap[arg1->regLinerScaner] = arg1;
+                arg1->isInReg = true;
+            }
+            iloc.load_var(arg1->regLinerScaner, arg1);
+        }
         // 寄存器 => 内存
         // 寄存器 => 寄存器
 
         // r8 -> rs 可能用到r9
-        iloc.store_var(arg1->regId, rs, 9);
+		if(rs->type.type==BasicType::TYPE_POINTER)
+		{
+			iloc.load_var(REG_ALLOC_SIMPLE_TMP_REG_NO, rs);
+			// iloc.load_var(REG_ALLOC_SIMPLE_SRC1_REG_NO, arg1);
+			auto srcName = PlatformArm32::regName[arg1->regLinerScaner];
+			auto aimName = PlatformArm32::regName[REG_ALLOC_SIMPLE_TMP_REG_NO];
+			iloc.inst("str", srcName, "[" + aimName + "]");
+		}else
+		{
+	        iloc.store_var(arg1->regLinerScaner, rs, 9);	
+		}
 
-    } else if (rs->regId != -1) {
+    } else if (rs->regLinerScaner != -1) {
+        if(rs->isInReg==false)
+		{
+			if (isAlloctionReg(rs->regLinerScaner)&&regValueMap[rs->regLinerScaner] != nullptr) {
+                regValueMap[rs->regLinerScaner]->isInReg = false;
+                regValueMap[rs->regLinerScaner] = rs;
+                rs->isInReg = true;
+            }
+            // iloc.load_var(rs->regLinerScaner, rs);
+            // arg1->isInReg = true;
+        }
         // 内存变量 => 寄存器
 		// 函数传参应该会走这里。
-        iloc.load_var(rs->regId, arg1);
+		if(arg1->type.type==BasicType::TYPE_POINTER)
+		{
+            std::string name = PlatformArm32::regName[rs->regLinerScaner];
+            iloc.load_var(rs->regLinerScaner, arg1);
+            iloc.inst("ldr", name, "["+ name +"]");
+		}else
+		{
+        	iloc.load_var(rs->regLinerScaner, arg1);
+		}
+
+        // iloc.store_var(rs->regLinerScaner, rs, REG_ALLOC_SIMPLE_TMP_REG_NO);
 
     } else {
         // 内存变量 => 内存变量
@@ -255,7 +342,7 @@ void InstSelectorArm32::translate_assign(IRInst * inst)
 			iloc.store_var(REG_ALLOC_SIMPLE_SRC1_REG_NO, rs, 9);
         }
     }
-	ArmInst::addtionInfo = "";
+    ArmInst::addtionInfo = "";
 }
 
 /// @brief 变量定义语句，其实跟赋值语句差不多。
@@ -280,18 +367,19 @@ void InstSelectorArm32::translate_var_def(IRInst * inst)
         // 寄存器 => 寄存器
 
         // r8 -> rs 可能用到r9
-        iloc.store_var(arg1->regId, rs, 9);
+        iloc.store_var(arg1->regLinerScaner, rs, 9);
 
     } else if (rs->regLinerScaner != -1) {
 		//分配了寄存器，但是值还没有被load进来。
 		if(rs->isInReg==false)
 		{
-            iloc.load_var(rs->regLinerScaner, rs);
+            // iloc.load_var(rs->regLinerScaner, rs);
             arg1->isInReg = true;
         }
         // 内存变量 => 寄存器
 
-        iloc.load_var(rs->regId, arg1);
+        iloc.load_var(rs->regLinerScaner, arg1);
+        iloc.store_var(rs->regLinerScaner, rs, REG_ALLOC_SIMPLE_TMP_REG_NO);
 
     } else {
         // 内存变量 => 内存变量
@@ -379,7 +467,10 @@ void InstSelectorArm32::translate_compare(	IRInst * inst,
     // ArmInst::addtionInfo += "\n";
 
 	std::string arg1_reg_name, arg2_reg_name;
-    int arg1_reg_no = arg1->regId, arg2_reg_no = arg2->regId;
+    arg1_reg_name = PlatformArm32::regName[op1_reg_no];
+    arg2_reg_name = PlatformArm32::regName[op2_reg_no];
+
+    int arg1_reg_no = arg1->regLinerScaner, arg2_reg_no = arg2->regLinerScaner;
 
     // 看arg1是否是寄存器，若是则寄存器寻址，否则要load变量到寄存器中
     if (arg1_reg_no == -1) {
@@ -392,6 +483,8 @@ void InstSelectorArm32::translate_compare(	IRInst * inst,
 			iloc.load_var(arg1->regLinerScaner, arg1);
             arg1->isInReg = true;
 		}
+	    arg1_reg_name = PlatformArm32::regName[arg1->regLinerScaner];
+
 	}
 	//  else if (arg1_reg_no != op1_reg_no) {
     //     // 已分配的操作数1的寄存器和操作数2的缺省寄存器一致，这样会使得操作数2的值设置到一个寄存器上
@@ -406,7 +499,6 @@ void InstSelectorArm32::translate_compare(	IRInst * inst,
     //     }
     // }
 
-    arg1_reg_name = PlatformArm32::regName[op1_reg_no];
 
     // 看arg2是否是寄存器，若是则寄存器寻址，否则要load变量到寄存器中
     if (arg2_reg_no == -1) {
@@ -419,6 +511,8 @@ void InstSelectorArm32::translate_compare(	IRInst * inst,
 			iloc.load_var(arg2->regLinerScaner, arg2);
             arg2->isInReg = true;
 		}
+	    arg2_reg_name = PlatformArm32::regName[arg2->regLinerScaner];
+
 	}
 	//  else if (arg2_reg_no != op2_reg_no) {
     //     // 已分配的操作数2的寄存器和操作数1的缺省寄存器一致，这样会使得操作数2的值设置到一个寄存器上
@@ -432,8 +526,6 @@ void InstSelectorArm32::translate_compare(	IRInst * inst,
     //         op2_reg_no = arg2_reg_no;
     //     }
     // }
-
-    arg2_reg_name = PlatformArm32::regName[op2_reg_no];
 
     iloc.inst("cmp", arg1_reg_name, arg2_reg_name);
 	// if(inst->getDst())
@@ -545,7 +637,11 @@ void InstSelectorArm32::translate_two_operator(IRInst * inst,
 
 
     std::string arg1_reg_name, arg2_reg_name;
-    int arg1_reg_no = arg1->regId, arg2_reg_no = arg2->regId;
+    //会被再次刷掉这个name。
+	arg1_reg_name = PlatformArm32::regName[op1_reg_no];
+    arg2_reg_name = PlatformArm32::regName[op2_reg_no];
+
+    int arg1_reg_no = arg1->regLinerScaner, arg2_reg_no = arg2->regLinerScaner;
 
     // 看arg1是否是寄存器，若是则寄存器寻址，否则要load变量到寄存器中
     if (arg1_reg_no == -1) {
@@ -559,8 +655,9 @@ void InstSelectorArm32::translate_two_operator(IRInst * inst,
 			iloc.load_var(arg1->regLinerScaner, arg1);
             arg1->isInReg = true;
 		}
-	}
-	//  else if (arg1_reg_no != op1_reg_no) {
+        arg1_reg_name = PlatformArm32::regName[arg1->regLinerScaner];
+    }
+    //  else if (arg1_reg_no != op1_reg_no) {
     //     // 已分配的操作数1的寄存器和操作数2的缺省寄存器一致，这样会使得操作数2的值设置到一个寄存器上
     //     // 缺省寄存器  2    3
     //     // 实际寄存器  3    -1   有问题
@@ -573,8 +670,6 @@ void InstSelectorArm32::translate_two_operator(IRInst * inst,
     //     }
     // }
 
-    arg1_reg_name = PlatformArm32::regName[op1_reg_no];
-
     // 看arg2是否是寄存器，若是则寄存器寻址，否则要load变量到寄存器中
     if (arg2_reg_no == -1) {
         // arg1 -> r8
@@ -586,6 +681,8 @@ void InstSelectorArm32::translate_two_operator(IRInst * inst,
 			iloc.load_var(arg2->regLinerScaner, arg2);
             arg2->isInReg = true;
 		}
+	    arg2_reg_name = PlatformArm32::regName[arg2->regLinerScaner];
+
 	}
 	//  else if (arg2_reg_no != op2_reg_no) {
     //     // 已分配的操作数2的寄存器和操作数1的缺省寄存器一致，这样会使得操作数2的值设置到一个寄存器上
@@ -600,22 +697,22 @@ void InstSelectorArm32::translate_two_operator(IRInst * inst,
     //     }
     // }
 
-    arg2_reg_name = PlatformArm32::regName[op2_reg_no];
 
     // 看结果变量是否是寄存器，若不是则采用参数指定的寄存器rs_reg_name
-    if (rs->regId != -1) {
-        rs_reg_no = rs->regId;
+    if (rs->regLinerScaner != -1) {
+        rs_reg_no = rs->regLinerScaner;
     }
+	//else 是默认的r10
 
     std::string rs_reg_name = PlatformArm32::regName[rs_reg_no];
 
     iloc.inst(operator_name, rs_reg_name, arg1_reg_name, arg2_reg_name);
 
     // 结果不是寄存器，则需要把rs_reg_name保存到结果变量中
-    if (rs->regId == -1) {
+    // if (rs->regLinerScaner == -1) {
         // r8 -> rs 可能用到r9
-        iloc.store_var(rs_reg_no, rs, op2_reg_no);
-    }
+	iloc.store_var(rs_reg_no, rs, REG_ALLOC_SIMPLE_TMP_REG_NO);
+    // }
     ArmInst::addtionInfo = "";
 
 }
