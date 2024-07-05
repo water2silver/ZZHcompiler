@@ -127,7 +127,6 @@ void InstSelectorArm32::translate_label(IRInst * inst)
         }
         regValueMap[i]->isInReg = false;
         regValueMap[i] = nullptr;
-        // iloc.store_var(i, regValueMap[i], REG_ALLOC_SIMPLE_TMP_REG_NO);
     }
 }
 
