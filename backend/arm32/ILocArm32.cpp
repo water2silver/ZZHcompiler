@@ -268,7 +268,10 @@ void ILocArm32::load_var(int rs_reg_no, Value * var)
     }
 
     std::string rsReg = PlatformArm32::regName[rs_reg_no];
-
+	if(var->_isReg)
+	{
+        return;
+    }
     if (var->isConst()) {
         // 常量
 

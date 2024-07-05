@@ -179,6 +179,11 @@ void CodeGeneratorArm32::registerAllocation(Function * func)
     auto & protectedRegNo = func->getProtectedReg();
     protectedRegNo.push_back(REG_ALLOC_SIMPLE_TMP_REG_NO);
     protectedRegNo.push_back(REG_ALLOC_SIMPLE_FP_REG_NO);
+    protectedRegNo.push_back(4);
+    protectedRegNo.push_back(5);
+    protectedRegNo.push_back(6);
+    protectedRegNo.push_back(7);
+
     if (func->getExistFuncCall()) {
         protectedRegNo.push_back(REG_ALLOC_SIMPLE_LX_REG_NO);
     }
