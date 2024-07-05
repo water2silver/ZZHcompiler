@@ -601,10 +601,13 @@ void Function::OutputCFG()
         	
             cfgNode = nullptr;
         } else {
-			// if(cfgNode!=nullptr)
+			if(cfgNode!=nullptr)
 			{
 	            cfgNode->addInst(inst);
-			}
+			}else
+			{
+                inst->setDead();
+            }
         }
     }
 

@@ -311,7 +311,7 @@ int main(int argc, char * argv[])
 			// 基本块划分。
         	symtab.OutputCFG();
 
-            // OutputCFG(&symtab, std::string(""));
+            OutputCFG(&symtab, std::string(""));
 
             break;
         }
