@@ -118,6 +118,16 @@ void InstSelectorArm32::translate_label(IRInst * inst)
     std::string str;
     inst->toString(str);
     iloc.label(str);
+	//每次遇到label，把寄存器的值存回去。
+    for (int i = 4; i <= 7;i++)
+	{
+		if(regValueMap[i]==nullptr)
+		{
+            continue;
+        }
+        regValueMap[i]->isInReg = false;
+        // iloc.store_var(i, regValueMap[i], REG_ALLOC_SIMPLE_TMP_REG_NO);
+    }
 }
 
 /// @brief goto指令指令翻译成ARM32汇编
@@ -224,11 +234,11 @@ void InstSelectorArm32::translate_assign(IRInst * inst)
 		{
             //变量所期望分配的寄存器已经其他变量占用了，需要把原有的变量移除这个寄存器。
             if (isAlloctionReg(arg1->regLinerScaner)&&regValueMap[arg1->regLinerScaner] != nullptr) {
-                
-				regValueMap[arg1->regLinerScaner]->isInReg = false;
-                regValueMap[arg1->regLinerScaner] = arg1;
-                arg1->isInReg = true;
+                regValueMap[arg1->regLinerScaner]->isInReg = false;
+                iloc.store_var(arg1->regLinerScaner, regValueMap[arg1->regLinerScaner],REG_ALLOC_SIMPLE_TMP_REG_NO);
             }
+			regValueMap[arg1->regLinerScaner] = arg1;
+			arg1->isInReg = true;
 
             if(arg1->type.type==BasicType::TYPE_POINTER)
 			{
@@ -245,9 +255,10 @@ void InstSelectorArm32::translate_assign(IRInst * inst)
 		{
 			if (isAlloctionReg(rs->regLinerScaner)&&regValueMap[rs->regLinerScaner] != nullptr) {
                 regValueMap[rs->regLinerScaner]->isInReg = false;
-                regValueMap[rs->regLinerScaner] = rs;
-                rs->isInReg = true;
+                iloc.store_var(rs->regLinerScaner, regValueMap[rs->regLinerScaner],REG_ALLOC_SIMPLE_TMP_REG_NO);
             }
+			regValueMap[rs->regLinerScaner] = rs;
+			rs->isInReg = true;
 			iloc.load_var(rs->regLinerScaner, rs);
 			if(rs->type.type ==BasicType::TYPE_POINTER)
 			{
@@ -256,6 +267,7 @@ void InstSelectorArm32::translate_assign(IRInst * inst)
             // rs->isInReg = true;
         }
         iloc.mov_reg(rs->regLinerScaner, arg1->regLinerScaner);
+        iloc.must_store_var(rs->regLinerScaner, rs,REG_ALLOC_SIMPLE_TMP_REG_NO);
 
         // printf("------------\n");
     } else if (arg1->regLinerScaner != -1) {
@@ -263,9 +275,11 @@ void InstSelectorArm32::translate_assign(IRInst * inst)
 		{
 			if (isAlloctionReg(arg1->regLinerScaner)&&regValueMap[arg1->regLinerScaner] != nullptr) {
                 regValueMap[arg1->regLinerScaner]->isInReg = false;
-                regValueMap[arg1->regLinerScaner] = arg1;
-                arg1->isInReg = true;
+                iloc.store_var(arg1->regLinerScaner, regValueMap[arg1->regLinerScaner],REG_ALLOC_SIMPLE_TMP_REG_NO);
+
             }
+			regValueMap[arg1->regLinerScaner] = arg1;
+			arg1->isInReg = true;
             iloc.load_var(arg1->regLinerScaner, arg1);
         }
         // 寄存器 => 内存
@@ -289,14 +303,12 @@ void InstSelectorArm32::translate_assign(IRInst * inst)
 		{
 			if (isAlloctionReg(rs->regLinerScaner)&&regValueMap[rs->regLinerScaner] != nullptr) {
                 regValueMap[rs->regLinerScaner]->isInReg = false;
-                regValueMap[rs->regLinerScaner] = rs;
-                rs->isInReg = true;
+                iloc.store_var(rs->regLinerScaner, regValueMap[rs->regLinerScaner],REG_ALLOC_SIMPLE_TMP_REG_NO);
+                
             }
-            // iloc.load_var(rs->regLinerScaner, rs);
-            // arg1->isInReg = true;
+			regValueMap[rs->regLinerScaner] = rs;
+			rs->isInReg = true;
         }
-        // 内存变量 => 寄存器
-		// 函数传参应该会走这里。
 		if(arg1->type.type==BasicType::TYPE_POINTER)
 		{
             std::string name = PlatformArm32::regName[rs->regLinerScaner];
@@ -307,7 +319,8 @@ void InstSelectorArm32::translate_assign(IRInst * inst)
         	iloc.load_var(rs->regLinerScaner, arg1);
 		}
 
-        // iloc.store_var(rs->regLinerScaner, rs, REG_ALLOC_SIMPLE_TMP_REG_NO);
+        iloc.must_store_var(rs->regLinerScaner, rs,REG_ALLOC_SIMPLE_TMP_REG_NO);
+
 
     } else {
         // 内存变量 => 内存变量

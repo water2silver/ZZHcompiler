@@ -175,6 +175,12 @@ public:
     /// @param addr_reg_no 地址寄存器号
     void store_var(int src_reg_no, Value * var, int addr_reg_no);
 
+	/// @brief 保存寄存器到变量，无论变量是否在寄存器中。
+    /// @param src_reg_no 源寄存器号
+    /// @param var 变量
+    /// @param addr_reg_no 地址寄存器号
+    void must_store_var(int src_reg_no, Value * var, int addr_reg_no);
+
     /// @brief 寄存器Mov操作
     /// @param rs_reg_no 结果寄存器
     /// @param src_reg_no 源寄存器

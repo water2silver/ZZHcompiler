@@ -280,7 +280,7 @@ void ILocArm32::load_var(int rs_reg_no, Value * var)
         // 不是常量
 		
 
-        if (var->regLinerScaner != -1) {
+        if (var->regLinerScaner != -1 &&var->isInReg) {
 
             // 寄存器变量
 
@@ -363,7 +363,7 @@ void ILocArm32::store_var(int src_reg_no, Value * var, int tmp_reg_no)
     // -1表示非寄存器，其他表示寄存器的索引值
     int id = var->regLinerScaner;
 
-    if (id != -1) {
+    if (id != -1 &&var->isInReg) {
         // 寄存器变量
 
         std::string regName = PlatformArm32::regName[id];
@@ -406,6 +406,33 @@ void ILocArm32::store_var(int src_reg_no, Value * var, int tmp_reg_no)
         // str r8, [fp, # - 16]
         store_base(src_reg_no, var->baseRegNo, off, tmp_reg_no);
     }
+}
+
+/// @brief 保存寄存器到变量，无论变量是否在寄存器中。
+/// @param src_reg_no 源寄存器号
+/// @param var 变量
+/// @param addr_reg_no 地址寄存器号
+void ILocArm32::must_store_var(int src_reg_no, Value * var, int tmp_reg_no)
+{
+	//如果var是寄存器变量。
+	if(var->_isReg)
+	{
+		emit("mov",var->name, PlatformArm32::regName[src_reg_no]);
+        return;
+    }
+    std::string srcReg = PlatformArm32::regName[src_reg_no];
+    std::string tmpReg = PlatformArm32::regName[tmp_reg_no];
+
+	if(var->_global)
+	{
+		emit("ldr", tmpReg, var->global_name);
+		emit("str", srcReg, "[" + tmpReg + "]");
+		return;
+	}
+	int32_t off = getAdjustOffset(var);
+
+	store_base(src_reg_no, var->baseRegNo, off, tmp_reg_no);
+    
 }
 
 /// @brief 加载栈内变量地址
